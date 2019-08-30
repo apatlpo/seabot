@@ -6,7 +6,8 @@ from seabot_piston_driver.msg import *
 
 def talker():
   rospy.init_node('sinus_node', anonymous=True)
-  piston_position = rospy.Publisher('/driver/piston/position', PistonPosition, queue_size=1)
+  piston_position = rospy.Publisher('/position', PistonPosition, queue_size=1)
+  rospy.loginfo("Commande de position pour sinus")
 
   f = 1.0/60.0
 

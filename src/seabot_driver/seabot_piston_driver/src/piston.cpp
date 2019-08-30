@@ -58,12 +58,32 @@ void Piston::set_reached_switch_off(const bool &val) const{
   usleep(100);
 }
 
+/*
 void Piston::set_piston_speed(const __u8 &speed_in, const __u8 &speed_out) const{
   __u16 val = (speed_in | speed_out<<8);
   if(i2c_smbus_write_word_data(m_file, 0x12, val)<0)
     ROS_WARN("[Piston_driver] I2C bus Failure - Set Speed In/Out");
   usleep(100);
 }
+*/
+
+//addition
+void Piston::set_piston_speed_in(const __u8 &speed_in) const{  //modification Alex
+  if(i2c_smbus_write_byte_data(m_file, 0x12, speed_in)<0)
+    ROS_WARN("[Piston_driver] I2C bus Failure - Set Speed In");
+  usleep(100);
+}
+
+//addition
+void Piston::set_piston_speed_out(const __u8 &speed_out) const{ //modification Alex
+  if(i2c_smbus_write_byte_data(m_file, 0x13, speed_out)<0)
+    ROS_WARN("[Piston_driver] I2C bus Failure - Set Speed Out");
+  usleep(100);
+}
+
+
+
+
 
 void Piston::set_piston_speed_reset(const __u8 &speed) const{
   if(i2c_smbus_write_byte_data(m_file, 0x14, speed)<0)
@@ -89,26 +109,51 @@ void Piston::get_piston_all_data(){
   uint8_t buff[6];
   if(i2c_smbus_read_i2c_block_data(m_file, 0x00, 6,buff) != 6)
     ROS_WARN("[Piston_driver] I2C Bus Failure - Read piston data");
+  usleep(100); //modification
+
 
   uint16_t position = (buff[1] << 8 | buff[0]);
   if(position > 32768) // 2^16 / 2
-    m_position = -(65536-position)/4.0; // 2^16-val
+    m_position = -(65536-position); ///4.0; // 2^16-val //modification Alex
   else
-    m_position = position/4.0;
+    m_position = position; ///4.0; //modification Alex
 
   //  m_position = (buff[1] << 8 | buff[0])/4.0;
-  m_switch_out = buff[2] & 0b1;
-  m_switch_in = (buff[2] >> 1) & 0b1;
+
+
+  //butee artificielle :
+
+  if(m_position <= 10.0){ //min : 0.0  //modification Alex
+	m_switch_out = true;
+  }
+  else{
+	m_switch_out = false;
+  }
+
+  if(m_position >= 5610.0){ //max : 1410.5 //modification Alex
+	m_switch_in = true;
+  }
+  else{
+	m_switch_in = false; //modification Alex
+  }
+
+  //m_switch_out = false; //buff[2] & 0b1; //non utilise //modification Alex
+  //m_switch_in = false; //(buff[2] >> 1) & 0b1; //non utilise //modification Alex
   m_state = (buff[2] >> 2) & 0b11;
-  m_motor_on = (buff[2] >> 4) & 0b1;
-  m_enable_on = (buff[2] >> 5) & 0b1;
-  m_position_set_point = (buff[4] << 8 | buff[3])/4.0;
+  m_motor_on = true; //(buff[2] >> 4) & 0b1; //non utilise //modification Alex
+  //ROS_INFO("m_motor_on value : %d", m_motor_on); //modification Alex
+  m_enable_on = (buff[2] >> 5) & 0b1; 
+  m_position_set_point = (buff[4] << 8 | buff[3]);///4.0; //modification Alex
   m_motor_speed = buff[5];
+
+
+  m_switch_halfway = !i2c_smbus_read_byte_data(m_file, 0xB1); //modification Alex
+
   usleep(100);
 }
 
 void Piston::get_piston_set_point(){
-  m_position_set_point = i2c_smbus_read_word_data(m_file, 0x03)/4.0;
+  m_position_set_point = i2c_smbus_read_word_data(m_file, 0x03); ///4.0; //modification Alex
   usleep(100);
 }
 
