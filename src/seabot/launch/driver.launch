@@ -21,10 +21,13 @@
             <param name="reached_switch_off" value="true" />
             <param name="error_interval" value="6" />
 
-            <param name="tick_max" value="2500" />
+
+<!-- modification Alex -->
+            <param name="tick_max" value="5700" />
         </node>
 
-        <node name="pressure_sensor_ext" pkg="pressure_89bsd_driver" type="pressure_89bsd_node" output="screen" respawn="true" respawn_delay="5">
+<!-- modification Alex -->
+        <node name="pressure_sensor_ext" pkg="pressure_89bsd_driver" type="pressureExt.py" output="screen" respawn="true" respawn_delay="5">
             <param name="frequency" value="5.0" />
         </node>
 
@@ -36,21 +39,23 @@
             <param name="frequency" value="5.0" />
         </node>
 
-        <node name="thruster_node" pkg="seabot_thruster_driver" type="thruster_node" output="screen" ns="thruster" respawn_delay="5">
-            <param name="frequency" value="15.0" />
-            <param name="coeff_cmd_to_pwm" value="9" />
-            <param name="delay_stop" value="0.5" />
-												<param name="backward_engine" value="false" />
-												<param name="invert_left" value="true" />
-												<param name="invert_right" value="false" />
-												<param name="max_engine_change" value="15.0" />
-        </node>
 
-        <node name="gpsd_client" pkg="gpsd_client" type="gpsd_client" output="screen"></node>
+<!-- modification Alex -->
+        <!--node name="thruster_node" pkg="seabot_thruster_driver" type="thruster_node" output="screen" ns="thruster" respawn_delay="5"-->
+            <!--param name="frequency" value="15.0" /-->
+            <!--param name="coeff_cmd_to_pwm" value="9" /-->
+            <!--param name="delay_stop" value="0.5" /-->
+												<!--param name="backward_engine" value="false" /-->
+												<!--param name="invert_left" value="true" /-->
+												<!--param name="invert_right" value="false" /-->
+												<!--param name="max_engine_change" value="15.0" /-->
+        <!--/node-->
 
-							<node name="i2c_imu" pkg="i2c_imu" type="i2c_imu_node" output="screen" respawn_delay="5">
-												<rosparam file="$(find i2c_imu)/param/imu_9250.yaml"/>
-							</node>
+        <!--node name="gpsd_client" pkg="gpsd_client" type="gpsd_client" output="screen"></node-->
+
+							<!--node name="i2c_imu" pkg="i2c_imu" type="i2c_imu_node" output="screen" respawn_delay="5"-->
+												<!--rosparam file="$(find i2c_imu)/param/imu_9250.yaml"/-->
+							<!--/node-->
 
     </group>
 </launch>

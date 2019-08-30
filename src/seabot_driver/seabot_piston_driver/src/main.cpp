@@ -24,7 +24,7 @@ bool state_emergency = false;
 double depth = 0;
 int speed_in_last = 50;
 int speed_out_last = 50;
-__u16 piston_set_point = 0;
+__u16 piston_set_point = 0; //fait bouger le piston
 size_t cpt_error_zero = 0;
 
 bool fast_move = false;
@@ -38,11 +38,6 @@ bool velocity_issue_detected=false;
 bool is_sealing_issue = false;
 ros::Time time_sealing_issue;
 
-size_t speed_index = 0;
-
-int speed_in_min = 15;
-int speed_out_min = 15;
-
 #define NB_SPEED_STEPS 10
 
 bool piston_reset(std_srvs::Empty::Request  &req,
@@ -53,7 +48,8 @@ bool piston_reset(std_srvs::Empty::Request  &req,
 
 bool piston_speed(seabot_piston_driver::PistonSpeed::Request  &req,
                   seabot_piston_driver::PistonSpeed::Response &res){
-  p.set_piston_speed(req.speed_in, req.speed_out);
+  p.set_piston_speed_in(req.speed_in); //modification Alex
+  p.set_piston_speed_out(req.speed_out); //modification Alex
   return true;
 }
 
@@ -71,17 +67,15 @@ bool piston_emergency(std_srvs::SetBool::Request  &req,
                       std_srvs::SetBool::Response &res){
   if(req.data == true){
     new_cmd_position_piston = 0;
-    p.set_piston_speed(45, 45);
+    p.set_piston_speed_in(45); //modification Alex
+    p.set_piston_speed_out(45); //modification Alex
     p.set_piston_position(0);
     speed_in_last = 45;
     speed_out_last = 45;
     state_emergency = true;
-    ROS_INFO("[Piston_driver] Emergency ON");
   }
   else{
     state_emergency = false;
-    ROS_INFO("[Piston_driver] Emergency OFF");
-    p.set_piston_speed(speed_in_min, speed_out_min); // ?
   }
 
   res.success = true;
@@ -103,8 +97,8 @@ int main(int argc, char *argv[]){
   const double speed_in_slope = n_private.param<double>("speed_in_slope", 0.2);
   const double speed_out_slope = n_private.param<double>("speed_out_slope", 0.2);
 
-  speed_in_min = n_private.param<int>("speed_in_min", 15);
-  speed_out_min = n_private.param<int>("speed_out_min", 15);
+  const int speed_in_min = n_private.param<int>("speed_in_min", 15);
+  const int speed_out_min = n_private.param<int>("speed_out_min", 15);
 
   const int speed_reset = n_private.param<int>("speed_reset", 30);
 
@@ -114,7 +108,7 @@ int main(int argc, char *argv[]){
   const bool reached_switch_off = n_private.param<bool>("reached_switch_off", true);
   const int error_interval = n_private.param<int>("error_interval", 6);
 
-  const double tick_max = n_private.param<double>("tick_max", 2500);
+  const double tick_max = n_private.param<double>("tick_max", 5700); //modification Alex
 
   // Service (ON/OFF)
   ros::ServiceServer service_speed = n.advertiseService("speed", piston_speed);
@@ -127,13 +121,15 @@ int main(int argc, char *argv[]){
   ros::Publisher speed_pub = n.advertise<seabot_piston_driver::PistonSpeedDebug>("speed", 1);
   ros::Publisher velocity_pub = n.advertise<seabot_piston_driver::PistonVelocity>("velocity", 1);
   ros::Publisher distance_travelled_pub = n.advertise<seabot_piston_driver::PistonDistanceTravelled>("distance_travelled", 1);
+
+
   seabot_piston_driver::PistonState state_msg;
   seabot_piston_driver::PistonSpeedDebug speed_msg;
   seabot_piston_driver::PistonVelocity velocity_msg;
   seabot_piston_driver::PistonDistanceTravelled distance_travelled_msg;
 
   // Subscriber
-  ros::Subscriber piston_position_sub = n.subscribe("position", 1, position_callback);
+  ros::Subscriber piston_position_sub = n.subscribe("/position", 1, position_callback);
   ros::Subscriber depth_sub = n.subscribe("/fusion/depth", 1, depth_callback);
 
   ros::Time t_last_velocity, t_last_set_point;
@@ -144,7 +140,7 @@ int main(int argc, char *argv[]){
   p.i2c_open();
   sleep(1); // 1s sleep (wait until i2c open)
 
-  if(p.get_version()!=0x04){
+  if(p.get_version()!=0x21){ //modification Alex
     ROS_WARN("[Piston_driver] Wrong PIC code version");
   }
 
@@ -156,7 +152,8 @@ int main(int argc, char *argv[]){
   }
   p.set_error_interval(error_interval);
   p.set_reached_switch_off(reached_switch_off);
-  p.set_piston_speed(speed_in_min, speed_out_min);
+  p.set_piston_speed_in(speed_in_min);//modification Alex
+  p.set_piston_speed_out(speed_out_min);//modification Alex
   p.set_piston_speed_reset(speed_reset);
 
   const double depth_max = 50.0;
@@ -169,11 +166,11 @@ int main(int argc, char *argv[]){
     speed_table_in[i] = speed_in_slope*i*(depth_max/NB_SPEED_STEPS) + speed_in_min;
     speed_index_depth[i] = i*NB_SPEED_STEPS/depth_max;
   }
-
+  size_t speed_index = 0;
   bool new_speed = true;
 
 
-  ROS_INFO("[Piston_driver] Start Ok");
+  ROS_INFO("[Piston_driver] Start Ok"); //modification Alex
   ros::Rate loop_rate(frequency);
   while (ros::ok()){
     ros::spinOnce();
@@ -187,7 +184,8 @@ int main(int argc, char *argv[]){
       if(p.m_position_set_point!=0){
         p.set_piston_position(0);
         if(p.m_position<10)
-          p.set_piston_speed(50, 50);
+          p.set_piston_speed_in(50); //modification Alex
+          p.set_piston_speed_out(50); //modification Alex
       }
     }
     else{
@@ -217,25 +215,43 @@ int main(int argc, char *argv[]){
         if(speed_index_new != speed_index){
           speed_index = speed_index_new;
           new_speed = true;
+
+          // Log
+          //speed_msg.speed_in = speed_table_in[speed_index];
+          //speed_msg.speed_out = speed_table_out[speed_index];
+          //speed_pub.publish(speed_msg);
         }
       }
 
       if(new_speed){
-        size_t speed_in, speed_out;
+	size_t speed_in, speed_out;
         if(fast_move){
+          //p.set_piston_speed_in(min((size_t)floor(speed_table_in[speed_index]*speed_fast_move_factor), speed_max)); //modification Alex
+
+          //p.set_piston_speed_out(min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max)); //modification Alex
+
           speed_in = min((size_t)floor(speed_table_in[speed_index]*speed_fast_move_factor), speed_max);
+                             min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max));
           speed_out = min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max);
         }
         else{
+          //p.set_piston_speed_in(speed_table_in[speed_index]); //modification Alex
+
+          //p.set_piston_speed_out(speed_table_out[speed_index]); //modification Alex
+
           speed_in = speed_table_in[speed_index];
           speed_out = speed_table_out[speed_index];
+
         }
-        p.set_piston_speed(speed_in,speed_out);
+
+        p.set_piston_speed_in(speed_in);
+	p.set_piston_speed_out(speed_out);
         speed_msg.speed_in = speed_in;
         speed_msg.speed_out = speed_out;
 
         // Log
         speed_pub.publish(speed_msg);
+
       }
     }
 
@@ -249,12 +265,14 @@ int main(int argc, char *argv[]){
       state_msg.position = tick_max;
     state_msg.switch_out = p.m_switch_out;
     state_msg.switch_in = p.m_switch_in;
+	state_msg.switch_halfway = p.m_switch_halfway; // modification Alex
     state_msg.state = p.m_state;
     state_msg.motor_on = p.m_motor_on;
     state_msg.enable_on = p.m_enable_on;
     state_msg.position_set_point = p.m_position_set_point;
     state_msg.motor_speed = p.m_motor_speed;
     state_pub.publish(state_msg);
+
 
     // Piston Velocity publisher
     double delta_t = (t - t_last_velocity).toSec();

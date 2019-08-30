@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include <linux/i2c-dev.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,7 +15,6 @@
 
 #include <ros/ros.h>
 
-#define I2C_PISTON_MOVE 0xFE
 #define I2C_PISTON_SPEED_IN 0xAB
 #define I2C_PISTON_SPEED_OUT 0xAC
 #define I2C_PISTON_CMD 0x00
@@ -68,7 +68,10 @@ public:
    * @param speed_in
    * @param speed_out
    */
-  void set_piston_speed(const __u8 &speed_in, const __u8 &speed_out) const;
+  //void set_piston_speed(const __u8 &speed_in, const __u8 &speed_out) const;
+  void set_piston_speed_in(const __u8 &speed_in) const;  //modification Alex
+  void set_piston_speed_out(const __u8 &speed_out) const; //modification Alex
+  
 
   /**
    * @brief set_piston_speed_reset
@@ -142,6 +145,7 @@ public:
   float m_position = 0;
   bool m_switch_out = false;
   bool m_switch_in = false;
+  bool m_switch_halfway = false; //modification Alex
   uint16_t m_state = 0;
   bool m_system_on = false;
   bool m_motor_on = true;
@@ -150,6 +154,8 @@ public:
   uint16_t m_motor_speed = 0;
 
   uint8_t m_version=0;
+
+
 
 private:
   int m_file;

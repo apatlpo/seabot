@@ -17,7 +17,8 @@
 
 // 150/(150+330)
 // 5V = 1024
-#define ADC_BATTERY_LEVEL_CONV 0.015625
+//#define ADC_BATTERY_LEVEL_CONV 0.015625
+#define ADC_BATTERY_LEVEL_CONV 0.1 //modification
 
 class Power
 {
@@ -42,12 +43,6 @@ public:
    * @param dt in 0.1 s (20 = 2s)
    */
   void set_flash_delay(const unsigned char &dt) const;
-
-  /**
-   * @brief set_flash_enable_with_delay
-   * @param dt
-   */
-  void set_flash_enable_with_delay(const unsigned char &dt) const;
 
   /**
    * @brief set_sleep_mode
@@ -87,7 +82,7 @@ public:
 
 private:
   int m_file;
-  const int m_i2c_addr = 0x39;
+  const int m_i2c_addr = 0x38; //modifie
   const char* m_i2c_periph = "/dev/i2c-1";
 
   float m_level_battery[4] =  {0.0, 0.0, 0.0, 0.0};

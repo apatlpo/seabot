@@ -46,12 +46,6 @@ void Power::set_flash_enable(const bool &val) const{
     ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash Led");
 }
 
-void Power::set_flash_enable_with_delay(const unsigned char &dt) const{
-    __u16 val = (0x01 | (dt<<8));
-    if(i2c_smbus_write_word_data(m_file, 0x01, val))
-      ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash and Period Led");
-}
-
 void Power::set_sleep_mode() const{
   if(i2c_smbus_write_byte_data(m_file, 0x00, 0x02)<0)
     ROS_WARN("[Power_driver] I2C Bus Failure - Set Sleep Mode");
@@ -64,13 +58,14 @@ void Power::stop_sleep_mode() const{
 
 void Power::get_batteries(){
   uint8_t buff[8];
-  if(i2c_smbus_read_i2c_block_data(m_file, 0x00, 8,buff) != 8)
+  if(i2c_smbus_read_i2c_block_data(m_file, 0xB0, 8,buff) != 8) //modifie
     ROS_WARN("[Power_driver] I2C Bus Failure - Get Batteries");
 
-  m_level_battery[0] = (buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[1] = (buff[2] | buff[3] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[2] = (buff[4] | buff[5] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[3] = (buff[6] | buff[7] << 8) * ADC_BATTERY_LEVEL_CONV;
+//modification
+  m_level_battery[0] = i2c_smbus_read_byte_data(m_file, 0xB0)* ADC_BATTERY_LEVEL_CONV;//(buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[1] = i2c_smbus_read_byte_data(m_file, 0xB0)* ADC_BATTERY_LEVEL_CONV;//(buff[2] | buff[3] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[2] = i2c_smbus_read_byte_data(m_file, 0xB0)* ADC_BATTERY_LEVEL_CONV;//(buff[4] | buff[5] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[3] = i2c_smbus_read_byte_data(m_file, 0xB0)* ADC_BATTERY_LEVEL_CONV;//(buff[6] | buff[7] << 8) * ADC_BATTERY_LEVEL_CONV;
 }
 
 uint8_t& Power::get_version(){
