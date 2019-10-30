@@ -1,0 +1,142 @@
+------------------------
+i2cdetect -y 1
+
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- 38 -- -- -- -- -- -- -- 
+40: 40 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- 76 77  
+
+------------------------
+Ecriture registre
+
+--- 01 reset
+i2cset -y 1 0x38 0x01 0
+LED D3 blanche allumée fort puis s'éteint au bout de 30s
+MD13S: LED rouge (MB) et verte allumées
+
+motor_torque passe à 1:
+
+ state: reset_out
+ butee out: 1
+ butee in: 0
+ motor on: 1
+ motor torque: 1
+
+repasse en regulation a bout de 73-45=28s
+
+--- 02 motor on
+i2cset -y 1 0x38 0x02 0
+ check: passe motor_on a 0
+ se remet à 1 tout seul
+i2cset -y 1 0x38 0x02 1
+ check: passe motor_on a 1
+
+--- 03 motor_torque
+i2cset -y 1 0x38 0x03 1
+n'agit pas sur motor_torque
+
+--- 04 led1
+i2cset -y 1 0x38 0x04 0
+i2cset -y 1 0x38 0x04 0
+check
+
+--- 05 error_interval
+(valeur initiale est 0)
+
+se met en régulation (pas toujours) et change error_interval:
+ error interval = 56 (38 en hexa)
+après un certain ... comment c'est possible?
+
+255, current_speed 100
+
+38/4 = 9.5
+(also: error = 65535)
+i2cset -y 1 0x38 0x10 0x08 0x00 i
+ne bouge rien
+mais bouge si on dépasse: 0xA0 0x00
+puis se met rapidement en reset
+
+i2cset -y 1 0x38 0x05 0x00
+remet à 0
+error_interval rebascule ensuite
+
+
+i2cset -y 1 0x38 0x05 0x05
+
+
+--- 06 time_zero_shift_error
+
+i2cset -y 1 0x38 0x05 0x00
+
+
+
+...
+
+
+
+
+--- 10 consigne position
+i2cset -y 1 0x38 0x10 0xE8 0x03 i
+50   = 00 32
+1000 = 03 E8
+2000 = 07 D0
+
+read nb_pulse
+i2cget -y 1 0x38 0x03
+i2cget -y 1 0x38 0x04
+0xa0
+0x0f
+4000
+
+
+--- 12 motor_speed_max
+
+i2cset -y 1 0x38 0x12 0x32
+50 decimal -> 32 hex
+
+10 decimal -> 0A hex
+20 decimal -> 14 hex
+30 decimal -> 1E hex
+40 decimal -> 28 hex
+
+20 decimal 
+
+
+------------------------
+Lecture registre
+
+--- 00 et 01 nb_pulse low and high
+i2cget -y 1 0x38 0x00
+i2cget -y 1 0x38 0x01
+0x00 
+0x00
+high low (01 00)
+
+--- 02 butee_out, butee_in, state, motor_on, motor_torque
+i2cget -y 1 0x38 0x02
+0x15 / 15 hex is 010101 binary (regulation)
+0x19 / 19 hex is 011001 biary  (emergency)
+0x35 / 35 hex is 110101        (regulation)
+state: RESET_OUT 0 / REGULATION 1 / EMERGENCY 2
+
+--- 05 motor_current_speed
+i2cget -y 1 0x38 0x05
+
+--- 06 motor_speed_max
+i2cget -y 1 0x38 0x06
+0x19 = 25
+0x96 = 150
+
+
+--- 07 motor_speed_out
+i2cget -y 1 0x38 0x07
+0x00 
+
+
+--- 09 error_interval
+i2cget -y 1 0x38 0x09

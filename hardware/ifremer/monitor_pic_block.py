@@ -14,9 +14,9 @@ def lh2int(lh, signed=False):
 	low = lh[0]
 	high = lh[1]
 	if signed:
-		return unpack('h', chr(low)+chr(high))
+		return unpack('h', chr(low)+chr(high))[0]
 	else:
-		return unpack('H', chr(low)+chr(high))
+		return unpack('H', chr(low)+chr(high))[0]
 
 state_map = {'00': 'reset_out', '01': 'regulation', '10': 'emergency'}
 
@@ -57,11 +57,11 @@ while True:
                 D['motor_torque'] = gstate[0]
 
                 # nbpulse
-                data = lh2int(block[:2])
+                data = lh2int(block[:2], signed=True)
 		D['nbpulse'] = '%d'%data
 
                 # position set point
-		data = lh2int(block[3:5])
+		data = lh2int(block[3:5], signed=True)
                 D['position_set_point'] = '%d'%data
 
 		# error interval
@@ -80,7 +80,7 @@ while True:
                 block = mybus.read_i2c_block_data(0x38, 0xA0, block_size)
 
 		# position error
-		data = lh2int(block[:2])
+		data = lh2int(block[:2], signed=True)
 		D['error'] = '%d'%data
 	except:
 		pass

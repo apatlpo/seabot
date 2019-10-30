@@ -8,9 +8,15 @@ from struct import unpack
 # data types must be converted PIC int is struct short
 #unpack('i','\x00\x00')
 
-def lh2signed(low, high):
-	_tup = unpack('h', chr(low)+chr(high))
-	return int(''.join(str(i) for i in _tup))
+def lh2int(lh, signed=False):
+        """ lh but be a list [low, high]
+        """
+        low = lh[0]
+        high = lh[1]
+        if signed:
+                return unpack('h', chr(low)+chr(high))[0]
+        else:
+                return unpack('H', chr(low)+chr(high))[0]
 
 state_map = {'00': 'reset_out', '01': 'regulation', '10': 'emergency'}
 
@@ -46,7 +52,7 @@ while True:
 		# voltage
 	        low = mybus.read_byte_data(0x38, 0xb0)
         	high = mybus.read_byte_data(0x38, 0xb1)
-	        data = (high << 8) + low
+		data = lh2int([low, high], signed=False)
 	        print(' voltage = %d'%data)
 
         except:
@@ -61,7 +67,7 @@ while True:
 	        low = mybus.read_byte_data(0x38, 0x00)
         	high = mybus.read_byte_data(0x38, 0x01)
 	        #data = (high << 8) + low
-		data = lh2signed(low, high)
+		data = lh2int([low, high], signed=True)
         	print(' nbpulse = %d'%data)
 		# tmp
 		print(' nbpulse diff = %d'%(int(data)-past))
@@ -71,14 +77,14 @@ while True:
         	low = mybus.read_byte_data(0x38, 0x03)
 	        high = mybus.read_byte_data(0x38, 0x04)
         	#data = (high << 8) + low
-		data = lh2signed(low, high)
+		data = lh2int([low, high], signed=True)
 	        print(' position set point = %d'%data)
 
 		# error
 	        low = mybus.read_byte_data(0x38, 0xa0)
         	high = mybus.read_byte_data(0x38, 0xa1)
 	        #data = (high << 8) + low
-		data = lh2signed(low, high)
+		data = lh2int([low, high], signed=True)
         	print(' error = %d'%data)
                 # error interval
                 data = mybus.read_byte_data(0x38, 0x09)
