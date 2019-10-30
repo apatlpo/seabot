@@ -1,0 +1,30 @@
+# remove module (bcm2708 refers ):
+sudo modprobe -r i2c_bcm2708
+# add module with baudrate
+sudo modprobe i2c_bcm2708 baudrate=400000
+sudo cat /sys/module/i2c_bcm2708/parameters/baudrate 
+
+# change combined parameter
+sudo nano /sys/module/i2c_bcm2708/parameters/combined
+# or
+sudo sh -c 'echo Y >/sys/module/i2c_bcm2708/parameters/combined'
+sudo sh -c 'echo N >/sys/module/i2c_bcm2708/parameters/combined'
+
+lsmod
+
+▶ grep i2c /boot/config.txt
+## i2c_arm
+##     Enable the ARM's i2c interface
+dtparam=i2c_arm=on
+## i2c_vc
+##     Enable the i2c interface
+#dtparam=i2c_vc=off
+## i2c_arm_baudrate
+##     Set the baudrate of the ARM's i2c interface
+dtparam=i2c_arm_baudrate=100000
+## i2c_vc_baudrate
+##     Set the baudrate of the VideoCore i2c interface
+#dtparam=i2c_vc_baudrate=100000
+
+
+
