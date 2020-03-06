@@ -1,0 +1,4 @@
+[INFO] [1572194092.380932]: t+0 min: send command to go to nbpulse=1300 during 5 minutes
+[INFO] [1572194392.473489]: t+5 min: send command to go to nbpulse=5663 during 5 minutes
+[INFO] [1572194692.544958]: t+10 min: send command to go to nbpulse=1300 during 60 minutes
+t0+70: test finished

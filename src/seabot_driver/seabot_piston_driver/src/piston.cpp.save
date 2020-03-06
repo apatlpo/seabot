@@ -93,6 +93,7 @@ void Piston::set_piston_speed_reset(const __u8 &speed) const{
 
 void Piston::set_piston_position(__u16 position) const{
   // S Addr Wr [A] Comm [A] DataLow [A] DataHigh [A] P
+
   if(i2c_smbus_write_word_data(m_file, 0x10, position)<0)
     ROS_WARN("[Piston_driver] I2C bus Failure - Piston set position");
   usleep(100);
@@ -145,6 +146,7 @@ void Piston::get_piston_all_data(){
   m_position_set_point = (buff[4] << 8 | buff[3]);///4.0; //modification Alex
   m_motor_speed = buff[5];
 
+
   m_switch_halfway = !i2c_smbus_read_byte_data(m_file, 0xB1); //modification Alex
 
   usleep(100);
@@ -153,6 +155,7 @@ void Piston::get_piston_all_data(){
 void Piston::get_piston_set_point(){
   m_position_set_point = i2c_smbus_read_word_data(m_file, 0x03); ///4.0; //modification Alex
   usleep(100);
+:q
 }
 
 uint8_t& Piston::get_version(){

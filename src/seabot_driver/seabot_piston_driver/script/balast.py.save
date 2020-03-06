@@ -13,22 +13,24 @@ def talker():
   sleep_time = rospy.Duration(delta_time)
 
 #  while not rospy.is_shutdown():
-  for i in range(2):
+  for i in range(1):
 	rospy.sleep(10)
 
-	rospy.loginfo("Dive")
-	piston_position.publish(5700)
+	rospy.loginfo("Go to target position")
+        # max: 5663
+        # limit sortie gros piston: 1472
+	piston_position.publish()
 
-	rospy.sleep(60)
+	rospy.sleep(20)
 
 	rospy.loginfo("Large piston out")
-	piston_position.publish(4)
+	piston_position.publish(4*368)
 
-	rospy.sleep(60)
+	rospy.sleep(20)
 
 	rospy.loginfo("Surface")
 	piston_position.publish(0)
-	rospy.sleep(190)
+	rospy.sleep(20)
 
 
 	print("i (0;2) = ", i)

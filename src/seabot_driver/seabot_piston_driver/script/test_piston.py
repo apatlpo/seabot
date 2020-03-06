@@ -14,7 +14,7 @@ def talker():
 
   while not rospy.is_shutdown():
 	rospy.sleep(2)
-	piston_position.publish(355*4)
+	piston_position.publish(5700)
     	#355*4
 	#1070 + 355*4
 	#1050 + 368*4 25 pourcent verin + gros piston rentres

@@ -183,9 +183,10 @@ int main(int argc, char *argv[]){
     if(state_emergency){
       if(p.m_position_set_point!=0){
         p.set_piston_position(0);
-        if(p.m_position<10)
+        if(p.m_position<10){
           p.set_piston_speed_in(50); //modification Alex
           p.set_piston_speed_out(50); //modification Alex
+        }
       }
     }
     else{
@@ -227,23 +228,23 @@ int main(int argc, char *argv[]){
 	size_t speed_in, speed_out;
         if(fast_move){
           //p.set_piston_speed_in(min((size_t)floor(speed_table_in[speed_index]*speed_fast_move_factor), speed_max)); //modification Alex
-
           //p.set_piston_speed_out(min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max)); //modification Alex
-
           speed_in = min((size_t)floor(speed_table_in[speed_index]*speed_fast_move_factor), speed_max);
-                             min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max));
+                             min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max);
           speed_out = min((size_t)floor(speed_table_out[speed_index]*speed_fast_move_factor), speed_max);
         }
         else{
           //p.set_piston_speed_in(speed_table_in[speed_index]); //modification Alex
-
           //p.set_piston_speed_out(speed_table_out[speed_index]); //modification Alex
-
           speed_in = speed_table_in[speed_index];
           speed_out = speed_table_out[speed_index];
-
         }
 
+        // AP( override speed_in and speed_out
+        ROS_INFO("[Piston_driver] speed_in = %li , speed_out = %li", (long int)speed_in, (long int)speed_out);
+        speed_in = 50;
+        speed_out = 50;
+        // AP)
         p.set_piston_speed_in(speed_in);
 	p.set_piston_speed_out(speed_out);
         speed_msg.speed_in = speed_in;
@@ -265,7 +266,7 @@ int main(int argc, char *argv[]){
       state_msg.position = tick_max;
     state_msg.switch_out = p.m_switch_out;
     state_msg.switch_in = p.m_switch_in;
-	state_msg.switch_halfway = p.m_switch_halfway; // modification Alex
+    state_msg.switch_halfway = p.m_switch_halfway; // modification Alex
     state_msg.state = p.m_state;
     state_msg.motor_on = p.m_motor_on;
     state_msg.enable_on = p.m_enable_on;
@@ -299,7 +300,8 @@ int main(int argc, char *argv[]){
       else{
         if((ros::WallTime::now()-time_velocity_issue_detected).toSec()>3.0){
           for(size_t i=speed_index; i<NB_SPEED_STEPS; i++){
-            if(p.m_position_set_point-p.m_position>0.0){
+            // AP comment out
+	    if(p.m_position_set_point-p.m_position>0.0){
               speed_table_in[i] = min(speed_max, speed_table_in[i]+(size_t)5);
             }
             else{
