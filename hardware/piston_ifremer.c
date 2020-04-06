@@ -58,10 +58,10 @@ volatile int nb_pulse = 0;  // Nombre d'impulsions de la sortie de l'opto OPB461
 volatile unsigned short butee_out = 0;
 volatile unsigned short butee_in = 0;
 
-// Motor [0 400]
-#define MOTOR_STOP 200
-volatile unsigned motor_speed_max = 150;
-volatile unsigned motor_speed_out_reset = 200;
+// Motor [0 100]
+#define MOTOR_STOP 50
+volatile unsigned motor_speed_max = 25;
+volatile unsigned motor_speed_out_reset = 50;
 volatile unsigned motor_current_speed = MOTOR_STOP;
 volatile unsigned short motor_speed_variation = 2;
 volatile int error_speed=0;
@@ -188,10 +188,10 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
     case 0x06:
         SSPBUF = motor_speed_max;
         break;
-/*    case 0x07:
-        SSPBUF = motor_speed_out;
-        break;*/
-    case 0x015:
+    case 0x07:
+        SSPBUF = motor_speed_out_reset;
+        break;
+    case 0x08:
         SSPBUF = motor_speed_variation;
         break;
     case 0xA0:
@@ -270,7 +270,9 @@ void set_motor_cmd_stop(){
  * in : [0, 50]
  */
 void set_motor_cmd(unsigned speed){
-    if(motor_on == 0 || (butee_out == 1 && speed >= MOTOR_STOP) || (butee_in == 1 && speed <= MOTOR_STOP)){
+    //if(motor_on == 0 || (butee_out == 1 && speed >= MOTOR_STOP) || (butee_in == 1 && speed <= MOTOR_STOP)){
+    // on compte sur les but�es internes du v�rin plut�t:
+    if(motor_on == 0){
         set_motor_cmd_stop();
     }
     else if(motor_current_speed != speed){
@@ -389,11 +391,11 @@ void init_io(){
 
     TRISA5_bit = 0; // RA5 en sortie
 
-    INTCON2.RABPU = 0; // PORTA and PORTB Pull-up Enable bit
-    WPUA.WPUA0 = 1; // Pull-up enabled sur RA0, sur inter de butée haute
-    WPUA.WPUA1 = 1; // Pull-up enabled sur RA1, sur inter de butée basse
-    //WPUA.WPUA2 = 1; // Pull-up enabled sur RA2, sur sortie de l'opto HOA0901 (sortie collecteur ouvert)
-    //WPUA.WPUA3 = 1; // Pull-up enabled sur RA3, sur sortie de l'opto HOA0901 (sortie collecteur ouvert)
+    //INTCON2.RABPU = 0; // PORTA and PORTB Pull-up Enable bit
+    //WPUA.WPUA0 = 1; // Pull-up enabled sur RA0, sur inter de butée haute
+    //WPUA.WPUA1 = 1; // Pull-up enabled sur RA1, sur inter de butée basse
+    ////WPUA.WPUA2 = 1; // Pull-up enabled sur RA2, sur sortie de l'opto HOA0901 (sortie collecteur ouvert)
+    ////WPUA.WPUA3 = 1; // Pull-up enabled sur RA3, sur sortie de l'opto HOA0901 (sortie collecteur ouvert)
 
     TRISB5_bit = 0; // RB5 en sortie
     TRISB7_bit = 0; // RB7 en sortie
@@ -408,8 +410,9 @@ void init_io(){
     MOTOR_TORQUE = 0;   
 }
 
-void regulation(){
+void regulate(){
     LED2 = 1;
+    read_optical_fork();
     error = position_set_point - nb_pulse;
 
     if(error > error_interval)
@@ -424,8 +427,8 @@ void regulation(){
 }
 
 void init_adc(){
-	ANSEL8_bit = 1; // ADC Channel 8
-	ADC_Init();
+        ANSEL8_bit = 1; // ADC Channel 8
+        ADC_Init();
 }
 
 void init_pwm(){
@@ -435,12 +438,12 @@ void init_pwm(){
     // Therefore between [0, 400] with middle at 200
     // Delay = 4 * Tosc * (PWM1CON<6:0>)
     // Freq = 10kHz
-    PR2 = 99;
+    PR2 = 24;
     // Prescale
     // 00 => 1
     // 01 => 4
     // 11 => 16
-    T2CKPS1_bit = 0;
+    T2CKPS1_bit = 1;
     T2CKPS0_bit = 1; // Prescale 4
     TMR2ON_bit = 1;
     
@@ -462,7 +465,7 @@ void init_pwm(){
     CCP1CON.CCP1M0 = 0b0;
 
     PSTRCON.STRA = 1; // Steering Enable bit A
-    PSTRCON.STRB = 1; // Steering Enable bit B
+    //PSTRCON.STRB = 1; // Steering Enable bit B
     // P1A pin has the PWM waveform with polarity control from CCP1M<1:0>
 }
 
@@ -544,9 +547,8 @@ void main(){
 
         case REGULATION:
             LED2 = 0;
-            read_optical_fork();
             if(flag_regulation==1)
-                regulation();
+                regulate();
             break;
 
         case EMERGENCY:
@@ -590,7 +592,7 @@ void interrupt(){
           position_set_point = 0;
           watchdog_restart = watchdog_restart_default;
         }
-
+        
         read_batteries_voltage();
 
         if(state==RESET_OUT){
@@ -692,7 +694,6 @@ void interrupt_low(){
           SSPCON1.CKP = 1;
           nb_tx_octet++;
       }
-
     
     PIR1.SSPIF = 0; // reset SSP interrupt flag
   }
