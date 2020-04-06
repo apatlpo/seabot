@@ -1,6 +1,6 @@
 /*  PIC18F14K22  mikroC PRO for PIC v6.4
 Oscillateur externe quartz 16MHZ, PLL * 4, MCU clock frequency 64MHZ
-
+Fosc = 4*16e6
 
 Hardware:
   18F14K22  DIP20,SOIC
@@ -55,7 +55,13 @@ TIMER1: Géneration d'une temporisation variable par pas de 10us
 
 */
 
-#define CODE_VERSION 0x04
+#define CODE_VERSION 0x05
+
+#define TMR0H_CPT 0x0B
+#define TMR0L_CPT 0xDB
+
+#define TMR1H_CPT 0xFF
+#define TMR1L_CPT 0xD5
 
 // I2C
 const unsigned short ADDRESS_I2C = 0x20;
@@ -79,8 +85,6 @@ sbit LED at LATA.B2; // sortie LED
 #define MOTOR_CMD_STOP 150
 #define PWM_PERIOD 2000
 unsigned short cmd_motor[3] = {MOTOR_CMD_STOP, MOTOR_CMD_STOP, MOTOR_CMD_STOP};
-#define TMR1_CPT 136 // 16MHz/4 and 10us delay, cpt incrementing from TMR1_CPT to 0xFFFF
-// 136, 215, 246
 
  unsigned char cpt_motor_1 = 0;
  unsigned char cpt_motor_2 = 0;
@@ -136,9 +140,19 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
  */
 void init_timer0(){
   T0CON = 0x85; // TIMER0 ON (1 s)
-  TMR0H = 0x0B;
-  TMR0L = 0xDC;
-  TMR0IE_bit = 0;
+  T08BIT_bit = 0;
+  PSA_bit = 0;
+
+  // Freq/4 = 4e6 (PLL not working here?)
+  // Prescale = 64, 0xFFFF-62500=0x0BDB
+  T0PS2_bit = 1;
+  T0PS1_bit = 0;
+  T0PS0_bit = 1;
+
+  TMR0H = TMR0H_CPT;
+  TMR0L = TMR0L_CPT;
+
+  TMR0IE_bit = 1;  
 }
 
 /**
@@ -148,11 +162,15 @@ void init_timer0(){
  */
 void init_timer1(){
   T1CON = 0x01; // Enable time (TMR1ON)
+  T1CKPS0_bit = 0;
+  T1CKPS1_bit = 0;
   TMR1IF_bit = 0; // Interupt flag
-  TMR1H = 0xFF; // 65416
-  TMR1L = TMR1_CPT;
+  TMR1H = TMR1H_CPT; // 65416
+  TMR1L = TMR1L_CPT;
   TMR1IE_bit = 0;
   INTCON = 0xC0;
+
+  TMR1IE_bit = 1;
 }
 
 
@@ -207,10 +225,7 @@ void main(){
 
   LATC = 0;
 
-  TMR0IE_bit = 1; //Enable TIMER0
   TMR0ON_bit = 1; // Start TIMER0
-  
-  TMR1IE_bit = 1;
   TMR1ON_bit = 1; // Start TIMER1
 
   INTCON3.INT1IP = 1; //INT1 External Interrupt Priority bit, INT0 always a high
@@ -224,18 +239,13 @@ void main(){
   INTCON.GIE = 1; // Global Interrupt Enable bit
   INTCON.PEIE = 1; // Peripheral Interrupt Enable bit
 
-  LED = 1;
-  delay_ms(250);
+  LED = 0;
+  Delay_ms(250);
 
   is_init = 0;
 
   while(1){
     asm CLRWDT;
-
-    if(cmd_motor[0] != MOTOR_CMD_STOP || cmd_motor[1] != MOTOR_CMD_STOP || cmd_motor[2] != MOTOR_CMD_STOP)
-      LED = 1;
-    else
-      LED = 0;
 
     if(nb_rx_octet>1 && SSPSTAT.P == 1){
         i2c_read_data_from_buffer();
@@ -253,6 +263,9 @@ void interrupt(){
 
   // Interruption TIMER1 toutes les 10us
   if (TMR1IF_bit){
+    TMR1H = TMR1H_CPT;
+    TMR1L = TMR1L_CPT; //136
+    TMR1IF_bit = 0;
 
     if(cpt_global==0){
       MOT1 = 1;
@@ -285,13 +298,13 @@ void interrupt(){
       else
         cpt_motor_3--;
     }
-
-    TMR1H = 0xFF;
-    TMR1L = TMR1_CPT; //136
-    TMR1IF_bit = 0;
   }
 
-  else if (TMR0IF_bit){
+  if (TMR0IF_bit){
+    TMR0H = TMR0H_CPT;
+    TMR0L = TMR0L_CPT;
+    TMR0IF_bit = 0;
+
     // Watchdog
     if(watchdog_restart>0)
       watchdog_restart--;  
@@ -301,10 +314,6 @@ void interrupt(){
       cmd_motor[2] = MOTOR_CMD_STOP;
       watchdog_restart = WATCHDOG_RESTART_DEFAULT;
     }
-
-    TMR0H = 0x0B;
-    TMR0L = 0xDC;
-    TMR0IF_bit = 0;
   }
 }
 
@@ -358,47 +367,42 @@ void init_i2c(){
  */
 void interrupt_low(){
   if (PIR1.SSPIF){  // I2C Interrupt
+        tmp_rx = SSPBUF;
 
       if(SSPCON1.SSPOV || SSPCON1.WCOL){
           SSPCON1.SSPOV = 0;
           SSPCON1.WCOL = 0;
-          tmp_rx = SSPBUF;
+          SSPCON1.CKP = 1;
       }
 
       //****** receiving data from master ****** //
       // 0 = Write (master -> slave - reception)
       if (SSPSTAT.R_W == 0){
-        if(SSPSTAT.P == 0){
-          if (SSPSTAT.D_A == 0){ // Address
+          SSPCON1.CKP = 1;
+          if(SSPSTAT.D_A == 0){ // Address
             nb_rx_octet = 0;
-            tmp_rx = SSPBUF;
           }
           else{ // Data
             if(nb_rx_octet < SIZE_RX_BUFFER){
-              rxbuffer_tab[nb_rx_octet] = SSPBUF;
+              rxbuffer_tab[nb_rx_octet] = tmp_rx;
               nb_rx_octet++;
             }
-            else{
-              tmp_rx = SSPBUF;
-            }
           }
-        }
       }
       //******  transmitting data to master ****** //
       // 1 = Read (slave -> master - transmission)
       else{
           if(SSPSTAT.D_A == 0){
             nb_tx_octet = 0;
-            tmp_rx = SSPBUF;
           }
 
           // In both D_A case (transmit data after receive add)
           i2c_write_data_to_buffer(nb_tx_octet);
-          delay_us(20);
+          //Delay_us(20);
+          SSPCON1.CKP = 1;
           nb_tx_octet++;
       }
 
-    SSPCON1.CKP = 1;
     PIR1.SSPIF = 0; // reset SSP interrupt flag
   }
 }

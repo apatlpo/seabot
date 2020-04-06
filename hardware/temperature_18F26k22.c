@@ -92,6 +92,8 @@ volatile unsigned short cpt = 0;
 void i2c_read_data_from_buffer(){
     unsigned short i = 0;
     unsigned short nb_data = nb_rx_octet;
+    if(nb_data==0)
+        nb_data=1;
 
     for(i=0; i<nb_data; i++){
         switch(rxbuffer_tab[0]+i){
@@ -207,7 +209,7 @@ void init_io(){
  */
 void reset_TSYS01_sequence(){
   i2c_master_write_byte(TSYS01_RESET);
-  delay_ms(10);
+  Delay_ms(10);
   reset = 0;
 }
 
@@ -230,7 +232,7 @@ void prom_read_TSYS01_sequence(){
         i2c_master_read_data(TSYS01_PROM_READ + (j+1)*2, 2);
         tsys01_prom[j*2] = i2c_master_rxbuffer_tab[0];
         tsys01_prom[j*2+1] = i2c_master_rxbuffer_tab[1];
-        delay_us(100);
+        Delay_us(100);
    }
 }
 
@@ -241,7 +243,7 @@ void prom_read_TSYS01_sequence(){
 void read_TSYS01_sequence(){
   i2c_master_write_byte(TSYS01_ADC_TEMP_CONV);
 
-  delay_ms(20);
+  Delay_ms(20);
 
   i2c_master_read_data(TSYS01_ADC_READ, 3);
 
@@ -260,11 +262,11 @@ void wait_MSSP(){
 
 void i2c_fail(){
 //   int i;
-	LED = 1;
+        LED = 1;
   SSP1CON2.PEN = 1; //Send Stop Condition
   wait_MSSP(); //Wait to complete
 
-  delay_ms(2000); // Reset
+  Delay_ms(2000); // Reset
 }
 
 void i2c_master_write_byte(unsigned char cmd){
@@ -302,19 +304,19 @@ void i2c_master_read_data(unsigned char cmd, unsigned char nb_bytes){
     SSP1CON2.RCEN = 1; // Configure master to receive bytes
     wait_MSSP(); // Wait data to be received
     i2c_master_rxbuffer_tab[i] = SSP1BUF; // Read data
-    delay_us(30);
+    Delay_us(30);
     if(i==nb_bytes-1)
       SSP1CON2.ACKDT = 1;
     else
       SSP1CON2.ACKDT = 0;
     SSP1CON2.ACKEN = 1; // Acknowledge read
     wait_MSSP();
-    delay_us(30);
+    Delay_us(30);
   }
-  delay_us(10);
+  Delay_us(10);
   SSP1CON2.PEN = 1; //Send Stop Condition
   //wait_MSSP(); //Wait to complete
-  delay_ms(5);
+  Delay_ms(5);
    mssp_interrupt_received = 0;
   //LED = 1;
 }
@@ -345,7 +347,7 @@ void main(){
   // I2C1_Init(100000);// initialize I2C communication bus I2C N?1
 
   
-  delay_ms(250);
+  Delay_ms(250);
 
   RCON.IPEN = 1;  //Enable priority levels on interrupts
 
@@ -359,7 +361,7 @@ void main(){
   reset_TSYS01_sequence();
   prom_read_TSYS01_sequence();
   
-  delay_ms(250);
+  Delay_ms(250);
 
   while(1){
 
@@ -370,7 +372,7 @@ void main(){
         state = IDLE;
         break;
       case IDLE: // Idle state
-        LED = 0;
+        // LED = 0;
         if(reset == 1)
           state = RESET_TSYS01;
         else if(conversion == 1)
@@ -385,7 +387,7 @@ void main(){
         break;
 
       case CONVERSION_READ:
-        LED = 1;
+        // LED = 1;
         read_TSYS01_sequence();
         state = IDLE;
         break;
@@ -502,49 +504,43 @@ if(PIR1.SSP1IF){
  * @brief interrupt_low
  */
 void interrupt(){
-  if (PIR3.SSP2IF){  // I2C Interrupt
+  if (PIR1.SSPIF){  // I2C Interrupt
+        tmp_rx = SSPBUF;
 
-      if(SSP2CON1.SSPOV || SSP2CON1.WCOL){
-          SSP2CON1.SSPOV = 0;
-          SSP2CON1.WCOL = 0;
-          tmp_rx = SSP2BUF;
+      if(SSPCON1.SSPOV || SSPCON1.WCOL){
+          SSPCON1.SSPOV = 0;
+          SSPCON1.WCOL = 0;
+          SSPCON1.CKP = 1;
       }
 
       //****** receiving data from master ****** //
       // 0 = Write (master -> slave - reception)
-      if (SSP2STAT.R_W == 0){
-        if(SSP2STAT.P == 0){
-          if (SSP2STAT.D_A == 0){ // Address
+      if (SSPSTAT.R_W == 0){
+          SSPCON1.CKP = 1;
+          if(SSPSTAT.D_A == 0){ // Address
             nb_rx_octet = 0;
-            tmp_rx = SSP2BUF;
           }
           else{ // Data
             if(nb_rx_octet < SIZE_RX_BUFFER){
-              rxbuffer_tab[nb_rx_octet] = SSP2BUF;
+              rxbuffer_tab[nb_rx_octet] = tmp_rx;
               nb_rx_octet++;
             }
-            else{
-              tmp_rx = SSP2BUF;
-            }
           }
-        }
       }
       //******  transmitting data to master ****** //
       // 1 = Read (slave -> master - transmission)
       else{
-          if(SSP2STAT.D_A == 0){
+          if(SSPSTAT.D_A == 0){
             nb_tx_octet = 0;
-            tmp_rx = SSP2BUF;
           }
 
           // In both D_A case (transmit data after receive add)
           i2c_write_data_to_buffer(nb_tx_octet);
-          delay_us(20);
+          //Delay_us(20);
+          SSPCON1.CKP = 1;
           nb_tx_octet++;
       }
 
-    SSP2CON1.CKP = 1;
-    PIR3.SSP2IF = 0; // reset SSP interrupt flag
+    PIR1.SSPIF = 0; // reset SSP interrupt flag
   }
-
 }
