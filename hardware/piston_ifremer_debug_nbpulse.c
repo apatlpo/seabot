@@ -64,7 +64,6 @@ volatile unsigned int optical_counter = 0; // test
 volatile unsigned int optical_counters[4] = {0,0,0,0}; // test
 volatile unsigned short optical_max = 0; // index of maximum value
 volatile unsigned int optical_counter_threshold = 5; // test main loop 33kHz, thus 30 is 1ms
-volatile unsigned short nb_pulse_skip = 0;
 volatile unsigned int mytimer = 0; // test
 volatile unsigned int mytimer0 = 0; // test
 //volatile unsigned int mytimer1 = 1; // test
@@ -73,7 +72,8 @@ volatile unsigned short butee_in = 0;
 
 // Motor [0 100]
 #define MOTOR_STOP 50
-volatile signed int motor_speed_max = 25;                     // test
+volatile unsigned short motor_flag_regulation = 0;
+volatile signed int motor_speed_max = 50;                     // test
 volatile signed int motor_speed_out_reset = 50;               // test
 volatile signed int motor_current_speed = MOTOR_STOP;          // test
 volatile signed short motor_speed_variation = 2;          // test
@@ -114,6 +114,14 @@ volatile unsigned int battery_voltage = 0;
 volatile unsigned short flag_battery = 0;
 sbit BAT1 at PORTC.B0; // entrée de controle de tension BAT1
 
+// DEBUG
+volatile unsigned short debug_counter = 0;
+volatile unsigned short debug_period = 15;
+volatile unsigned short flag_debug = 0;
+volatile unsigned int optical_counters_debug[4] = {0,0,0,0}; // test
+volatile unsigned short flag_count=0;
+
+
 void i2c_read_data_from_buffer(){
     unsigned short i = 0;
     short nb_data = nb_rx_octet-1;
@@ -123,12 +131,11 @@ void i2c_read_data_from_buffer(){
     for(i=0; i<nb_data; i++){
         switch(rxbuffer_tab[0]+i){
             case 0x01:
-                // could test value in rxbuffer to make this more robust
-                state = RESET_OUT; // test
+                //state = RESET_OUT; // test
                 butee_reset_cpt = TIME_BUTEE_RESET;
                 break;
             case 0x02:
-                motor_on = (rxbuffer_tab[i+1]!=0x00); // test
+                //motor_on = (rxbuffer_tab[i+1]!=0x00); // test
                 break;
             case 0x03:
                 MOTOR_TORQUE = (rxbuffer_tab[i+1]!=0x00);
@@ -163,8 +170,7 @@ void i2c_read_data_from_buffer(){
                 delay_release_torque = rxbuffer_tab[i+1];
                 break;
             case 0xB0: // emergency mode
-                // could test value in rxbuffer to make this more robust
-                state = EMERGENCY; // test
+                //state = EMERGENCY; // test
                 break;
             default:
                 break;
@@ -181,11 +187,13 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
 
     switch(rxbuffer_tab[0]+nb_tx_octet){
     case 0x00:
-        SSPBUF = nb_pulse;
+        SSPBUF = optical_counters_debug[0];
+        //SSPBUF = nb_pulse;
         //SSPBUF = mytimer;
         break;
     case 0x01:
-        SSPBUF = nb_pulse >> 8;
+        SSPBUF = optical_counters_debug[0] >> 8;
+        //SSPBUF = nb_pulse >> 8;
         //SSPBUF = (mytimer >> 8);
         break;
     case 0x02:
@@ -193,14 +201,16 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
                 | ((butee_in & 0b1)<<1)
                 | ((state & 0b11) <<2)
                 | ((motor_on & 0b1) << 4)
-                | ((MOTOR_TORQUE & 0b1) << 5);
+                | ((MOTOR_TORQUE & 0b1) << 5);  
         break;
     case 0x03:
-        SSPBUF = position_set_point;
+        SSPBUF = optical_counters_debug[1];
+        //SSPBUF = position_set_point;
         //SSPBUF = mytimer;
         break;
     case 0x04:
-        SSPBUF = position_set_point >> 8;
+        SSPBUF = optical_counters_debug[1] >> 8;
+        //SSPBUF = position_set_point >> 8;
         //SSPBUF = mytimer >> 8;
         break;
     case 0x05:
@@ -223,18 +233,22 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
         SSPBUF = error_interval;
         break;
     case 0xA0:
-        SSPBUF = error;
+        //SSPBUF = error;
+        SSPBUF = optical_counters_debug[2];
         //SSPBUF = nb_pulse_debug;
         break;
     case 0xA1:
-        SSPBUF = (error >> 8);
+        //SSPBUF = (error >> 8);
+        SSPBUF = optical_counters_debug[2] >> 8;
         //SSPBUF = nb_pulse_debug >> 8;
         break;
     case 0xB0:
-        SSPBUF = battery_voltage;
+        SSPBUF = optical_counters_debug[3];
+        //SSPBUF = battery_voltage;
         break;
     case 0xB1:
-        SSPBUF = battery_voltage >> 8;
+        SSPBUF = optical_counters_debug[3] >> 8;
+        //SSPBUF = battery_voltage >> 8;
         break;
     case 0xB2:
         SSPBUF = S_PISTON;
@@ -252,8 +266,8 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
 }
 
 void read_batteries_voltage(){
-  battery_voltage = ADC_Get_Sample(8);   // Get 10-bit results of AD conversion AN8 batterie 1
-  //battery_voltage = 0; // test
+  //battery_voltage = ADC_Get_Sample(8);   // Get 10-bit results of AD conversion AN8 batterie 1
+  battery_voltage = 0; // test
   flag_battery=0;
 }
 
@@ -308,13 +322,19 @@ void set_motor_cmd(unsigned speed){
         set_motor_cmd_stop();
     }
     else if(motor_current_speed != speed){
+
         error_speed = speed - motor_current_speed;
         if (error_speed > motor_speed_variation)
             error_speed = motor_speed_variation;
         else if(error_speed < -motor_speed_variation)
             error_speed = -motor_speed_variation;
 
-        motor_current_speed += error_speed;
+        if (motor_flag_regulation==1){
+            motor_current_speed += error_speed;
+        }
+        else{
+            motor_current_speed = speed;
+        }
         
         // PWM is on 10-bit (2*4 + 2)
         CCPR1L = motor_current_speed >> 2; // High bit
@@ -331,218 +351,32 @@ void set_motor_cmd(unsigned speed){
     
 }
 
-/**
- * @brief Lecture de la fourche optique
- */
-
-
-// debug version
-/*void read_optical_fork(){
+void read_optical_fork_debug(){
 
     unsigned short i;
     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
-    // test: frequency = 
-    //          1000 Hz if called from regulate
-    //         33000 Hz if called from main while loop
-    //mytimer0++;
-    //if (mytimer0>=1000){
-    //    mytimer++;
-    //    mytimer0=0;
-    //}
-    //
-    //mytimer++;
 
-    if(new_state == 0x00){
-        optical_counters[0]++;
-    }
-    else if(new_state == 0x01){
-        optical_counters[1]++;
-    }
-    else if(new_state == 0x02){
-        optical_counters[2]++;
-    }
-    else if(new_state == 0x03){
-        optical_counters[3]++;
+    if (flag_count==1){
+        if(new_state==0x00){
+            optical_counters[0]++;
+        }
+        else if(new_state == 0x01){
+            optical_counters[1]++;
+        }
+        else if(new_state == 0x02){
+            optical_counters[2]++;
+        }
+        else if(new_state == 0x03){
+            optical_counters[3]++;
+        }
     }
  
-    // find max
-    optical_max = 0;
-    optical_counter = optical_counters[0];
-    for (i=1; i<4; i++){
-        if (optical_counters[i]>optical_counter){
-            optical_counter = optical_counters[i];
-            optical_max = i;
-        }
-    }
-
-    //if (optical_max==0)
-    //    new_state = 0x00;
-    //else if (optical_max==1)
-    //    new_state = 0x01;
-    //else if (optical_max==2)
-    //    new_state = 0x02;
-    //else if (optical_max==3)
-    //    new_state = 0x03;
-
-    //if (new_state!=optical_state && new_state==last_state){
-    //if (new_state!=optical_state){
-    //    optical_counter++;
-    //}
-    //else{
-    //    //optical_counter=0;
-    //    last_state = new_state;
-    //}
-    //mytimer = optical_counter;
-
-    if (optical_counter>optical_counter_threshold){
-        switch(optical_state){
-        case 0x00:
-            if(optical_max == 1)
-                nb_pulse--;
-            else if(optical_max == 2)
-                nb_pulse++;
-            else if(optical_max == 3)
-                nb_pulse_debug++;
-            break;
-        case 0x01:
-            if(optical_max == 3)
-                nb_pulse--;
-            else if(optical_max == 0)
-                nb_pulse++;
-            else if(optical_max == 2)
-                nb_pulse_debug++;
-            break;
-        case 0x02:
-            if(optical_max == 0)
-                nb_pulse--;
-            else if(optical_max == 3)
-                nb_pulse++;
-            else if(optical_max == 1)
-                nb_pulse_debug++;
-            break;
-        case 0x03:
-            if(optical_max == 1)
-                nb_pulse++;
-            else if(optical_max == 2)
-                nb_pulse--;
-            else if(optical_max == 0)
-                nb_pulse_debug++;
-            break;
-        default:
-            break;
-        }
-        // store the current state value to optical_state value this value
-        // will be used in next call
-        optical_state = optical_max;
-
-        // reset counters
-        //optical_counter = 0;
-        for (i=0; i<4; i++){
+    //optical_counter = 0;
+    for (i=0; i<4; i++){
+        if (optical_counters[i]>1000){
+            optical_counters_debug[i]++;
             optical_counters[i]=0;
         }
-    }
-}
-*/
-
-// original method
-/*void read_optical_fork(){
-
-    unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
-    switch(optical_state){
-    case 0x00:
-        if(new_state == 0x1)
-            nb_pulse--;
-        else if(new_state == 0x2)
-            nb_pulse++;
-        else if(new_state == 0x3)
-            nb_pulse_debug++;
-        break;
-    case 0x01:
-        if(new_state == 0x3)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse_debug++;
-        break;
-    case 0x02:
-        if(new_state == 0x0)
-            nb_pulse--;
-        else if(new_state == 0x3)
-            nb_pulse++;
-        else if(new_state == 0x1)
-            nb_pulse_debug++;
-        break;
-    case 0x03:
-        if(new_state == 0x1)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse_debug++;
-        break;
-    default:
-        break;
-    }        
-    // store the current state value to optical_state value this value
-    // will be used in next call
-    optical_state = new_state; 
-}*/
-
-// robust to one hall sensor failure
-void read_optical_fork(){
-
-    unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
-    switch(optical_state){
-    case 0x00:
-        if(new_state == 0x1)
-            nb_pulse--;
-        else if(new_state == 0x2)
-            nb_pulse++;
-        else if(new_state == 0x3)
-            nb_pulse_skip=1;
-        break;
-    case 0x01:
-        if(new_state == 0x3)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse_skip=1;
-        break;
-    case 0x02:
-        if(new_state == 0x0)
-            nb_pulse--;
-        else if(new_state == 0x3)
-            nb_pulse++;
-        else if(new_state == 0x1)
-            nb_pulse_skip=1;
-        break;
-    case 0x03:
-        if(new_state == 0x1)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse_skip=1;
-        break;
-    default:
-        break;
-    }
-    // store the current state value to optical_state value this value
-    // will be used in next call
-    optical_state = new_state; 
-
-    if (nb_pulse_skip==1){
-        nb_pulse_debug++;
-        if (motor_current_speed>MOTOR_STOP)
-            nb_pulse+=-2;
-        else if (motor_current_speed<MOTOR_STOP)
-            nb_pulse+=2;
-        nb_pulse_skip=0;
     }
 }
 
@@ -587,6 +421,8 @@ void init_timer1(){
  * @brief Initialisation des entrées sorties du PIC
  */
 void init_io(){
+
+    // set all inputs as digital
     ANSEL = 0x00;
     ANSELH = 0x00;
 
@@ -618,22 +454,6 @@ void init_io(){
     TRISC7_bit = 0; // RC7 en sortie
 
     MOTOR_TORQUE = 0;   
-}
-
-void regulate(){
-    //LED2 = 1;
-    //read_optical_fork(); // test original position
-    error = position_set_point - nb_pulse;
-
-    if(error > error_interval)
-        set_motor_cmd(MOTOR_STOP - motor_speed_max); // In
-    else if(error < -error_interval)
-        set_motor_cmd(MOTOR_STOP + motor_speed_max); // Out
-    else // position reached
-        set_motor_cmd_stop();
-
-    flag_regulation = 0;
-    //LED2 = 0;
 }
 
 void init_adc(){
@@ -690,6 +510,7 @@ void main(){
   *   -> Watchdog Time Postscale : 1:256 (32768/31000 = environ 1Hz)
     *   -> MCLR : disabled (external reset)
     */
+    unsigned short i;
 
     // Oscillateur interne de 16Mhz
     IRCF0_bit=1; // Internal Oscillator Frequency Select bits (111 = 16 MHz)
@@ -751,48 +572,57 @@ void main(){
         //    mytimer++;
         //    mytimer0=0;
         //}
- 
-        read_optical_fork(); // test
-        //if(flag_optical_fork==1){
-        //    read_optical_fork(); // test
-        //    flag_optical_fork=0;
-        //}
 
+        read_optical_fork_debug();
 
         if(flag_battery==1)
             read_batteries_voltage();
 
         // State machine
-        switch (state){
-        case RESET_OUT:
-            //debug_uart();
-            LED2 = 1;
 
-            if(butee_reset_cpt==0){
-               state = REGULATION;
-               optical_state = SB<<1 | SA;  //  ou logique de RA3 et RA2, lecture du capteur pour initialiser la machine d'état
-               nb_pulse = 0; // Reset Nb pulse (The reset is also done in the interrupt function)
-               position_set_point = 0;
-               set_motor_cmd_stop();
+        if (flag_debug==1){
+            if(debug_counter<debug_period){
+                LED2=1;
+                set_motor_cmd(MOTOR_STOP - motor_speed_max); // In
+                flag_debug=0; 
+                flag_count=1;
+            }
+            else if(debug_counter<2*debug_period){
+                LED2=0;
+                set_motor_cmd_stop();
+                flag_debug=0;
+                flag_count=0;
+            }
+            else if(debug_counter==2*debug_period){
+                LED2=0;
+                set_motor_cmd_stop();
+                flag_debug=0;
+                for (i=0; i<4; i++){
+                    optical_counters_debug[i] = 0;
+                }
+            }            
+            else if(debug_counter<3*debug_period){
+                LED2=1;
+                set_motor_cmd(MOTOR_STOP + motor_speed_max); // Out
+                flag_debug=0;
+                flag_count=1;
+            }
+            else if(debug_counter<4*debug_period){
+                LED2=0;
+                set_motor_cmd_stop();
+                flag_debug=0;
+                flag_count=0;
+            }
+            else if(debug_counter==4*debug_period){
+                LED2=0;
+                set_motor_cmd_stop();
+                flag_debug=0;
+                for (i=0; i<4; i++){
+                    optical_counters_debug[i] = 0;
+                }
             }
             else
-                set_motor_cmd(MOTOR_STOP + motor_speed_out_reset);
-            break;
-
-        case REGULATION:
-            LED2 = 0;
-
-            if(flag_regulation==1)
-                regulate();
-            break;
-
-        case EMERGENCY:
-            LED2 = 1;
-            set_motor_cmd(MOTOR_STOP + motor_speed_out_reset);
-            break;
-
-        default:
-            break;
+                debug_counter = 0;
         }
 
         // I2C
@@ -838,11 +668,14 @@ void interrupt(){
         
         //read_batteries_voltage();
         flag_battery = 1;
+        flag_debug = 1;
+        debug_counter++;
 
         if(state==RESET_OUT){
             if(butee_reset_cpt!=0)
                 butee_reset_cpt--;
         }
+
         // test: frequency = 1Hz
         //mytimer++;
     }
