@@ -56,8 +56,9 @@ VECTOR_MODE=0
 IVT_BASE=00000008
 [EXPANDED_NODES]
 0=piston_ifremer.mcppi
+1=Sources
 9=Output Files
-Count=2
+Count=3
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries

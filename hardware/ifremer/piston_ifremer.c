@@ -3,7 +3,7 @@ Oscillateur interne sur quartz 16MHZ
 
 Hardware:
   18F14K22  DIP20,SOIC
-  
+
   pin 1     VDD Alim +5V
   pin 2     OSC1/RA5
   pin 3     OSC2/RA4
@@ -60,13 +60,14 @@ volatile unsigned short optical_state;
 volatile unsigned short last_state;
 volatile int nb_pulse = 0;  // Nombre d'impulsions de la sortie de l'opto OPB461T11
 volatile int nb_pulse_debug = 0;  // test
-volatile unsigned int optical_counter = 0; // test
-volatile unsigned int optical_counters[4] = {0,0,0,0}; // test
-volatile unsigned short optical_max = 0; // index of maximum value
-volatile unsigned int optical_counter_threshold = 5; // test main loop 33kHz, thus 30 is 1ms
+volatile unsigned int optical_states[4] = {0,0,0,0}; // test
+//volatile unsigned int optical_counter = 0; // test
+//volatile unsigned int optical_counters[4] = {0,0,0,0}; // test
+//volatile unsigned short optical_max = 0; // index of maximum value
+//volatile unsigned int optical_counter_threshold = 5; // test main loop 33kHz, thus 30 is 1ms
 volatile unsigned short nb_pulse_skip = 0;
 volatile unsigned int mytimer = 0; // test
-volatile unsigned int mytimer0 = 0; // test
+//volatile unsigned int mytimer0 = 0; // test
 //volatile unsigned int mytimer1 = 1; // test
 volatile unsigned short butee_out = 0;
 volatile unsigned short butee_in = 0;
@@ -85,7 +86,7 @@ volatile signed int error = 0;
 volatile unsigned short delay_release_torque = 10;
 volatile unsigned short delay_release_torque_cpt = 0;
 
-volatile signed short error_interval = 5;   // used to be unsigned
+volatile unsigned short error_interval = 5;   // used to be unsigned
 
 //volatile unsigned short zero_shift_error = 0;
 volatile unsigned short time_zero_shift_error = 5;  // note used apparently
@@ -124,11 +125,13 @@ void i2c_read_data_from_buffer(){
         switch(rxbuffer_tab[0]+i){
             case 0x01:
                 // could test value in rxbuffer to make this more robust
-                state = RESET_OUT; // test
-                butee_reset_cpt = TIME_BUTEE_RESET;
+                if(rxbuffer_tab[i+1]==1){
+                  state = RESET_OUT;
+                  butee_reset_cpt = TIME_BUTEE_RESET;
+                }
                 break;
             case 0x02:
-                motor_on = (rxbuffer_tab[i+1]!=0x00); // test
+                motor_on = (rxbuffer_tab[i+1]!=0x00);
                 break;
             case 0x03:
                 MOTOR_TORQUE = (rxbuffer_tab[i+1]!=0x00);
@@ -163,8 +166,9 @@ void i2c_read_data_from_buffer(){
                 delay_release_torque = rxbuffer_tab[i+1];
                 break;
             case 0xB0: // emergency mode
-                // could test value in rxbuffer to make this more robust
-                state = EMERGENCY; // test
+                // test value in rxbuffer to make this more robust
+                if(rxbuffer_tab[i+1]==1)
+                  state = EMERGENCY; // test
                 break;
             default:
                 break;
@@ -284,7 +288,7 @@ void set_motor_cmd_stop(){
         CCPR1L = MOTOR_STOP >> 2;
         CCP1CON.DC1B0 = MOTOR_STOP & 0b01;
         CCP1CON.DC1B1 = (MOTOR_STOP & 0b10)>>1;
-        
+
         motor_current_speed = MOTOR_STOP;
         MOTOR_TORQUE = 1;
     }
@@ -303,7 +307,7 @@ void set_motor_cmd_stop(){
  */
 void set_motor_cmd(unsigned speed){
     //if(motor_on == 0 || (butee_out == 1 && speed >= MOTOR_STOP) || (butee_in == 1 && speed <= MOTOR_STOP)){
-    // on compte sur les butées internes du vérin plutôt:
+    // on compte sur les butï¿½es internes du vï¿½rin plutï¿½t:
     if(motor_on == 0){
         set_motor_cmd_stop();
     }
@@ -315,12 +319,12 @@ void set_motor_cmd(unsigned speed){
             error_speed = -motor_speed_variation;
 
         motor_current_speed += error_speed;
-        
+
         // PWM is on 10-bit (2*4 + 2)
         CCPR1L = motor_current_speed >> 2; // High bit
         CCP1CON.DC1B0 = motor_current_speed & 0b01; // Two low bit
         CCP1CON.DC1B1 = (motor_current_speed & 0b10)>>1;
-        
+
         MOTOR_TORQUE = 1;  //Enable L6203
         delay_release_torque_cpt = 0;
     }
@@ -328,7 +332,7 @@ void set_motor_cmd(unsigned speed){
     // P1M : 10 (P1A assigned as Capture/Compare input/output...)
     // DC1B : 00
     // CCP1 : 1100 : PWM mode; P1A, P1C active-high; P1B, P1D active-high
-    
+
 }
 
 /**
@@ -341,8 +345,8 @@ void set_motor_cmd(unsigned speed){
 
     unsigned short i;
     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
-    // test: frequency = 
+
+    // test: frequency =
     //          1000 Hz if called from regulate
     //         33000 Hz if called from main while loop
     //mytimer0++;
@@ -365,7 +369,7 @@ void set_motor_cmd(unsigned speed){
     else if(new_state == 0x03){
         optical_counters[3]++;
     }
- 
+
     // find max
     optical_max = 0;
     optical_counter = optical_counters[0];
@@ -449,7 +453,7 @@ void set_motor_cmd(unsigned speed){
 /*void read_optical_fork(){
 
     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
+
     switch(optical_state){
     case 0x00:
         if(new_state == 0x1)
@@ -485,17 +489,17 @@ void set_motor_cmd(unsigned speed){
         break;
     default:
         break;
-    }        
+    }
     // store the current state value to optical_state value this value
     // will be used in next call
-    optical_state = new_state; 
+    optical_state = new_state;
 }*/
 
 // robust to one hall sensor failure
 void read_optical_fork(){
 
     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-    
+
     switch(optical_state){
     case 0x00:
         if(new_state == 0x1)
@@ -534,7 +538,7 @@ void read_optical_fork(){
     }
     // store the current state value to optical_state value this value
     // will be used in next call
-    optical_state = new_state; 
+    optical_state = new_state;
 
     if (nb_pulse_skip==1){
         nb_pulse_debug++;
@@ -565,7 +569,7 @@ void init_timer0(){
   TMR0H = TMR0H_CPT;
   TMR0L = TMR0L_CPT;
 
-  TMR0IE_bit = 1;  
+  TMR0IE_bit = 1;
 }
 
 /**
@@ -617,7 +621,7 @@ void init_io(){
     TRISC5_bit = 0; // RC5 en sortie
     TRISC7_bit = 0; // RC7 en sortie
 
-    MOTOR_TORQUE = 0;   
+    MOTOR_TORQUE = 0;
 }
 
 void regulate(){
@@ -656,7 +660,7 @@ void init_pwm(){
     T2CKPS1_bit = 1;
     T2CKPS0_bit = 1; // Prescale 4
     TMR2ON_bit = 1;
-    
+
     PWM1CON = 1; // Delay (to avoid cross-condition)
 
     // Max value = 4*(PR2+1)
@@ -732,7 +736,7 @@ void main(){
 
     MOTOR_TORQUE = 0;  //Disable L6203
     motor_current_speed = MOTOR_STOP;
-    
+
     Delay_ms(100);
     TMR0ON_bit = 1; // Start TIMER0
     TMR1ON_bit = 1; // Start TIMER1
@@ -745,18 +749,18 @@ void main(){
         // Global actions
         read_butee();
 
-        // test: frequency = 56000 Hz 
+        // test: frequency = 56000 Hz
         //mytimer0++;
         //if (mytimer0>=1000){
         //    mytimer++;
         //    mytimer0=0;
         //}
- 
-        read_optical_fork(); // test
-        //if(flag_optical_fork==1){
-        //    read_optical_fork(); // test
-        //    flag_optical_fork=0;
-        //}
+
+        //read_optical_fork(); // test
+        if(flag_optical_fork==1){
+            read_optical_fork();
+            flag_optical_fork=0;
+        }
 
 
         if(flag_battery==1)
@@ -830,12 +834,12 @@ void interrupt(){
 
         // Watchdog
         if(watchdog_restart>0)
-          watchdog_restart--;  
+          watchdog_restart--;
         else{
           position_set_point = 0;
           watchdog_restart = watchdog_restart_default;
         }
-        
+
         //read_batteries_voltage();
         flag_battery = 1;
 
@@ -853,7 +857,7 @@ void interrupt(){
         TMR1L = TMR1L_CPT;
         TMR1IF_bit = 0;
         flag_regulation = 1;
-        //flag_optical_fork = 1;
+        flag_optical_fork = 1;
         //read_optical_fork(); // test not good
         // test: frequency = 1000 Hz
         //mytimer++;
