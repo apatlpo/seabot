@@ -749,7 +749,7 @@ void main(){
         // Global actions
         read_butee();
 
-        // test: frequency = 56000 Hz
+        // test: frequency = 56000 Hz but can go down to 15000Hz
         //mytimer0++;
         //if (mytimer0>=1000){
         //    mytimer++;
@@ -761,7 +761,6 @@ void main(){
             read_optical_fork();
             flag_optical_fork=0;
         }
-
 
         if(flag_battery==1)
             read_batteries_voltage();
@@ -840,7 +839,6 @@ void interrupt(){
           watchdog_restart = watchdog_restart_default;
         }
 
-        //read_batteries_voltage();
         flag_battery = 1;
 
         if(state==RESET_OUT){
@@ -914,14 +912,6 @@ void init_i2c(){
  */
 void interrupt_low(){
 
-    // test
-    //if (INTCON.RABIF){
-    //    //read_optical_fork();
-    //    //flag_read_optical_fork=1;
-    //    mytimer++;
-    //    INTCON.RABIF=0;
-    //}
-
     if (PIR1.SSPIF){  // I2C Interrupt
         tmp_rx = SSPBUF;
 
@@ -953,8 +943,8 @@ void interrupt_low(){
             }
             // In both D_A case (transmit data after receive add)
             i2c_write_data_to_buffer(nb_tx_octet);
-            delay_us(20);
             SSPCON1.CKP = 1;
+            //delay_us(20);
             nb_tx_octet++;
         }
         PIR1.SSPIF = 0; // reset SSP interrupt flag
