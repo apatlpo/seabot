@@ -950,3 +950,62 @@ void interrupt_low(){
         PIR1.SSPIF = 0; // reset SSP interrupt flag
     }
 }
+
+
+/**
+ * Version that works with no repeated start (N in /sys/module/i2c_bcm2708/parameters/combined, see /etc/rc.local/)
+ * f9ef2a965425c5b5f36290041acba329d23676a1
+ * https://github.com/ThomasLeMezo/seabot/blob/0994af47b060ec5a97e4ed8f97d84af08d7155c6/hardware/robot_18F14k22_test.c#L644-L689
+ * @brief interrupt_low: older version:
+ */
+// void interrupt_low(){
+//   if (PIR1.SSPIF){  // I2C Interrupt
+// 
+// 
+//       if(SSPCON1.SSPOV || SSPCON1.WCOL){
+//           SSPCON1.SSPOV = 0;
+//           SSPCON1.WCOL = 0;
+//           tmp_rx = SSPBUF;
+//       }
+// 
+// 
+//       //****** receiving data from master ****** //
+//       // 0 = Write (master -> slave - reception)
+//       if (SSPSTAT.R_W == 0){
+//         if(SSPSTAT.P == 0){
+//           if (SSPSTAT.D_A == 0){ // Address
+//             nb_rx_octet = 0;
+//             tmp_rx = SSPBUF;
+//           }
+//           else{ // Data
+//             if(nb_rx_octet < SIZE_RX_BUFFER){
+//               rxbuffer_tab[nb_rx_octet] = SSPBUF;
+//               nb_rx_octet++;
+//             }
+//             else{
+//               tmp_rx = SSPBUF;
+//             }
+//           }
+//         }
+//       }
+//       //******  transmitting data to master ****** //
+//       // 1 = Read (slave -> master - transmission)
+//       else{
+//           if(SSPSTAT.D_A == 0){
+//             nb_tx_octet = 0;
+//             tmp_rx = SSPBUF;
+//           }
+// 
+// 
+//           // In both D_A case (transmit data after receive add)
+//           i2c_write_data_to_buffer(nb_tx_octet);
+//           delay_us(20);
+//           nb_tx_octet++;
+//       }
+// 
+// 
+//     SSPCON1.CKP = 1;
+//     PIR1.SSPIF = 0; // reset SSP interrupt flag
+//   }
+// }
+
