@@ -98,3 +98,38 @@ dmesg | grep i2c
 # to swith to old i2c driver, use in /boot/firmware/usercfg.txt :
 # dtoverlay=i2c-bcm2708
 
+# email Thomas
+
+Le mieux pour ROS c'est de suivre le tuto en ligne : 
+http://wiki.ros.org/melodic/Installation/Ubuntu
+Tu peux installer seulement la version ros-base (sans-GUI) puisqu'à priori on se connecte en ligne de commande.
+
+Dans les packages pratiques à installer : 
+gpsd, ntp, screen, crontab, éventuellement zsh suivant les préférences.
+Si tu as déjà les paquets pour l'i2c, normalement je dirais qu'il y a pas besoins de choses supplémentaires 
+(j'utilise eigen, proj4 mais ça doit être déjà installé par défaut ou avec ROS). 
+J'en ai peut-être oublié mais de toute façon il te le dira à la compilation. 
+Pour info, j'ai intégré directement le code de l'IMU (dont tu n'as pas besoin) 
+dans le projet ROS, donc il n'y a plus de dépendance extérieur (RTIUMLib).
+
+Pour le réglage de l'heure automatiquement à partir du gps, il faut configurer ntp
+ (et peut-être gpsd, mais ça n'est pas sûr). 
+ Normalement il y a les fichiers utilisés ici : 
+ https://github.com/ThomasLeMezo/seabot/tree/master/linux
+
+Pour le plan de travail :
+Installation et compilation de ROS
+Lancer driver.launch et vérifier que tu peux piloter le piston et que tu accèdes 
+à tous les capteurs. 
+Il y aura peut-être des modifications à faire pour désactiver certains capteurs (à regarder).
+Lancer base.launch et vérifier que tu as bien le log des datas
+Lancer mission.launch avec une mission factice pour voir le comportement général
+ du flotteur (même si il faudrait un bassin si tu arrives à cette étape).
+Pour info, la régulation qui est sur le répertoire github (branche devel) 
+n'est pas complètement testé mais intègre les derniers développements où il y a
+ une estimation quadratique de la compressibilité, ainsi qu'une estimation du 
+ coefficient de frottement. 
+ L'algo d'estimation fonctionnait bien sur des données enregistrés mais je n'ai 
+ pas testé la boucle complète avec le régulateur dans un bassin.
+
+
