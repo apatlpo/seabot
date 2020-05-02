@@ -1,0 +1,100 @@
+
+# copy image on mac and transfer with balenaEtcher (mac os)
+
+# boot and figure out several informations
+
+pi@seabot:~$ cat /etc/os-release 
+NAME="Ubuntu"
+VERSION="18.04.2 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.2 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic
+
+pi@seabot:~$ uname -a
+Linux seabot 4.15.0-1032-raspi2 #34-Ubuntu SMP PREEMPT Wed Feb 6 11:46:23 UTC 2019 aarch64 aarch64 aarch64 GNU/Linux
+
+# Raspberry board version
+
+cat /sys/firmware/devicetree/base/model 
+Raspberry Pi 3 Model B Rev 1.2
+
+# install libraries
+
+sudo apt update
+sudo apt upgrade # triggers major upgrade
+# breaks:
+# https://ubuntu-mate.community/t/dpkg-deb-error-paste-subprocess-was-killed-by-signal-broken-pipe/20758
+sudo dpkg -i --force-all /var/cache/apt/archives/linux-firmware-raspi2_1.20190819-0ubuntu0.18.04.1_arm64.deb
+# finish up upgrade
+sudo apt upgrade
+
+## activate i2c
+lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
+
+# now /boot/firmware/usercfg.txt 
+# (old /boot/config.txt)
+dtparam=audio=off
+dtparam=i2c_arm=on 
+dtparam=i2c_arm_baudrate=40000 # sensitivity to baudrate was not tested
+dtparam=spi=on
+dtparam=watchdog=on 
+
+# /etc/modules
+i2c-dev
+#pps-gpio
+
+# install i2c tools
+sudo apt install -y i2c-tools
+
+i2cdetect -y 1
+
+# pip ... not sure this will be used as most installs below use apt
+sudo apt install -y python-pip
+#sudo apt install -y python3-pip
+
+# smbus python (note there is a version for python3)
+sudo apt install -y python-smbus
+
+# seabot library
+sudo apt install -y git
+git clone https://github.com/apatlpo/seabot.git
+
+# turn on i2c library (i2c_bcm2835) debug mode
+# create rc.local
+# https://vpsfix.com/community/server-administration/no-etc-rc-local-file-on-ubuntu-18-04-heres-what-to-do/
+sudo nano /etc/rc.local
+
+---
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+sudo sh -c 'echo 3 >/sys/module/i2c_bcm2835/parameters/debug'
+
+exit 0
+---
+
+sudo chmod +x /etc/rc.local
+
+# check debug in kernel log
+dmesg | grep i2c
+
+# to swith to old i2c driver, use in /boot/firmware/usercfg.txt :
+# dtoverlay=i2c-bcm2708
+

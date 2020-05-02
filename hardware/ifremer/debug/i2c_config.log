@@ -36,3 +36,14 @@ dtparam=i2c_arm_baudrate=100000
 i2cdetect -y 1
 
 
+# with newer version of ubuntu mate
+
+# to switch to old driver, in /boot/firmware/usercfg.txt 
+# dtoverlay=i2c-bcm2708
+
+# turn on debug and check kernel log
+
+# write 3 in /sys/module/i2c_bcm2835/parameters/debug 
+
+dmesg | grep i2c
+
