@@ -1,0 +1,234 @@
+pi@seabot ~/seabot % catkin_make                       
+Base path: /home/pi/seabot
+Source space: /home/pi/seabot/src
+Build space: /home/pi/seabot/build
+Devel space: /home/pi/seabot/devel
+Install space: /home/pi/seabot/install
+####
+#### Running command: "make cmake_check_build_system" in "/home/pi/seabot/build"
+####
+####
+#### Running command: "make -j4 -l4" in "/home/pi/seabot/build"
+####
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target rosgraph_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_nodejs
+[  0%] Built target _gpsd_client_generate_messages_check_deps_GPSFix
+[  0%] Built target rosgraph_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target sensor_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_cpp
+[  0%] Built target roscpp_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target roscpp_generate_messages_nodejs
+[  0%] Built target roscpp_generate_messages_eus
+[  0%] Built target sensor_msgs_generate_messages_eus
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target gpsd_client_generate_messages_nodejs
+[  0%] Built target sensor_msgs_generate_messages_lisp
+[  0%] Built target roscpp_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_nodejs
+[  0%] Built target sensor_msgs_generate_messages_py
+[  0%] Built target gpsd_client_generate_messages_eus
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target roscpp_generate_messages_lisp
+[  2%] Built target gpsd_client_generate_messages_cpp
+[  2%] Built target gpsd_client_generate_messages_lisp
+[  2%] Built target rosgraph_msgs_generate_messages_lisp
+[  2%] Built target std_srvs_generate_messages_py
+[  2%] Built target std_srvs_generate_messages_nodejs
+[  2%] Built target std_srvs_generate_messages_lisp
+[  2%] Built target std_srvs_generate_messages_eus
+[  2%] Built target std_srvs_generate_messages_cpp
+[  2%] Built target _pressure_89bsd_driver_generate_messages_check_deps_PressureBsdData
+[  2%] Built target _pressure_bme280_driver_generate_messages_check_deps_Bme280Data
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_RegulationLoopDuration
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonState
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonDistanceTravelled
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonErrorInterval
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonSpeedDebug
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonSpeed
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonPosition
+[  2%] Built target _catkin_empty_exported_target
+[  2%] Built target _seabot_piston_driver_generate_messages_check_deps_PistonVelocity
+[  2%] Built target _seabot_power_driver_generate_messages_check_deps_FlashSpeed
+[  2%] Built target _seabot_power_driver_generate_messages_check_deps_SleepModeParam
+[  2%] Built target _seabot_power_driver_generate_messages_check_deps_FlashCounter
+[  2%] Built target _seabot_power_driver_generate_messages_check_deps_Battery
+[  2%] Built target _seabot_fusion_generate_messages_check_deps_DepthPose
+[  2%] Built target _seabot_fusion_generate_messages_check_deps_TemperaturePose
+[  2%] Built target _seabot_fusion_generate_messages_check_deps_Kalman
+[  2%] Built target _seabot_fusion_generate_messages_check_deps_GnssPose
+[  2%] Built target _seabot_fusion_generate_messages_check_deps_InternalPose
+[  2%] Built target _seabot_depth_controller_generate_messages_check_deps_RegulationDebug
+[  2%] Built target _seabot_mission_generate_messages_check_deps_MissionEnable
+[  2%] Built target _seabot_mission_generate_messages_check_deps_Waypoint
+[  2%] Built target _seabot_safety_generate_messages_check_deps_SafetyLog
+[  2%] Built target _seabot_safety_generate_messages_check_deps_SafetyDebug
+[  2%] Built target _seabot_safety_generate_messages_check_deps_SafetyCpu
+[  2%] Built target _seabot_iridium_generate_messages_check_deps_IridiumSession
+[  2%] Built target _seabot_iridium_generate_messages_check_deps_IridiumStatus
+[  2%] Built target _seabot_thruster_driver_generate_messages_check_deps_Velocity
+[  2%] Built target _seabot_thruster_driver_generate_messages_check_deps_Engine
+[  2%] Built target _seabot_waypoint_regulation_generate_messages_check_deps_WaypointDebug
+[  2%] Built target _seabot_waypoint_regulation_generate_messages_check_deps_HeadingDebug
+[  2%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTFusion.cpp.o
+[  2%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTFusionRTQF.cpp.o
+[  2%] Built target _temperature_tsys01_driver_generate_messages_check_deps_Temperature
+[  2%] Built target _imu_mpu_generate_messages_check_deps_ImuDebug
+[  3%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTMath.cpp.o
+[  3%] Built target tf2_msgs_generate_messages_cpp
+[  3%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTFusionKalman4.cpp.o
+[  4%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTIMUHal.cpp.o
+[  4%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTIMUAccelCal.cpp.o
+[  4%] Built target actionlib_msgs_generate_messages_lisp
+[  4%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTIMUMagCal.cpp.o
+[  4%] Built target actionlib_msgs_generate_messages_eus
+[  4%] Built target actionlib_generate_messages_py
+[  4%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/RTIMUSettings.cpp.o
+[  5%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMU.cpp.o
+[  5%] Built target actionlib_msgs_generate_messages_nodejs
+[  5%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUGD20M303DLHC.cpp.o
+[  5%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUGD20HM303DLHC.cpp.o
+[  6%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUGD20HM303D.cpp.o
+[  6%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMULSM9DS0.cpp.o
+[  6%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMULSM9DS1.cpp.o
+[  7%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUMPU9150.cpp.o
+[  7%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUMPU9250.cpp.o
+[  7%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUBMX055.cpp.o
+[  8%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUBNO055.cpp.o
+[  8%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTIMUNull.cpp.o
+[  8%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTPressure.cpp.o
+[  9%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTPressureBMP180.cpp.o
+[  9%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTPressureLPS25H.cpp.o
+[  9%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTPressureMS5611.cpp.o
+[ 10%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTPressureMS5637.cpp.o
+[ 10%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTHumidity.cpp.o
+[ 10%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTHumidityHTS221.cpp.o
+[ 11%] Building CXX object seabot_driver/imu_mpu/RTIMULib/CMakeFiles/RTIMULib.dir/IMUDrivers/RTHumidityHTU21D.cpp.o
+[ 11%] Built target tf_generate_messages_py
+[ 11%] Built target actionlib_generate_messages_lisp
+Scanning dependencies of target tf_generate_messages_eus
+Scanning dependencies of target actionlib_msgs_generate_messages_cpp
+[ 11%] Built target actionlib_generate_messages_eus
+[ 11%] Built target tf_generate_messages_eus
+[ 11%] Built target actionlib_msgs_generate_messages_cpp
+Scanning dependencies of target tf_generate_messages_cpp
+Scanning dependencies of target actionlib_msgs_generate_messages_py
+Scanning dependencies of target tf_generate_messages_lisp
+[ 11%] Built target tf_generate_messages_cpp
+[ 11%] Built target actionlib_msgs_generate_messages_py
+[ 11%] Built target tf_generate_messages_lisp
+Scanning dependencies of target tf2_msgs_generate_messages_eus
+Scanning dependencies of target tf_generate_messages_nodejs
+[ 11%] Linking CXX shared library /home/pi/seabot/devel/lib/libRTIMULib.so
+Scanning dependencies of target tf2_msgs_generate_messages_nodejs
+[ 11%] Built target tf2_msgs_generate_messages_eus
+[ 11%] Built target tf_generate_messages_nodejs
+[ 11%] Built target tf2_msgs_generate_messages_nodejs
+Scanning dependencies of target tf2_msgs_generate_messages_lisp
+Scanning dependencies of target tf2_msgs_generate_messages_py
+Scanning dependencies of target actionlib_generate_messages_cpp
+[ 11%] Built target tf2_msgs_generate_messages_py
+[ 11%] Built target tf2_msgs_generate_messages_lisp
+[ 11%] Built target actionlib_generate_messages_cpp
+Scanning dependencies of target actionlib_generate_messages_nodejs
+Scanning dependencies of target gpsd_client_generate_messages_py
+Scanning dependencies of target pressure_89bsd_driver_generate_messages_py
+[ 11%] Built target actionlib_generate_messages_nodejs
+[ 11%] Generating Python from MSG gpsd_client/GPSFix
+[ 11%] Generating Python from MSG pressure_89bsd_driver/PressureBsdData
+Scanning dependencies of target pressure_89bsd_driver_generate_messages_cpp
+[ 12%] Generating C++ code from pressure_89bsd_driver/PressureBsdData.msg
+[ 12%] Built target RTIMULib
+[ 13%] Built target pressure_89bsd_driver_generate_messages_lisp
+[ 13%] Built target pressure_89bsd_driver_generate_messages_eus
+[ 14%] Generating Python msg __init__.py for pressure_89bsd_driver
+[ 15%] Generating Python msg __init__.py for gpsd_client
+[ 15%] Built target pressure_89bsd_driver_generate_messages_nodejs
+Scanning dependencies of target pressure_bme280_driver_generate_messages_py
+[ 16%] Generating Python from MSG pressure_bme280_driver/Bme280Data
+[ 16%] Built target pressure_89bsd_driver_generate_messages_py
+[ 16%] Built target gpsd_client_generate_messages_py
+[ 16%] Built target pressure_89bsd_driver_generate_messages_cpp
+Scanning dependencies of target pressure_bme280_driver_generate_messages_eus
+Scanning dependencies of target pressure_bme280_driver_generate_messages_cpp
+Scanning dependencies of target pressure_bme280_driver_generate_messages_lisp
+[ 16%] Generating EusLisp code from pressure_bme280_driver/Bme280Data.msg
+[ 16%] Generating C++ code from pressure_bme280_driver/Bme280Data.msg
+[ 16%] Generating Lisp code from pressure_bme280_driver/Bme280Data.msg
+[ 16%] Generating Python msg __init__.py for pressure_bme280_driver
+[ 16%] Built target pressure_bme280_driver_generate_messages_lisp
+Scanning dependencies of target pressure_bme280_driver_generate_messages_nodejs
+[ 17%] Generating EusLisp manifest code for pressure_bme280_driver
+[ 17%] Generating Javascript code from pressure_bme280_driver/Bme280Data.msg
+[ 17%] Built target pressure_bme280_driver_generate_messages_py
+Scanning dependencies of target pressure_ms5837_node
+[ 17%] Built target pressure_bme280_driver_generate_messages_nodejs
+Scanning dependencies of target seabot_piston_driver_generate_messages_eus
+[ 18%] Generating EusLisp code from seabot_piston_driver/PistonPosition.msg
+[ 18%] Building CXX object seabot_driver/pressure_ms5837_driver/CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837_driver.cpp.o
+[ 18%] Built target pressure_bme280_driver_generate_messages_cpp
+[ 19%] Building CXX object seabot_driver/pressure_ms5837_driver/CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837.cpp.o
+[ 19%] Generating EusLisp code from seabot_piston_driver/PistonDistanceTravelled.msg
+[ 19%] Generating EusLisp code from seabot_piston_driver/RegulationLoopDuration.msg
+[ 20%] Generating EusLisp code from seabot_piston_driver/PistonState.msg
+[ 20%] Generating EusLisp code from seabot_piston_driver/PistonVelocity.msg
+[ 20%] Generating EusLisp code from seabot_piston_driver/PistonSpeedDebug.msg
+[ 21%] Generating EusLisp code from seabot_piston_driver/PistonErrorInterval.srv
+[ 21%] Built target pressure_bme280_driver_generate_messages_eus
+Scanning dependencies of target seabot_piston_driver_generate_messages_py
+[ 21%] Generating EusLisp code from seabot_piston_driver/PistonSpeed.srv
+[ 21%] Generating Python from MSG seabot_piston_driver/PistonPosition
+[ 21%] Generating EusLisp manifest code for seabot_piston_driver
+[ 21%] Generating Python from MSG seabot_piston_driver/PistonDistanceTravelled
+[ 22%] Generating Python from MSG seabot_piston_driver/RegulationLoopDuration
+[ 22%] Generating Python from MSG seabot_piston_driver/PistonState
+[ 22%] Generating Python from MSG seabot_piston_driver/PistonVelocity
+[ 23%] Generating Python from MSG seabot_piston_driver/PistonSpeedDebug
+[ 23%] Built target seabot_piston_driver_generate_messages_eus
+Scanning dependencies of target seabot_piston_driver_generate_messages_nodejs
+[ 23%] Generating Javascript code from seabot_piston_driver/PistonPosition.msg
+[ 24%] Generating Python code from SRV seabot_piston_driver/PistonErrorInterval
+[ 24%] Generating Javascript code from seabot_piston_driver/PistonDistanceTravelled.msg
+[ 24%] Generating Python code from SRV seabot_piston_driver/PistonSpeed
+[ 24%] Generating Javascript code from seabot_piston_driver/RegulationLoopDuration.msg
+[ 25%] Generating Python msg __init__.py for seabot_piston_driver
+[ 25%] Generating Javascript code from seabot_piston_driver/PistonState.msg
+[ 26%] Generating Javascript code from seabot_piston_driver/PistonVelocity.msg
+[ 26%] Linking CXX executable /home/pi/seabot/devel/lib/pressure_ms5837_driver/pressure_ms5837_node
+[ 26%] Generating Python srv __init__.py for seabot_piston_driver
+[ 26%] Generating Javascript code from seabot_piston_driver/PistonSpeedDebug.msg
+[ 26%] Generating Javascript code from seabot_piston_driver/PistonErrorInterval.srv
+[ 27%] Generating Javascript code from seabot_piston_driver/PistonSpeed.srv
+[ 27%] Built target seabot_piston_driver_generate_messages_py
+[ 27%] Built target seabot_piston_driver_generate_messages_nodejs
+CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837.cpp.o: In function `Pressure_ms5837::reset()':
+pressure_ms5837.cpp:(.text+0x114): undefined reference to `i2c_smbus_write_byte'
+CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837.cpp.o: In function `Pressure_ms5837::init_sensor()':
+pressure_ms5837.cpp:(.text+0x940): undefined reference to `i2c_smbus_read_i2c_block_data'
+CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837.cpp.o: In function `Pressure_ms5837::get_D1()':
+pressure_ms5837.cpp:(.text._ZN15Pressure_ms58376get_D1Ev[_ZN15Pressure_ms58376get_D1Ev]+0x30): undefined reference to `i2c_smbus_write_byte'
+pressure_ms5837.cpp:(.text._ZN15Pressure_ms58376get_D1Ev[_ZN15Pressure_ms58376get_D1Ev]+0x7c): undefined reference to `i2c_smbus_read_i2c_block_data'
+CMakeFiles/pressure_ms5837_node.dir/src/pressure_ms5837.cpp.o: In function `Pressure_ms5837::get_D2()':
+pressure_ms5837.cpp:(.text._ZN15Pressure_ms58376get_D2Ev[_ZN15Pressure_ms58376get_D2Ev]+0x30): undefined reference to `i2c_smbus_write_byte'
+pressure_ms5837.cpp:(.text._ZN15Pressure_ms58376get_D2Ev[_ZN15Pressure_ms58376get_D2Ev]+0x7c): undefined reference to `i2c_smbus_read_i2c_block_data'
+collect2: error: ld returned 1 exit status
+seabot_driver/pressure_ms5837_driver/CMakeFiles/pressure_ms5837_node.dir/build.make:138: recipe for target '/home/pi/seabot/devel/lib/pressure_ms5837_driver/pressure_ms5837_node' failed
+make[2]: *** [/home/pi/seabot/devel/lib/pressure_ms5837_driver/pressure_ms5837_node] Error 1
+CMakeFiles/Makefile2:3231: recipe for target 'seabot_driver/pressure_ms5837_driver/CMakeFiles/pressure_ms5837_node.dir/all' failed
+make[1]: *** [seabot_driver/pressure_ms5837_driver/CMakeFiles/pressure_ms5837_node.dir/all] Error 2
+Makefile:140: recipe for target 'all' failed
+make: *** [all] Error 2
+Invoking "make -j4 -l4" failed
+
+
+pi@seabot ~/seabot % find / -name "i2c-dev.h" 2>/dev/null
+
+/usr/include/linux/i2c-dev.h
+
