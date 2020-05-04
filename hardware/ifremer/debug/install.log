@@ -1,3 +1,41 @@
+### error 2
+
+[ 25%] Generating Lisp code from seabot_piston_driver/PistonSpeedDebug.msg
+[ 26%] Generating Lisp code from seabot_piston_driver/PistonErrorInterval.srv
+[ 26%] Generating Lisp code from seabot_piston_driver/PistonSpeed.srv
+[ 26%] Built target seabot_piston_driver_generate_messages_lisp
+Scanning dependencies of target piston_node
+[ 27%] Building CXX object seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/src/main.cpp.o
+/home/pi/seabot/src/seabot_driver/seabot_piston_driver/src/main.cpp:17:10: fatal error: seabot_fusion/DepthPose.h: No such file or directory
+ #include "seabot_fusion/DepthPose.h"
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/build.make:62: recipe for target 'seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/src/main.cpp.o' failed
+make[2]: *** [seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/src/main.cpp.o] Error 1
+CMakeFiles/Makefile2:3595: recipe for target 'seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/all' failed
+make[1]: *** [seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/all] Error 2
+Makefile:140: recipe for target 'all' failed
+make: *** [all] Error 2
+Invoking "make -j1" failed
+
+
+
+### error 1
+
+cannot compile if parallel build is desactived:
+catkin_make -j1
+
+### error 0
+
+# fix:
+seabot/src/CMakeLists.txt 
+#if (LINUX_KERNEL_VERSION GREATER 4.8)
+set(I2C_LIBRARIES i2c)
+message("Set I2C LIBRARIES = " ${I2C_LIBRARIES})
+#endif()
+
+# error
+
 pi@seabot ~/seabot % catkin_make                       
 Base path: /home/pi/seabot
 Source space: /home/pi/seabot/src

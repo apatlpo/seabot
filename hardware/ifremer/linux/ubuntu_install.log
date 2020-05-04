@@ -187,3 +187,5 @@ catkin_make
 
 find / -name "smbus.h" 2>/dev/null
 
+# to clean up catkin_make
+rm -rf build/ devel/
