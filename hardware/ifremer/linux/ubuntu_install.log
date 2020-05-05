@@ -1,5 +1,16 @@
 
 # copy image on mac and transfer with balenaEtcher (mac os)
+# https://ubuntu-mate.org/download/armhf/bionic/
+ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995  ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
+
+# https://ubuntu-mate.org/faq/usb-image/#macos
+
+# seabot library (to update install commands)
+sudo apt install -y git
+git clone https://github.com/apatlpo/seabot.git
 
 # boot and figure out several informations
 
@@ -61,10 +72,6 @@ sudo apt install -y python-pip
 
 # smbus python (note there is a version for python3)
 sudo apt install -y python-smbus
-
-# seabot library
-sudo apt install -y git
-git clone https://github.com/apatlpo/seabot.git
 
 # turn on i2c library (i2c_bcm2835) debug mode
 # create rc.local
