@@ -1,6 +1,10 @@
 
-# copy image on mac and transfer with balenaEtcher (mac os)
+## prepare sim card
+
+# note: you need 32bit version of ubuntu mate !
 # https://ubuntu-mate.org/download/armhf/bionic/
+
+# copy image on mac and transfer with balenaEtcher (mac os)
 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995  ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
@@ -8,12 +12,16 @@ bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
 
 # https://ubuntu-mate.org/faq/usb-image/#macos
 
-# seabot library (to update install commands)
+
+## get seabot library (to update install commands)
+sudo apt update
 sudo apt install -y git
 git clone https://github.com/apatlpo/seabot.git
+cd seabot
+git checkout -b devel_ifremer origin/devel_ifremer
 
-# boot and figure out several informations
-
+##
+# figure out distrib and system informations
 pi@seabot:~$ cat /etc/os-release 
 NAME="Ubuntu"
 VERSION="18.04.2 LTS (Bionic Beaver)"
@@ -29,31 +37,31 @@ VERSION_CODENAME=bionic
 UBUNTU_CODENAME=bionic
 
 pi@seabot:~$ uname -a
-Linux seabot 4.15.0-1032-raspi2 #34-Ubuntu SMP PREEMPT Wed Feb 6 11:46:23 UTC 2019 aarch64 aarch64 aarch64 GNU/Linux
+Linux seabot 4.15.0-1032-raspi2 #34-Ubuntu SMP PREEMPT Wed Feb 6 11:50:42 UTC 2019 armv7l armv7l armv7l GNU/Linux
 
 # Raspberry board version
-
 cat /sys/firmware/devicetree/base/model 
 Raspberry Pi 3 Model B Rev 1.2
 
-# install libraries
+## install libraries
 
+# system update
 sudo apt update
 sudo apt upgrade # triggers major upgrade
 # breaks:
 # https://ubuntu-mate.community/t/dpkg-deb-error-paste-subprocess-was-killed-by-signal-broken-pipe/20758
-sudo dpkg -i --force-all /var/cache/apt/archives/linux-firmware-raspi2_1.20190819-0ubuntu0.18.04.1_arm64.deb
+sudo dpkg -i --force-all /var/cache/apt/archives/linux-firmware-raspi2_1.20190819-0ubuntu0.18.04.1_armhf.deb
 # finish up upgrade
 sudo apt upgrade
 
-## activate i2c
+
+## turn i2c on
 lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
 
-# now /boot/firmware/usercfg.txt 
-# (old /boot/config.txt)
+# /boot/config.txt
 dtparam=audio=off
 dtparam=i2c_arm=on 
-dtparam=i2c_arm_baudrate=40000 # sensitivity to baudrate was not tested
+dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
 dtparam=spi=on
 dtparam=watchdog=on 
 
@@ -65,10 +73,6 @@ i2c-dev
 sudo apt install -y i2c-tools
 
 i2cdetect -y 1
-
-# pip ... not sure this will be used as most installs below use apt
-sudo apt install -y python-pip
-#sudo apt install -y python3-pip
 
 # smbus python (note there is a version for python3)
 sudo apt install -y python-smbus
@@ -105,6 +109,7 @@ dmesg | grep i2c
 # to swith to old i2c driver, use in /boot/firmware/usercfg.txt :
 # dtoverlay=i2c-bcm2708
 
+##
 # email Thomas
 
 Le mieux pour ROS c'est de suivre le tuto en ligne : 
@@ -139,22 +144,25 @@ n'est pas complètement testé mais intègre les derniers développements où il
  L'algo d'estimation fonctionnait bien sur des données enregistrés mais je n'ai 
  pas testé la boucle complète avec le régulateur dans un bassin.
 
-### zsh
+
+## zsh
 sudo apt update
+sudo apt install curl
 sudo apt install zsh
 whereis zsh
 sudo usermod -s /usr/bin/zsh $(whoami)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-### other utils
+
+## other libraries
 sudo apt install screen
-sudo apt install gpsd # may not be necessary given next install
+#sudo apt install gpsd # may not be necessary given next install
 sudo apt install libgps-dev
 sudo apt install ntp
 sudo apt install libi2c-dev
-# sudo apt install libproj-dev ??
 sudo apt install libproj-dev
 
-### ROS
+## ROS
 
 http://wiki.ros.org/melodic/Installation/Ubuntu
 
@@ -184,14 +192,15 @@ rosdep update
 # extra ROS package required
 sudo apt install ros-melodic-geometry
 
-
-
-### compile seabot
+## compile seabot
 cd seabot
 catkin_make -j2
 
-# compilation
-#### Running command: "make -j4 -l4" in "/home/pi/seabot/build"
+# add seabot sourcing to path in .zshrc
+source ~/seabot/devel/setup.zsh
+
+# compilation utils
+# Running command: "make -j4 -l4" in "/home/pi/seabot/build"
 
 find / -name "smbus.h" 2>/dev/null
 
