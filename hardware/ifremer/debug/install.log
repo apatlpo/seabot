@@ -1,5 +1,16 @@
 ### error 2
 
+
+Erreur de dépendance entre package (2.0)
+
+Fix 1: inclut commit fed121d de Thomas
+catkin_make -j2
+
+
+--- error 2.1
+
+--- error 2.0
+
 [ 25%] Generating Lisp code from seabot_piston_driver/PistonSpeedDebug.msg
 [ 26%] Generating Lisp code from seabot_piston_driver/PistonErrorInterval.srv
 [ 26%] Generating Lisp code from seabot_piston_driver/PistonSpeed.srv
@@ -17,7 +28,6 @@ make[1]: *** [seabot_driver/seabot_piston_driver/CMakeFiles/piston_node.dir/all]
 Makefile:140: recipe for target 'all' failed
 make: *** [all] Error 2
 Invoking "make -j1" failed
-
 
 
 ### error 1

@@ -145,6 +145,7 @@ sudo apt install libgps-dev
 sudo apt install ntp
 sudo apt install libi2c-dev
 # sudo apt install libproj-dev ??
+sudo apt install libproj-dev
 
 ### ROS
 
@@ -180,7 +181,7 @@ sudo apt install ros-melodic-geometry
 
 ### compile seabot
 cd seabot
-catkin_make
+catkin_make -j2
 
 # compilation
 #### Running command: "make -j4 -l4" in "/home/pi/seabot/build"
