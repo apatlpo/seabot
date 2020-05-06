@@ -1,0 +1,225 @@
+
+## prepare sim card
+
+# note: you need 32bit version of ubuntu mate !
+# see: 
+https://ubuntu-mate.org/download/armhf/bionic/
+
+# copy image on mac and transfer with balenaEtcher (mac os)
+# when booting the system, set the computer name appropriately, e.g.: 
+# ifremer1, ifremer2, ...
+# see:
+https://ubuntu-mate.org/faq/usb-image/#macos
+
+ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995  ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
+bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
+
+
+## get seabot library (to update install commands)
+sudo apt update
+sudo apt install -y git
+git clone https://github.com/apatlpo/seabot.git
+cd seabot
+git checkout -b devel_ifremer origin/devel_ifremer
+
+##
+# figure out distrib and system informations
+pi@seabot:~$ cat /etc/os-release 
+NAME="Ubuntu"
+VERSION="18.04.2 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.2 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic
+
+pi@seabot:~$ uname -a
+Linux seabot 4.15.0-1032-raspi2 #34-Ubuntu SMP PREEMPT Wed Feb 6 11:50:42 UTC 2019 armv7l armv7l armv7l GNU/Linux
+
+# Raspberry board version
+cat /sys/firmware/devicetree/base/model 
+Raspberry Pi 3 Model B Rev 1.2
+
+## install libraries
+
+# system update
+sudo apt update
+sudo apt upgrade # triggers major upgrade
+# breaks:
+# https://ubuntu-mate.community/t/dpkg-deb-error-paste-subprocess-was-killed-by-signal-broken-pipe/20758
+sudo dpkg -i --force-all /var/cache/apt/archives/linux-firmware-raspi2_1.20190819-0ubuntu0.18.04.1_armhf.deb
+# finish up upgrade
+sudo apt upgrade
+
+
+## turn i2c on
+lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
+
+# /boot/config.txt
+dtparam=audio=off
+dtparam=i2c_arm=on 
+dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
+dtparam=spi=on
+dtparam=watchdog=on 
+
+# /etc/modules
+i2c-dev
+#pps-gpio
+
+# install i2c tools
+sudo apt install -y i2c-tools
+
+i2cdetect -y 1
+
+# smbus python (note there is a version for python3)
+sudo apt install -y python-smbus
+
+# turn on i2c library (i2c_bcm2835) debug mode
+# create rc.local
+# https://vpsfix.com/community/server-administration/no-etc-rc-local-file-on-ubuntu-18-04-heres-what-to-do/
+sudo nano /etc/rc.local
+
+---
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+sudo sh -c 'echo 3 >/sys/module/i2c_bcm2835/parameters/debug'
+
+exit 0
+---
+
+sudo chmod +x /etc/rc.local
+
+# check debug in kernel log
+dmesg | grep i2c
+
+# to swith to old i2c driver, use in /boot/firmware/usercfg.txt :
+# dtoverlay=i2c-bcm2708
+
+##
+# email Thomas
+
+Le mieux pour ROS c'est de suivre le tuto en ligne : 
+http://wiki.ros.org/melodic/Installation/Ubuntu
+Tu peux installer seulement la version ros-base (sans-GUI) puisqu'à priori on se connecte en ligne de commande.
+
+Dans les packages pratiques à installer : 
+gpsd, ntp, screen, crontab, éventuellement zsh suivant les préférences.
+Si tu as déjà les paquets pour l'i2c, normalement je dirais qu'il y a pas besoins de choses supplémentaires 
+(j'utilise eigen, proj4 mais ça doit être déjà installé par défaut ou avec ROS). 
+J'en ai peut-être oublié mais de toute façon il te le dira à la compilation. 
+Pour info, j'ai intégré directement le code de l'IMU (dont tu n'as pas besoin) 
+dans le projet ROS, donc il n'y a plus de dépendance extérieur (RTIUMLib).
+
+Pour le réglage de l'heure automatiquement à partir du gps, il faut configurer ntp
+ (et peut-être gpsd, mais ça n'est pas sûr). 
+ Normalement il y a les fichiers utilisés ici : 
+ https://github.com/ThomasLeMezo/seabot/tree/master/linux
+
+Pour le plan de travail :
+Installation et compilation de ROS
+Lancer driver.launch et vérifier que tu peux piloter le piston et que tu accèdes 
+à tous les capteurs. 
+Il y aura peut-être des modifications à faire pour désactiver certains capteurs (à regarder).
+Lancer base.launch et vérifier que tu as bien le log des datas
+Lancer mission.launch avec une mission factice pour voir le comportement général
+ du flotteur (même si il faudrait un bassin si tu arrives à cette étape).
+Pour info, la régulation qui est sur le répertoire github (branche devel) 
+n'est pas complètement testé mais intègre les derniers développements où il y a
+ une estimation quadratique de la compressibilité, ainsi qu'une estimation du 
+ coefficient de frottement. 
+ L'algo d'estimation fonctionnait bien sur des données enregistrés mais je n'ai 
+ pas testé la boucle complète avec le régulateur dans un bassin.
+
+
+## zsh
+sudo apt update
+sudo apt install curl
+sudo apt install zsh
+whereis zsh
+sudo usermod -s /usr/bin/zsh $(whoami)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+
+## other libraries
+sudo apt install screen
+#sudo apt install gpsd # may not be necessary given next install
+sudo apt install libgps-dev
+sudo apt install ntp
+sudo apt install libi2c-dev
+sudo apt install libproj-dev
+
+## ROS
+
+http://wiki.ros.org/melodic/Installation/Ubuntu
+
+1/ Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can follow the Ubuntu guide for instructions on doing this. 
+https://help.ubuntu.com/community/Repositories/Ubuntu
+
+2/ 
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+
+3/
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+4/
+sudo apt update
+sudo apt install ros-melodic-ros-base
+
+5/
+echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
+source ~/.zshrc
+
+6/
+sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+sudo rosdep init
+rosdep update
+
+# extra ROS package required
+sudo apt install ros-melodic-geometry
+
+## compile seabot
+cd seabot
+catkin_make -j2
+
+# add seabot sourcing to path in .zshrc
+source ~/seabot/devel/setup.zsh
+
+# compilation utils
+# Running command: "make -j4 -l4" in "/home/pi/seabot/build"
+find / -name "smbus.h" 2>/dev/null
+# to clean up catkin_make
+rm -rf build/ devel/
+
+# if you want to change hostname (should not be necessary), you need to edit
+# /etc/hostname  and /etc/hosts and change old hostname for new one
+# then reboot
+
+# add hostname in .profile:
+export HOSTNAME="ifremer1"
+
+# create appropriate param file, for example
+src/seabot/param/config_ifremer1.yaml
+
+# ifremer1 is the hostname
+check python finds the hostname:
+import socket
+socket.gethostname()
