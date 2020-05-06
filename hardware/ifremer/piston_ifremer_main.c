@@ -916,6 +916,7 @@ void interrupt_low(){
         tmp_rx = SSPBUF;
 
         if(SSPCON1.SSPOV || SSPCON1.WCOL){
+            //tmp_rx = SSPBUF; // Read the previous value to clear the buffer
             SSPCON1.SSPOV = 0;
             SSPCON1.WCOL = 0;
             SSPCON1.CKP = 1;
@@ -960,15 +961,15 @@ void interrupt_low(){
  */
 // void interrupt_low(){
 //   if (PIR1.SSPIF){  // I2C Interrupt
-// 
-// 
+//
+//
 //       if(SSPCON1.SSPOV || SSPCON1.WCOL){
 //           SSPCON1.SSPOV = 0;
 //           SSPCON1.WCOL = 0;
 //           tmp_rx = SSPBUF;
 //       }
-// 
-// 
+//
+//
 //       //****** receiving data from master ****** //
 //       // 0 = Write (master -> slave - reception)
 //       if (SSPSTAT.R_W == 0){
@@ -995,17 +996,16 @@ void interrupt_low(){
 //             nb_tx_octet = 0;
 //             tmp_rx = SSPBUF;
 //           }
-// 
-// 
+//
+//
 //           // In both D_A case (transmit data after receive add)
 //           i2c_write_data_to_buffer(nb_tx_octet);
 //           delay_us(20);
 //           nb_tx_octet++;
 //       }
-// 
-// 
+//
+//
 //     SSPCON1.CKP = 1;
 //     PIR1.SSPIF = 0; // reset SSP interrupt flag
 //   }
 // }
-
