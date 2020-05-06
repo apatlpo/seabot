@@ -209,6 +209,8 @@ find / -name "smbus.h" 2>/dev/null
 # to clean up catkin_make
 rm -rf build/ devel/
 
+# add hostname in .profile:
+export HOSTNAME="ifremer1"
 # create appropriate param file, for example
 src/seabot/param/config_ifremer1.yaml
 # ifremer1 is the hostname
