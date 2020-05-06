@@ -209,10 +209,16 @@ find / -name "smbus.h" 2>/dev/null
 # to clean up catkin_make
 rm -rf build/ devel/
 
+# if you want to change hostname (should not be necessary), you need to edit
+# /etc/hostname  and /etc/hosts and change old hostname for new one
+# then reboot
+
 # add hostname in .profile:
 export HOSTNAME="ifremer1"
+
 # create appropriate param file, for example
 src/seabot/param/config_ifremer1.yaml
+
 # ifremer1 is the hostname
 check python finds the hostname:
 import socket
