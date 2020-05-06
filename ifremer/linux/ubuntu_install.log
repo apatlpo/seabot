@@ -2,15 +2,19 @@
 ## prepare sim card
 
 # note: you need 32bit version of ubuntu mate !
-# https://ubuntu-mate.org/download/armhf/bionic/
+# see: 
+https://ubuntu-mate.org/download/armhf/bionic/
 
 # copy image on mac and transfer with balenaEtcher (mac os)
+# when booting the system, set the computer name appropriately, e.g.: 
+# ifremer1, ifremer2, ...
+# see:
+https://ubuntu-mate.org/faq/usb-image/#macos
+
 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995  ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
-
-# https://ubuntu-mate.org/faq/usb-image/#macos
 
 
 ## get seabot library (to update install commands)
