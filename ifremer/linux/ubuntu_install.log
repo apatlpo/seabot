@@ -205,8 +205,13 @@ source ~/seabot/devel/setup.zsh
 
 # compilation utils
 # Running command: "make -j4 -l4" in "/home/pi/seabot/build"
-
 find / -name "smbus.h" 2>/dev/null
-
 # to clean up catkin_make
 rm -rf build/ devel/
+
+# create appropriate param file, for example
+src/seabot/param/config_ifremer1.yaml
+# ifremer1 is the hostname
+check python finds the hostname:
+import socket
+socket.gethostname()
