@@ -11,6 +11,10 @@ i2cdetect -y 1
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 70: -- -- -- -- -- -- 76 77  
 
+# debug on new linux i2cdriver
+dmesg | grep i2c
+
+
 ------------------------
 Ecriture registre
 
@@ -140,3 +144,5 @@ i2cget -y 1 0x38 0x07
 
 --- 09 error_interval
 i2cget -y 1 0x38 0x09
+
+

@@ -62,7 +62,8 @@ sudo apt upgrade
 ## turn i2c on
 lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
 
-# /boot/config.txt
+# (/boot/config.txt) prior to system upgrade
+# /boot/firmware/syscfg.txt and /boot/firmware/usercfg.txt
 dtparam=audio=off
 dtparam=i2c_arm=on 
 dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
