@@ -28,7 +28,29 @@ _all = ['state', 'is_init', 'code_version',
 	'motor_speed_variation',
 	'voltage']
 
+# cannot read block larger than 5
 block_size = 16
+#block_size = 8
+
+def read_block_4(bus, i):
+	local_block_size=4
+	b = [0,0,0,0]
+	#indices, offsets = [0,1,2,3], [0x00, 0x04, 0x08, 0x0C]
+        indices, offsets = [1,0,2,3], [0x04, 0x00, 0x08, 0x0C]
+	for index, off in zip(indices, offsets):
+		b[index] = bus.read_i2c_block_data(0x38, i+off, local_block_size)
+		sleep(.1)
+	return b[0]+b[1]+b[2]+b[3]
+
+def read_block_8(bus, i):
+        local_block_size=8
+        b = [0,0]
+        #indices, offsets = [0,1], [0x00, 0x08]
+        indices, offsets = [1,0], [0x08, 0x00]
+        for index, off in zip(indices, offsets):
+                b[index] = bus.read_i2c_block_data(0x38, i+off, local_block_size)
+                sleep(.1)
+        return b[0]+b[1]
 
 dt=1.
 timer=0
@@ -45,7 +67,9 @@ while True:
 
 	try:
 		### read data by blocks
-		block = mybus.read_i2c_block_data(0x38, 0x0, block_size)
+		#block = mybus.read_i2c_block_data(0x38, 0x0, block_size)
+		block = read_block_8(mybus, 0x0)
+                print(block)
 
 		# general state
                 gstate = '{0:06b}'.format(block[2])
