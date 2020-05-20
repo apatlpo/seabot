@@ -1,116 +1,287 @@
+➜  ~ roslaunch seabot driver.launch
+
+... logging to /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/roslaunch-ifremer1-7605.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://ifremer1:37949/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /driver/imu/accel_full_scale_range: 16
+ * /driver/imu/accel_low_pass_filter: 4
+ * /driver/imu/accel_max: [10.20169327, 9.8...
+ * /driver/imu/accel_min: [-9.61750807, -9....
+ * /driver/imu/axis_rotation: 4
+ * /driver/imu/compass_sample_rate: 10
+ * /driver/imu/ellipsoid_matrix0: [1, 0, 0]
+ * /driver/imu/ellipsoid_matrix1: [0, 1, 0]
+ * /driver/imu/ellipsoid_matrix2: [0, 0, 1]
+ * /driver/imu/ellipsoid_offset: [0, 0, 0]
+ * /driver/imu/fusion_type: 1
+ * /driver/imu/gyro_accel_sample_rate: 10
+ * /driver/imu/gyro_bias: [-0.00013038, 0.0...
+ * /driver/imu/gyro_full_scale_range: 16
+ * /driver/imu/gyro_low_pass_filter: 3
+ * /driver/imu/i2c_bus: 1
+ * /driver/imu/i2c_slave_address: 104
+ * /driver/imu/imu_frame: imu_link
+ * /driver/imu/imu_type: 7
+ * /driver/imu/is_i2c: False
+ * /driver/imu/mag_declination: -1.722
+ * /driver/imu/publish_euler: True
+ * /driver/imu/publish_magnetometer: True
+ * /driver/imu/spi_bus: 0
+ * /driver/imu/spi_select: 0
+ * /driver/imu/spi_speed: 500000
+ * /driver/piston/depth_max: 50.0
+ * /driver/piston/distance_fast_move: 100
+ * /driver/piston/divider_frequency: 5
+ * /driver/piston/error_interval: 6
+ * /driver/piston/frequency: 25.0
+ * /driver/piston/reached_switch_off: True
+ * /driver/piston/speed_depth_layer: 5.0
+ * /driver/piston/speed_fast_move_factor: 2.0
+ * /driver/piston/speed_in_min: 15
+ * /driver/piston/speed_in_slope: 0.5
+ * /driver/piston/speed_max: 50
+ * /driver/piston/speed_out_min: 15
+ * /driver/piston/speed_out_slope: 0.5
+ * /driver/piston/speed_reset: 25
+ * /driver/piston/tick_max: 2500
+ * /driver/power/frequency: 0.2
+ * /driver/pressure_ext/frequency: 5
+ * /driver/pressure_int/frequency: 5
+ * /driver/pressure_int/primary_i2c_address: True
+ * /driver/temperature_ext/frequency: 5
+ * /driver/thruster/allow_backward: False
+ * /driver/thruster/coeff_cmd_to_pwm: 9
+ * /driver/thruster/delay_stop: 0.5
+ * /driver/thruster/frequency: 15.0
+ * /driver/thruster/invert_left: False
+ * /driver/thruster/invert_right: True
+ * /driver/thruster/max_angular_velocity: 1.0
+ * /driver/thruster/max_engine_change: 15.0
+ * /driver/thruster/max_linear_velocity: 1.0
+ * /driver/thruster/thruster_left_pin: 0
+ * /driver/thruster/thruster_right_pin: 1
+ * /filter/batteries_filter/filter_mean_width: 2
+ * /filter/batteries_filter/filter_median_size: 6
+ * /filter/batteries_filter/frequency: 0.2
+ * /filter/depth_filter/filter_mean_half_width: 2
+ * /filter/depth_filter/filter_mean_width_velocity: 6
+ * /filter/depth_filter/filter_velocity_mean_half_width: 2
+ * /filter/depth_filter/filter_window_size: 6
+ * /filter/depth_filter/frequency: 25
+ * /filter/depth_filter/velocity_dt_sample: 5
+ * /filter/depth_filter/velocity_limit: 0.5
+ * /filter/depth_filter/zero_depth_pressure: 1.024
+ * /filter/depth_filter/zero_depth_window_size: 100
+ * /filter/internal_sensor_filter/filter_mean_width: 2
+ * /filter/internal_sensor_filter/filter_median_size: 6
+ * /filter/internal_sensor_filter/frequency: 5
+ * /filter/lambert/frequency: 5
+ * /filter/lambert/nb_sample_between_heading: 150
+ * /filter/lambert/nb_sample_mean: 6
+ * /filter/temperature_filter/filter_mean_width: 2
+ * /filter/temperature_filter/filter_mean_width_velocity: 5
+ * /filter/temperature_filter/filter_median_size: 6
+ * /filter/temperature_filter/frequency: 5
+ * /filter/temperature_filter/velocity_delta_size: 5
+ * /filter/temperature_filter/velocity_limit: 2.0
+ * /iridium/debug: False
+ * /iridium/depth_surface_limit: 0.5
+ * /iridium/duration_between_msg: 60
+ * /iridium/enable_gnss_iridium: False
+ * /iridium/wait_time_surface: 10
+ * /kalman/enable_depth: 0.5
+ * /kalman/estimated_first_error_equilibrium_tick: 250
+ * /kalman/frequency: 25.0
+ * /kalman/gamma_alpha_chi2: 0.001
+ * /kalman/gamma_alpha_chi: 0.001
+ * /kalman/gamma_alpha_cz: 0.001
+ * /kalman/gamma_alpha_depth: 1e-05
+ * /kalman/gamma_alpha_offset: 0.05
+ * /kalman/gamma_alpha_velocity: 0.001
+ * /kalman/gamma_beta_depth: 0.001
+ * /kalman/gamma_init_chi2: 30.0
+ * /kalman/gamma_init_chi: 30.0
+ * /kalman/gamma_init_cz: 0.1
+ * /kalman/gamma_init_depth: 0.01
+ * /kalman/gamma_init_offset: 2400.0
+ * /kalman/gamma_init_velocity: 0.1
+ * /mission/approach_velocity_default: 1.0
+ * /mission/flash_time_next_waypoint: 3
+ * /mission/frequency: 1.0
+ * /mission/limit_velocity_default: 0.02
+ * /mission_file_name: mission_depth_onl...
+ * /physics/diam_collerette: 0.24
+ * /physics/g: 9.81
+ * /physics/m: 18.0
+ * /physics/piston_diameter: 0.05
+ * /physics/piston_max_value: 2400.0
+ * /physics/piston_ref_eq: 2100
+ * /physics/piston_speed_max_tick: 20
+ * /physics/rho: 1020.0
+ * /physics/screw_thread: 0.00175
+ * /physics/tick_per_turn: 48
+ * /regulation/depth_controller/delta_position_lb: -0.001
+ * /regulation/depth_controller/delta_position_ub: 0.001
+ * /regulation/depth_controller/delta_velocity_lb: -0.01
+ * /regulation/depth_controller/delta_velocity_ub: 0.01
+ * /regulation/depth_controller/divider_frequency: 5
+ * /regulation/depth_controller/frequency: 25.0
+ * /regulation/depth_controller/hold_depth_enable: False
+ * /regulation/depth_controller/hold_depth_value_enter: 0.05
+ * /regulation/depth_controller/hold_depth_value_exit: 0.0
+ * /regulation/depth_controller/hysteresis_piston: 0.6
+ * /regulation/depth_controller/limit_depth_controller: 0.5
+ * /regulation/depth_controller/root_regulation: -0.2
+ * /regulation/depth_controller/speed_volume_sink: 2.0
+ * /regulation/waypoint/coeff_D: 0.2
+ * /regulation/waypoint/coeff_P: 0.8
+ * /regulation/waypoint/delta_valid_time: 3.0
+ * /regulation/waypoint/depth_limit_switch_off: 0.5
+ * /regulation/waypoint/frequency: 10.0
+ * /regulation/waypoint/hysteresis_circle_in: 2.0
+ * /regulation/waypoint/hysteresis_circle_out: 4.0
+ * /regulation/waypoint/linear_speed: 1.3
+ * /regulation/waypoint/max_angular_velocity: 1.0
+ * /rosdistro: melodic
+ * /rosversion: 1.14.5
+ * /safety/battery_limit: 10.0
+ * /safety/delta_ref_allowed: 10.0
+ * /safety/delta_volume_allowed: 1.0
+ * /safety/enable_flash: True
+ * /safety/frequency: 1.0
+ * /safety/humidity_limit: 70.0
+ * /safety/internal_pressure_detection: True
+ * /safety/limit_depth_flash_enable: 0.5
+ * /safety/limit_piston_position_reset_depth: 3
+ * /safety/max_depth_reset_zero: 1.0
+ * /safety/max_speed_reset_zero: 0.1
+ * /safety/pressure_internal_max: 850.0
+ * /safety/pressure_limit: 6.2
+ * /safety/safety_battery: True
+ * /safety/safety_depressure: True
+ * /safety/safety_pressure_limit: True
+ * /safety/seafloor_detection: True
+ * /safety/time_before_pressure_emergency: 3.0
+ * /safety/time_before_seafloor_emergency: 20.0
+ * /safety/time_delay_batteries_msg: 30.0
+ * /safety/time_delay_depth_msg: 2.0
+ * /safety/time_delay_euler_msg: 1.0
+ * /safety/time_delay_external_sensor_msg: 2.0
+ * /safety/time_delay_internal_sensor_msg: 2.0
+ * /safety/time_delay_piston_state_msg: 2.0
+ * /safety/time_delay_zero_depth_condition: 20
+ * /safety/transition_tick_law: 650.0
+ * /safety/volume_ref: 0.006
+
+NODES
+  /driver/power/
+    power (seabot_power_driver/power_node)
+  /driver/
+    gpsd_client (gpsd_client/gpsd_client)
+    imu_mpu9250 (imu_mpu/imu_mpu9250)
+    pressure_ext (pressure_89bsd_driver/pressure_89bsd_node)
+    pressure_int (pressure_bme280_driver/bme280_node)
+    temperature_ext (temperature_tsys01_driver/temperature_tsys01_node)
+  /driver/thruster/
+    thruster (seabot_thruster_driver/thruster_node)
+  /driver/piston/
+    piston (seabot_piston_driver/piston_node)
+
 auto-starting new master
-process[master]: started with pid [3650]
+process[master]: started with pid [7620]
 ROS_MASTER_URI=http://localhost:11311
 
-setting /run_id to 74a21ecc-9a9f-11ea-86fa-e84e064b777b
-process[rosout-1]: started with pid [3661]
+setting /run_id to 96b03f6c-9aa9-11ea-a754-e84e064b777b
+process[rosout-1]: started with pid [7631]
 started core service [/rosout]
 running rosparam dump ~/.ros/mission_config.yaml /
-process[driver/power/power-2]: started with pid [3673]
-process[driver/piston/piston-3]: started with pid [3674]
-process[driver/pressure_ext-4]: started with pid [3679]
-process[driver/pressure_int-5]: started with pid [3685]
-process[driver/temperature_ext-6]: started with pid [3691]
-[ WARN] [1589982034.119301305]: [POWER] Wrong PIC code version
-process[driver/thruster/thruster-7]: started with pid [3693]
-process[driver/gpsd_client-8]: started with pid [3702]
-[ WARN] [1589982034.294468931]: [Power_driver] I2C Bus Failure - Set Sleep mode countdown
-[ WARN] [1589982034.303022809]: [Power_driver] I2C Bus Failure - Set Flash Led Delay
-[ INFO] [1589982034.313715260]: [POWER] Start Ok
-[ WARN] [1589982034.329725631]: [Power_driver] I2C Bus Failure - Get Batteries
-[ INFO] [1589982034.361643664]: [Pressure_89BSD] Start Ok
-process[driver/imu_mpu9250-9]: started with pid [3708]
-[ WARN] [1589982034.459059103]: [Temperature_TSYS01] Error reseting sensor
-[ WARN] [1589982034.483689757]: [Pressure_89BSD] Data out of range (p=1.689029 t=-405.227504)
-[ WARN] [1589982034.514542436]: [Temperature_TSYS01] Error Reading 0xA2
-[ WARN] [1589982034.517591314]: [Temperature_TSYS01] Error Reading 0xA4
-[ WARN] [1589982034.522478039]: [Temperature_TSYS01] Error Reading 0xA6
-[ WARN] [1589982034.525757175]: [Temperature_TSYS01] Error Reading 0xA8
-[ WARN] [1589982034.529744950]: [Temperature_TSYS01] Error Reading 0xAA
-[ INFO] [1589982034.530510724]: [Temperature_TSYS01_driver] Start Ok
-[ WARN] [1589982034.596895100]: [Temperature_TSYS01] Error Reading T
-[ERROR] [1589982034.617688082]: [GPSD_Client] Failed to open GPSd
-[ WARN] [1589982034.649750281]: [Pressure_89BSD] Data out of range (p=1.689058 t=-405.227504)
+process[driver/power/power-2]: started with pid [7643]
+process[driver/piston/piston-3]: started with pid [7644]
+process[driver/pressure_ext-4]: started with pid [7649]
+process[driver/pressure_int-5]: started with pid [7655]
+process[driver/temperature_ext-6]: started with pid [7658]
+[ WARN] [1589986384.847330704]: [POWER] Wrong PIC code version
+process[driver/thruster/thruster-7]: started with pid [7663]
+[ WARN] [1589986384.943042982]: [Power_driver] I2C Bus Failure - Set Sleep mode countdown
+[ WARN] [1589986384.945478430]: [Power_driver] I2C Bus Failure - Set Flash Led Delay
+[ INFO] [1589986384.946103061]: [POWER] Start Ok
+[ WARN] [1589986384.950015893]: [Power_driver] I2C Bus Failure - Get Batteries
+process[driver/gpsd_client-8]: started with pid [7668]
+process[driver/imu_mpu9250-9]: started with pid [7674]
+[ WARN] [1589986385.316601597]: [Pressure_89BSD] Error Reading 0xA4
+[ WARN] [1589986385.380356588]: [Pressure_89BSD] Error Reading 0xA8
+[ WARN] [1589986385.404360346]: [Pressure_89BSD] Error Reading 0xAE
+[ INFO] [1589986385.404787270]: [Pressure_89BSD] Start Ok
+[ WARN] [1589986385.501405373]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ INFO] [1589986385.513522460]: [Temperature_TSYS01_driver] Start Ok
+[ERROR] [1589986385.538614491]: [GPSD_Client] Failed to open GPSd
 Settings file RTIMULib.ini loaded
-[ WARN] [1589982034.795998699]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982034.848533779]: [Pressure_89BSD] Data out of range (p=1.689070 t=-405.227504)
-[ INFO] [1589982034.949859441]: [IMU] imu type = 7
+[ WARN] [1589986385.671075370]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986385.867118793]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986385.914507618]: [Thruster] Wrong PIC code version
+[ INFO] [1589986385.959615003]: [IMU] imu type = 7
 Using fusion algorithm Kalman STATE4
 Using min/max compass calibration
 Using ellipsoid compass calibration
 Using accel calibration
-[ WARN] [1589982034.966310381]: [Thruster] Wrong PIC code version
-[ WARN] [1589982034.996051143]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982035.048278569]: [Pressure_89BSD] Data out of range (p=1.689092 t=-405.227504)
+[driver/gpsd_client-8] process has died [pid 7668, exit code 255, cmd /home/pi/seabot/devel/lib/gpsd_client/gpsd_client __name:=gpsd_client __log:=/home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-gpsd_client-8.log].
+log file: /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-gpsd_client-8*.log
+[ WARN] [1589986386.067986446]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
 Incorrect MPU-9250 id 0
-[FATAL] [1589982035.058118789]: I2cImu - init - Failed to init the IMU
-[FATAL] [1589982035.058384412]: BREAKPOINT HIT
+[FATAL] [1589986386.074572746]: I2cImu - init - Failed to init the IMU
+[FATAL] [1589986386.074857587]: BREAKPOINT HIT
 	file = /home/pi/seabot/src/seabot_driver/imu_mpu/src/imu_mpu9250.cpp
 	line=214
 
-[driver/gpsd_client-8] process has died [pid 3702, exit code 255, cmd /home/pi/seabot/devel/lib/gpsd_client/gpsd_client __name:=gpsd_client __log:=/home/pi/.ros/log/74a21ecc-9a9f-11ea-86fa-e84e064b777b/driver-gpsd_client-8.log].
-log file: /home/pi/.ros/log/74a21ecc-9a9f-11ea-86fa-e84e064b777b/driver-gpsd_client-8*.log
-[driver/imu_mpu9250-9] process has died [pid 3708, exit code -6, cmd /home/pi/seabot/devel/lib/imu_mpu/imu_mpu9250 ~imu_type:=/driver/imu/imu_type ~imu_frame:=/driver/imu/imu_frame ~is_i2c:=/driver/imu/is_i2c ~i2c_bus:=/driver/imu/i2c_bus ~i2c_slave_address:=/driver/imu/i2c_slave_address ~spi_speed:=/driver/imu/spi_speed ~spi_select:=/driver/imu/spi_select ~spi_bus:=/driver/imu/spi_bus ~fusion_type:=/driver/imu/fusion_type ~publish_euler:=/driver/imu/publish_euler ~publish_magnetometer:=/driver/imu/publish_magnetometer ~axis_rotation:=/driver/imu/axis_rotation ~compass_sample_rate:=/driver/imu/compass_sample_rate ~gyro_accel_sample_rate:=/driver/imu/gyro_accel_sample_rate ~accel_low_pass_filter:=/driver/imu/accel_low_pass_filter ~accel_full_scale_range:=/driver/imu/accel_full_scale_range ~gyro_low_pass_filter:=/driver/imu/gyro_low_pass_filter ~gyro_full_scale_range:=/driver/imu/gyro_full_scale_range ~ellipsoid_offset:=/driver/imu/ellipsoid_offset ~ellipsoid_matrix0:=/driver/imu/ellipsoid_matrix0 ~ellipsoid_matrix1:=/driver/imu/ellipsoid_matrix1 ~ellipsoid_matrix2:=/driver/imu/ellipsoid_matrix2 ~accel_min:=/driver/imu/accel_min ~accel_max:=/driver/imu/accel_max ~gyro_bias:=/driver/imu/gyro_bias ~mag_declination:=/driver/imu/mag_declination __name:=imu_mpu9250 __log:=/home/pi/.ros/log/74a21ecc-9a9f-11ea-86fa-e84e064b777b/driver-imu_mpu9250-9.log].
-log file: /home/pi/.ros/log/74a21ecc-9a9f-11ea-86fa-e84e064b777b/driver-imu_mpu9250-9*.log
-[ WARN] [1589982035.196038432]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982035.248710593]: [Pressure_89BSD] Data out of range (p=1.689098 t=-405.227504)
-[ WARN] [1589982035.395971502]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982035.448686059]: [Pressure_89BSD] Data out of range (p=1.689121 t=-405.227504)
-[ INFO] [1589982035.524482326]: [Thruster] Start Ok
-[ WARN] [1589982035.526578296]: [Thruster_driver] I2C Bus Failure - Write cmd
-[ WARN] [1589982035.595755146]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982035.648253976]: [Pressure_89BSD] Data out of range (p=1.689082 t=-405.227504)
-[ WARN] [1589982035.795927017]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982035.848270067]: [Pressure_89BSD] Data out of range (p=1.689107 t=-405.227504)
-[ WARN] [1589982035.942316058]: [Piston_driver] Wrong PIC code version
-[ WARN] [1589982035.996447685]: [Temperature_TSYS01] Error Reading T
-[ INFO] [1589982035.997088929]: [Pressure_BME280] Start Ok
-[ WARN] [1589982036.054007926]: [Pressure_89BSD] Data out of range (p=1.689117 t=-405.227504)
-[ WARN] [1589982036.195918000]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982036.252075233]: [Pressure_89BSD] Data out of range (p=1.689106 t=-405.227504)
-[ WARN] [1589982036.396031902]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982036.451811222]: [Pressure_89BSD] Data out of range (p=1.689115 t=-405.227504)
-[ WARN] [1589982036.595934244]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982036.651876427]: [Pressure_89BSD] Data out of range (p=1.689115 t=-405.227504)
-[ WARN] [1589982036.795906741]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982036.851901163]: [Pressure_89BSD] Data out of range (p=1.689145 t=-405.227504)
-[ WARN] [1589982036.995895905]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982037.052022930]: [Pressure_89BSD] Data out of range (p=1.689121 t=-405.227504)
-[ WARN] [1589982037.195909808]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982037.251835064]: [Pressure_89BSD] Data out of range (p=1.689109 t=-405.227504)
-[ WARN] [1589982037.395931888]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982037.452068288]: [Pressure_89BSD] Data out of range (p=1.689117 t=-405.227504)
-[ WARN] [1589982037.595912771]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982037.651934329]: [Pressure_89BSD] Data out of range (p=1.689137 t=-405.227504)
-[ WARN] [1589982037.795914331]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982037.851924482]: [Pressure_89BSD] Data out of range (p=1.689144 t=-405.227504)
-[ WARN] [1589982037.995890683]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982038.052091249]: [Pressure_89BSD] Data out of range (p=1.689152 t=-405.227504)
-[ WARN] [1589982038.195913076]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982038.251888071]: [Pressure_89BSD] Data out of range (p=1.689157 t=-405.227504)
-[ WARN] [1589982038.395947083]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982038.451951193]: [Pressure_89BSD] Data out of range (p=1.689151 t=-405.227504)
-[ WARN] [1589982038.595932446]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982038.651908483]: [Pressure_89BSD] Data out of range (p=1.689177 t=-405.227504)
-[ WARN] [1589982038.795920464]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982038.852031812]: [Pressure_89BSD] Data out of range (p=1.689165 t=-405.227504)
-[ WARN] [1589982038.995913743]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982039.052020247]: [Pressure_89BSD] Data out of range (p=1.689157 t=-405.227504)
-[ WARN] [1589982039.195940251]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982039.252023735]: [Pressure_89BSD] Data out of range (p=1.689147 t=-405.227504)
-[ WARN] [1589982039.324444409]: [Power_driver] I2C Bus Failure - Get Batteries
-[ WARN] [1589982039.395987331]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982039.452122429]: [Pressure_89BSD] Data out of range (p=1.689153 t=-405.227504)
-[ WARN] [1589982039.595910403]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982039.651968158]: [Pressure_89BSD] Data out of range (p=1.689171 t=-405.227504)
-[ WARN] [1589982039.795934983]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982039.852031592]: [Pressure_89BSD] Data out of range (p=1.689180 t=-405.227504)
-[ WARN] [1589982040.002436535]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982040.054706357]: [Pressure_89BSD] Data out of range (p=1.689150 t=-405.227504)
-[ WARN] [1589982040.195930292]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982040.252138045]: [Pressure_89BSD] Data out of range (p=1.689168 t=-405.227504)
-[ WARN] [1589982040.395916071]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982040.452089971]: [Pressure_89BSD] Data out of range (p=1.689172 t=-405.227504)
-[ WARN] [1589982040.595909663]: [Temperature_TSYS01] Error Reading T
-[ WARN] [1589982040.652044448]: [Pressure_89BSD] Data out of range (p=1.689177 t=-405.227504)
+[driver/imu_mpu9250-9] process has died [pid 7674, exit code -6, cmd /home/pi/seabot/devel/lib/imu_mpu/imu_mpu9250 ~imu_type:=/driver/imu/imu_type ~imu_frame:=/driver/imu/imu_frame ~is_i2c:=/driver/imu/is_i2c ~i2c_bus:=/driver/imu/i2c_bus ~i2c_slave_address:=/driver/imu/i2c_slave_address ~spi_speed:=/driver/imu/spi_speed ~spi_select:=/driver/imu/spi_select ~spi_bus:=/driver/imu/spi_bus ~fusion_type:=/driver/imu/fusion_type ~publish_euler:=/driver/imu/publish_euler ~publish_magnetometer:=/driver/imu/publish_magnetometer ~axis_rotation:=/driver/imu/axis_rotation ~compass_sample_rate:=/driver/imu/compass_sample_rate ~gyro_accel_sample_rate:=/driver/imu/gyro_accel_sample_rate ~accel_low_pass_filter:=/driver/imu/accel_low_pass_filter ~accel_full_scale_range:=/driver/imu/accel_full_scale_range ~gyro_low_pass_filter:=/driver/imu/gyro_low_pass_filter ~gyro_full_scale_range:=/driver/imu/gyro_full_scale_range ~ellipsoid_offset:=/driver/imu/ellipsoid_offset ~ellipsoid_matrix0:=/driver/imu/ellipsoid_matrix0 ~ellipsoid_matrix1:=/driver/imu/ellipsoid_matrix1 ~ellipsoid_matrix2:=/driver/imu/ellipsoid_matrix2 ~accel_min:=/driver/imu/accel_min ~accel_max:=/driver/imu/accel_max ~gyro_bias:=/driver/imu/gyro_bias ~mag_declination:=/driver/imu/mag_declination __name:=imu_mpu9250 __log:=/home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-imu_mpu9250-9.log].
+log file: /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-imu_mpu9250-9*.log
+[ WARN] [1589986386.266810575]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986386.466888027]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ INFO] [1589986386.479955470]: [Thruster] Start Ok
+[ WARN] [1589986386.481967797]: [Thruster_driver] I2C Bus Failure - Write cmd
+[ WARN] [1589986386.666782042]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986386.866881056]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986386.970986181]: [Piston_driver] Wrong PIC code version
+[ INFO] [1589986387.044881348]: [Pressure_BME280] Start Ok
+[ WARN] [1589986387.067532930]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986387.267729548]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986387.467674813]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986387.667704921]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986387.867703987]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986388.067681023]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986388.267696808]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986388.467680145]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986388.667680722]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986388.867678799]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.067672449]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.267655213]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.467657092]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.667667981]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.867756838]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986389.949602876]: [Power_driver] I2C Bus Failure - Get Batteries
+[ WARN] [1589986390.067661425]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986390.267727470]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986390.467672578]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986390.667696904]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986390.867714251]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+[ WARN] [1589986391.067697015]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
+^C[driver/thruster/thruster-7] killing on exit
+[driver/temperature_ext-6] killing on exit
+[driver/pressure_ext-4] killing on exit
+[driver/piston/piston-3] killing on exit
+[driver/pressure_int-5] killing on exit
+[driver/power/power-2] killing on exit
+[driver/piston/piston-3] escalating to SIGTERM
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
 
