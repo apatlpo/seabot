@@ -60,7 +60,7 @@ volatile unsigned short optical_state;
 volatile unsigned short last_state;
 volatile int nb_pulse = 0;  // Nombre d'impulsions de la sortie de l'opto OPB461T11
 volatile int nb_pulse_debug = 0;  // test
-volatile unsigned int optical_states[4] = {0,0,0,0}; // test
+//volatile unsigned int optical_states[4] = {0,0,0,0}; // test
 //volatile unsigned int optical_counter = 0; // test
 //volatile unsigned int optical_counters[4] = {0,0,0,0}; // test
 //volatile unsigned short optical_max = 0; // index of maximum value
@@ -74,19 +74,19 @@ volatile unsigned short butee_in = 0;
 
 // Motor [0 100]
 #define MOTOR_STOP 50
-volatile signed int motor_speed_max = 25;                     // test
-volatile signed int motor_speed_out_reset = 50;               // test
-volatile signed int motor_current_speed = MOTOR_STOP;          // test
-volatile signed short motor_speed_variation = 2;          // test
-volatile signed int error_speed=0;
+volatile short motor_speed_max = 25;
+volatile short motor_speed_out_reset = 50;
+volatile short motor_current_speed = MOTOR_STOP;
+volatile short motor_speed_variation = 2;
+volatile short error_speed=0;
 
 // Regulation
-volatile signed int position_set_point = 0;
-volatile signed int error = 0;
+volatile int position_set_point = 0;
+volatile int error = 0;
 volatile unsigned short delay_release_torque = 10;
 volatile unsigned short delay_release_torque_cpt = 0;
 
-volatile unsigned short error_interval = 5;   // used to be unsigned
+volatile short error_interval = 5;
 
 //volatile unsigned short zero_shift_error = 0;
 volatile unsigned short time_zero_shift_error = 5;  // note used apparently
@@ -124,11 +124,11 @@ void i2c_read_data_from_buffer(){
     for(i=0; i<nb_data; i++){
         switch(rxbuffer_tab[0]+i){
             case 0x01:
-                // could test value in rxbuffer to make this more robust
-                //if(rxbuffer_tab[i+1]==1){
-                state = RESET_OUT;
-                //  butee_reset_cpt = TIME_BUTEE_RESET;
-                //}
+                // test value to make this more robust
+                if(rxbuffer_tab[i+1]==1){
+                  state = RESET_OUT;
+                  butee_reset_cpt = TIME_BUTEE_RESET;
+                }
                 break;
             case 0x02:
                 motor_on = (rxbuffer_tab[i+1]!=0x00);
@@ -143,6 +143,7 @@ void i2c_read_data_from_buffer(){
                 error_interval = rxbuffer_tab[i+1];
                 break;
             case 0x07:
+                // not used !!
                 time_zero_shift_error = rxbuffer_tab[i+1];
                 break;
             case 0x10:  // consigne de postion
@@ -167,8 +168,8 @@ void i2c_read_data_from_buffer(){
                 break;
             case 0xB0: // emergency mode
                 // test value in rxbuffer to make this more robust
-                //if(rxbuffer_tab[i+1]==1)
-                state = EMERGENCY; // test
+                if(rxbuffer_tab[i+1]==1)
+                  state = EMERGENCY; // test
                 break;
             default:
                 break;
@@ -200,20 +201,25 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
                 | ((MOTOR_TORQUE & 0b1) << 5);
         break;
     case 0x03:
+        //SSPBUF = nb_pulse;
         SSPBUF = position_set_point;
         //SSPBUF = mytimer;
         break;
     case 0x04:
+        //SSPBUF = nb_pulse >> 8;
         SSPBUF = position_set_point >> 8;
         //SSPBUF = mytimer >> 8;
         break;
     case 0x05:
+        //SSPBUF = motor_speed_variation;
         SSPBUF = motor_current_speed;
         break;
     case 0x06:
+        //SSPBUF = motor_speed_variation;
         SSPBUF = motor_speed_max;
         break;
     case 0x07:
+        //SSPBUF = motor_speed_variation;
         SSPBUF = motor_speed_out_reset;
         break;
     case 0x08:
@@ -305,7 +311,7 @@ void set_motor_cmd_stop(){
  * out : [50, 100]
  * in : [0, 50]
  */
-void set_motor_cmd(unsigned speed){
+void set_motor_cmd(short speed){
     //if(motor_on == 0 || (butee_out == 1 && speed >= MOTOR_STOP) || (butee_in == 1 && speed <= MOTOR_STOP)){
     // on compte sur les but�es internes du v�rin plut�t:
     if(motor_on == 0){
@@ -450,52 +456,6 @@ void set_motor_cmd(unsigned speed){
 */
 
 // original method
-/*void read_optical_fork(){
-
-    unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
-
-    switch(optical_state){
-    case 0x00:
-        if(new_state == 0x1)
-            nb_pulse--;
-        else if(new_state == 0x2)
-            nb_pulse++;
-        else if(new_state == 0x3)
-            nb_pulse_debug++;
-        break;
-    case 0x01:
-        if(new_state == 0x3)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse_debug++;
-        break;
-    case 0x02:
-        if(new_state == 0x0)
-            nb_pulse--;
-        else if(new_state == 0x3)
-            nb_pulse++;
-        else if(new_state == 0x1)
-            nb_pulse_debug++;
-        break;
-    case 0x03:
-        if(new_state == 0x1)
-            nb_pulse++;
-        else if(new_state == 0x2)
-            nb_pulse--;
-        else if(new_state == 0x0)
-            nb_pulse_debug++;
-        break;
-    default:
-        break;
-    }
-    // store the current state value to optical_state value this value
-    // will be used in next call
-    optical_state = new_state;
-}*/
-
-// robust to one hall sensor failure
 void read_optical_fork(){
 
     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
@@ -507,7 +467,7 @@ void read_optical_fork(){
         else if(new_state == 0x2)
             nb_pulse++;
         else if(new_state == 0x3)
-            nb_pulse_skip=1;
+            nb_pulse_debug++;
         break;
     case 0x01:
         if(new_state == 0x3)
@@ -515,7 +475,7 @@ void read_optical_fork(){
         else if(new_state == 0x0)
             nb_pulse++;
         else if(new_state == 0x2)
-            nb_pulse_skip=1;
+            nb_pulse_debug++;
         break;
     case 0x02:
         if(new_state == 0x0)
@@ -523,7 +483,7 @@ void read_optical_fork(){
         else if(new_state == 0x3)
             nb_pulse++;
         else if(new_state == 0x1)
-            nb_pulse_skip=1;
+            nb_pulse_debug++;
         break;
     case 0x03:
         if(new_state == 0x1)
@@ -531,7 +491,7 @@ void read_optical_fork(){
         else if(new_state == 0x2)
             nb_pulse--;
         else if(new_state == 0x0)
-            nb_pulse_skip=1;
+            nb_pulse_debug++;
         break;
     default:
         break;
@@ -539,16 +499,62 @@ void read_optical_fork(){
     // store the current state value to optical_state value this value
     // will be used in next call
     optical_state = new_state;
-
-    if (nb_pulse_skip==1){
-        nb_pulse_debug++;
-        if (motor_current_speed>MOTOR_STOP)
-            nb_pulse+=-2;
-        else if (motor_current_speed<MOTOR_STOP)
-            nb_pulse+=2;
-        nb_pulse_skip=0;
-    }
 }
+
+// robust to one hall sensor failure
+// void read_optical_fork(){
+//
+//     unsigned short new_state = SB<<1 | SA;  //  ou logique de RA3 et RA2
+//
+//     switch(optical_state){
+//     case 0x00:
+//         if(new_state == 0x1)
+//             nb_pulse--;
+//         else if(new_state == 0x2)
+//             nb_pulse++;
+//         else if(new_state == 0x3)
+//             nb_pulse_skip=1;
+//         break;
+//     case 0x01:
+//         if(new_state == 0x3)
+//             nb_pulse--;
+//         else if(new_state == 0x0)
+//             nb_pulse++;
+//         else if(new_state == 0x2)
+//             nb_pulse_skip=1;
+//         break;
+//     case 0x02:
+//         if(new_state == 0x0)
+//             nb_pulse--;
+//         else if(new_state == 0x3)
+//             nb_pulse++;
+//         else if(new_state == 0x1)
+//             nb_pulse_skip=1;
+//         break;
+//     case 0x03:
+//         if(new_state == 0x1)
+//             nb_pulse++;
+//         else if(new_state == 0x2)
+//             nb_pulse--;
+//         else if(new_state == 0x0)
+//             nb_pulse_skip=1;
+//         break;
+//     default:
+//         break;
+//     }
+//     // store the current state value to optical_state value this value
+//     // will be used in next call
+//     optical_state = new_state;
+//
+//     if (nb_pulse_skip==1){
+//         nb_pulse_debug++;
+//         if (motor_current_speed>MOTOR_STOP)
+//             nb_pulse+=-2;
+//         else if (motor_current_speed<MOTOR_STOP)
+//             nb_pulse+=2;
+//         nb_pulse_skip=0;
+//     }
+// }
 
 /**
  * @brief init_timer0
@@ -914,28 +920,25 @@ void interrupt_low(){
 
     if (PIR1.SSPIF){  // I2C Interrupt
         tmp_rx = SSPBUF;
-        //SSPCON1.CKP = 0;
 
         if(SSPCON1.SSPOV || SSPCON1.WCOL){
-             tmp_rx = SSPBUF; // Read the previous value to clear the buffer
-             SSPCON1.SSPOV = 0;
-             SSPCON1.WCOL = 0;
-             SSPCON1.CKP = 1;
+            SSPCON1.SSPOV = 0;
+            SSPCON1.WCOL = 0;
+            tmp_rx = SSPBUF; // Read the previous value to clear the buffer
+            SSPCON1.CKP = 1;
         }
 
-        //if (SSPSTAT.P==0){
         //****** receiving data from master ****** //
         // 0 = Write (master -> slave - reception)
         if (SSPSTAT.R_W == 0){
-            //tmp_rx = SSPBUF;
             SSPCON1.CKP = 1;
             if(SSPSTAT.D_A == 0){ // Address
                 nb_rx_octet = 0;
             }
             else{ // Data
                 if(nb_rx_octet < SIZE_RX_BUFFER){
-                    rxbuffer_tab[nb_rx_octet] = tmp_rx;
-                    nb_rx_octet++;
+                  rxbuffer_tab[nb_rx_octet] = tmp_rx;
+                  nb_rx_octet++;
                 }
             }
         }
@@ -951,13 +954,6 @@ void interrupt_low(){
             //delay_us(20);
             nb_tx_octet++;
         }
-        //}
-        // if(SSPCON1.SSPOV || SSPCON1.WCOL){
-        //     SSPCON1.SSPOV = 0;
-        //     SSPCON1.WCOL = 0;
-        //     //tmp_rx = SSPBUF; // Read the previous value to clear the buffer
-        //     SSPCON1.CKP = 1;
-        // }
         PIR1.SSPIF = 0; // reset SSP interrupt flag
     }
 }
