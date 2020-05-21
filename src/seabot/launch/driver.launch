@@ -32,10 +32,10 @@
 		<node name="pressure_ext" pkg="pressure_89bsd_driver" type="pressure_89bsd_node" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_ext/frequency" />
 		</node>
-		<node name="pressure_ext" pkg="pressure_7ld_driver" type="pressure_7ld_node" output="screen" respawn="true" respawn_delay="5">
+                -->
+		<node name="pressure_ext" pkg="pressure_7ld_driver" type="pressure_7ld_node.py" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_ext/frequency" />
 		</node> 
-		-->
 
 		<node name="pressure_int" pkg="pressure_bme280_driver" type="bme280_node" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_int/frequency" />

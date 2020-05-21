@@ -1,6 +1,6 @@
 <launch>
   <!-- modification alex -->
-  <node name="pressure_sensor_ext" pkg="pressure_7ld_driver" type="pressureExt.py" output="screen">
+  <node name="pressure_sensor_ext" pkg="pressure_7ld_driver" type="pressure_7ld_node.py" output="screen">
   	<param name="frequency" value="5.0" />
   </node>
 </launch>

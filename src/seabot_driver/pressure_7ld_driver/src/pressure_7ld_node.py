@@ -18,6 +18,7 @@ def talker():
         msg = PressureBsdData()
         msg.pressure = sensor.pressure()
         msg.temperature = sensor.temperature()
+        msg.stamp = rospy.Time.now()
 #        print(("pressure: %7.4f bar\ttemperature: %0.2f C") % (sensor.pressure(), sensor.temperature()))
         #pressureVal = "pressure = %s" % rospy.get_time()
         #rospy.loginfo(msg)

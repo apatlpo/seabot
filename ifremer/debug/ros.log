@@ -1,11 +1,48 @@
+
+##
+rostopic echo /driver/sensor_internal
+
+---
+pressure: 1013.64801025
+temperature: 29.1938667297
+humidity: 37.862739563
+
+# temperature n'est pas bonne
+
+##
+rostopic echo /driver/sensor_temperature
+temperature: 24.4678611755
+
+# temperature a l'air bonne
+
+##
+rostopic echo /driver/sensor_external
+---
+header: 
+  seq: 49
+  stamp: 
+    secs: 0
+    nsecs:         0
+  frame_id: ''
+pressure: 0.2197265625
+temperature: 24.0
+stamp: 
+  secs: 1590077837
+  nsecs: 794985055
+
+# capteur pression externe a l'air bien
+
+
+##
+
 ➜  ~ roslaunch seabot driver.launch
 
-... logging to /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/roslaunch-ifremer1-7605.log
+... logging to /home/pi/.ros/log/71a67496-9b7d-11ea-8efb-e84e064b777b/roslaunch-ifremer1-13217.log
 Checking log directory for disk usage. This may take a while.
 Press Ctrl-C to interrupt
 Done checking log file disk usage. Usage is <1GB.
 
-started roslaunch server http://ifremer1:37949/
+started roslaunch server http://ifremer1:44789/
 
 SUMMARY
 ========
@@ -182,106 +219,34 @@ PARAMETERS
  * /safety/volume_ref: 0.006
 
 NODES
-  /driver/power/
-    power (seabot_power_driver/power_node)
   /driver/
     gpsd_client (gpsd_client/gpsd_client)
-    imu_mpu9250 (imu_mpu/imu_mpu9250)
-    pressure_ext (pressure_89bsd_driver/pressure_89bsd_node)
+    pressure_ext (pressure_7ld_driver/pressure_7ld_node.py)
     pressure_int (pressure_bme280_driver/bme280_node)
     temperature_ext (temperature_tsys01_driver/temperature_tsys01_node)
-  /driver/thruster/
-    thruster (seabot_thruster_driver/thruster_node)
   /driver/piston/
     piston (seabot_piston_driver/piston_node)
 
 auto-starting new master
-process[master]: started with pid [7620]
+process[master]: started with pid [13227]
 ROS_MASTER_URI=http://localhost:11311
 
-setting /run_id to 96b03f6c-9aa9-11ea-a754-e84e064b777b
-process[rosout-1]: started with pid [7631]
+setting /run_id to 71a67496-9b7d-11ea-8efb-e84e064b777b
+process[rosout-1]: started with pid [13238]
 started core service [/rosout]
 running rosparam dump ~/.ros/mission_config.yaml /
-process[driver/power/power-2]: started with pid [7643]
-process[driver/piston/piston-3]: started with pid [7644]
-process[driver/pressure_ext-4]: started with pid [7649]
-process[driver/pressure_int-5]: started with pid [7655]
-process[driver/temperature_ext-6]: started with pid [7658]
-[ WARN] [1589986384.847330704]: [POWER] Wrong PIC code version
-process[driver/thruster/thruster-7]: started with pid [7663]
-[ WARN] [1589986384.943042982]: [Power_driver] I2C Bus Failure - Set Sleep mode countdown
-[ WARN] [1589986384.945478430]: [Power_driver] I2C Bus Failure - Set Flash Led Delay
-[ INFO] [1589986384.946103061]: [POWER] Start Ok
-[ WARN] [1589986384.950015893]: [Power_driver] I2C Bus Failure - Get Batteries
-process[driver/gpsd_client-8]: started with pid [7668]
-process[driver/imu_mpu9250-9]: started with pid [7674]
-[ WARN] [1589986385.316601597]: [Pressure_89BSD] Error Reading 0xA4
-[ WARN] [1589986385.380356588]: [Pressure_89BSD] Error Reading 0xA8
-[ WARN] [1589986385.404360346]: [Pressure_89BSD] Error Reading 0xAE
-[ INFO] [1589986385.404787270]: [Pressure_89BSD] Start Ok
-[ WARN] [1589986385.501405373]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ INFO] [1589986385.513522460]: [Temperature_TSYS01_driver] Start Ok
-[ERROR] [1589986385.538614491]: [GPSD_Client] Failed to open GPSd
-Settings file RTIMULib.ini loaded
-[ WARN] [1589986385.671075370]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986385.867118793]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986385.914507618]: [Thruster] Wrong PIC code version
-[ INFO] [1589986385.959615003]: [IMU] imu type = 7
-Using fusion algorithm Kalman STATE4
-Using min/max compass calibration
-Using ellipsoid compass calibration
-Using accel calibration
-[driver/gpsd_client-8] process has died [pid 7668, exit code 255, cmd /home/pi/seabot/devel/lib/gpsd_client/gpsd_client __name:=gpsd_client __log:=/home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-gpsd_client-8.log].
-log file: /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-gpsd_client-8*.log
-[ WARN] [1589986386.067986446]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-Incorrect MPU-9250 id 0
-[FATAL] [1589986386.074572746]: I2cImu - init - Failed to init the IMU
-[FATAL] [1589986386.074857587]: BREAKPOINT HIT
-	file = /home/pi/seabot/src/seabot_driver/imu_mpu/src/imu_mpu9250.cpp
-	line=214
+process[driver/piston/piston-2]: started with pid [13251]
+process[driver/pressure_ext-3]: started with pid [13252]
+process[driver/pressure_int-4]: started with pid [13253]
+process[driver/temperature_ext-5]: started with pid [13259]
+process[driver/gpsd_client-6]: started with pid [13260]
+[ERROR] [1590077374.277963663]: [GPSD_Client] Failed to open GPSd
+[ INFO] [1590077374.323046405]: [Temperature_TSYS01_driver] Start Ok
+[driver/gpsd_client-6] process has died [pid 13260, exit code 255, cmd /home/pi/seabot/devel/lib/gpsd_client/gpsd_client __name:=gpsd_client __log:=/home/pi/.ros/log/71a67496-9b7d-11ea-8efb-e84e064b777b/driver-gpsd_client-6.log].
+log file: /home/pi/.ros/log/71a67496-9b7d-11ea-8efb-e84e064b777b/driver-gpsd_client-6*.log
+[ INFO] [1590077375.868397989]: [Pressure_BME280] Start Ok
+[ INFO] [1590077405.722801999]: [Piston_driver] Start Ok
+[WARN] [1590077838.260838]: Inbound TCP/IP connection failed: connection from sender terminated before handshake header received. 0 bytes were received. Please check sender for additional details.
 
-[driver/imu_mpu9250-9] process has died [pid 7674, exit code -6, cmd /home/pi/seabot/devel/lib/imu_mpu/imu_mpu9250 ~imu_type:=/driver/imu/imu_type ~imu_frame:=/driver/imu/imu_frame ~is_i2c:=/driver/imu/is_i2c ~i2c_bus:=/driver/imu/i2c_bus ~i2c_slave_address:=/driver/imu/i2c_slave_address ~spi_speed:=/driver/imu/spi_speed ~spi_select:=/driver/imu/spi_select ~spi_bus:=/driver/imu/spi_bus ~fusion_type:=/driver/imu/fusion_type ~publish_euler:=/driver/imu/publish_euler ~publish_magnetometer:=/driver/imu/publish_magnetometer ~axis_rotation:=/driver/imu/axis_rotation ~compass_sample_rate:=/driver/imu/compass_sample_rate ~gyro_accel_sample_rate:=/driver/imu/gyro_accel_sample_rate ~accel_low_pass_filter:=/driver/imu/accel_low_pass_filter ~accel_full_scale_range:=/driver/imu/accel_full_scale_range ~gyro_low_pass_filter:=/driver/imu/gyro_low_pass_filter ~gyro_full_scale_range:=/driver/imu/gyro_full_scale_range ~ellipsoid_offset:=/driver/imu/ellipsoid_offset ~ellipsoid_matrix0:=/driver/imu/ellipsoid_matrix0 ~ellipsoid_matrix1:=/driver/imu/ellipsoid_matrix1 ~ellipsoid_matrix2:=/driver/imu/ellipsoid_matrix2 ~accel_min:=/driver/imu/accel_min ~accel_max:=/driver/imu/accel_max ~gyro_bias:=/driver/imu/gyro_bias ~mag_declination:=/driver/imu/mag_declination __name:=imu_mpu9250 __log:=/home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-imu_mpu9250-9.log].
-log file: /home/pi/.ros/log/96b03f6c-9aa9-11ea-a754-e84e064b777b/driver-imu_mpu9250-9*.log
-[ WARN] [1589986386.266810575]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986386.466888027]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ INFO] [1589986386.479955470]: [Thruster] Start Ok
-[ WARN] [1589986386.481967797]: [Thruster_driver] I2C Bus Failure - Write cmd
-[ WARN] [1589986386.666782042]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986386.866881056]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986386.970986181]: [Piston_driver] Wrong PIC code version
-[ INFO] [1589986387.044881348]: [Pressure_BME280] Start Ok
-[ WARN] [1589986387.067532930]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986387.267729548]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986387.467674813]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986387.667704921]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986387.867703987]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986388.067681023]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986388.267696808]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986388.467680145]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986388.667680722]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986388.867678799]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.067672449]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.267655213]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.467657092]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.667667981]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.867756838]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986389.949602876]: [Power_driver] I2C Bus Failure - Get Batteries
-[ WARN] [1589986390.067661425]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986390.267727470]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986390.467672578]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986390.667696904]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986390.867714251]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-[ WARN] [1589986391.067697015]: [Pressure_89BSD] Data out of range (p=5.715876 t=-281.916667)
-^C[driver/thruster/thruster-7] killing on exit
-[driver/temperature_ext-6] killing on exit
-[driver/pressure_ext-4] killing on exit
-[driver/piston/piston-3] killing on exit
-[driver/pressure_int-5] killing on exit
-[driver/power/power-2] killing on exit
-[driver/piston/piston-3] escalating to SIGTERM
-[rosout-1] killing on exit
-[master] killing on exit
-shutting down processing monitor...
-... shutting down processing monitor complete
+
 
