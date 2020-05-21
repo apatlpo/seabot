@@ -63,7 +63,7 @@ public:
 private:
 
   int m_file = 0;
-  const int m_i2c_addr = 0x40;
+  const int m_i2c_addr = 0x77;
   const char* m_i2c_periph = "/dev/i2c-1";
   const float m_p_min = 0.0; // In Bar
   const float m_p_max = 6.0; // In Bar

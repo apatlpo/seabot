@@ -4,9 +4,11 @@
 	<rosparam command="dump" file="~/.ros/mission_config.yaml" />
 
 	<group ns="driver">
+		<!--
 		<node name="power" pkg="seabot_power_driver" type="power_node" output="screen" ns="power" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/power/frequency" />
 		</node>
+	  -->
 
 		<node name="piston" pkg="seabot_piston_driver" type="piston_node" output="screen" ns="piston" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/piston/frequency" />
@@ -26,9 +28,14 @@
 			<remap from="~tick_max" to="/driver/piston/tick_max" />
 		</node>
 
+		<!--
 		<node name="pressure_ext" pkg="pressure_89bsd_driver" type="pressure_89bsd_node" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_ext/frequency" />
 		</node>
+		<node name="pressure_ext" pkg="pressure_7ld_driver" type="pressure_7ld_node" output="screen" respawn="true" respawn_delay="5">
+			<remap from="~frequency" to="/driver/pressure_ext/frequency" />
+		</node> 
+		-->
 
 		<node name="pressure_int" pkg="pressure_bme280_driver" type="bme280_node" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_int/frequency" />
@@ -39,6 +46,7 @@
 			<remap from="~frequency" to="/driver/temperature_ext/frequency" />
 		</node>
 
+		<!--
 		<node name="thruster" pkg="seabot_thruster_driver" type="thruster_node" output="screen" ns="thruster" respawn_delay="5">
 
 			<remap from="~frequency" to="/driver/thruster/frequency" />
@@ -54,10 +62,12 @@
 			<remap from="~max_angular_velocity" to="/driver/thruster/max_angular_velocity" />
 			<remap from="~max_linear_velocity" to="/driver/thruster/max_linear_velocity" />
 		</node>
+	  -->
 
 		<node name="gpsd_client" pkg="gpsd_client" type="gpsd_client" output="screen">
 		</node>
 
+    <!--
 		<node name="imu_mpu9250" pkg="imu_mpu" type="imu_mpu9250" output="screen" respawn_delay="5">
 			<remap from="~imu_type" to="/driver/imu/imu_type" />
 			<remap from="~imu_frame" to="/driver/imu/imu_frame" />
@@ -88,6 +98,7 @@
 			<remap from="~gyro_bias" to="/driver/imu/gyro_bias" />
 			<remap from="~mag_declination" to="/driver/imu/mag_declination" />
 		</node>
+	  -->
 
 	</group>
 </launch>

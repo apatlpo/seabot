@@ -11,7 +11,7 @@
 #include <std_srvs/SetBool.h>
 #include <std_srvs/Empty.h>
 #include <seabot_fusion/InternalPose.h>
-#include <pressure_89bsd_driver/PressureBsdData.h>
+#include <pressure_7ld_driver/PressureBsdData.h>
 #include <seabot_power_driver/Battery.h>
 #include <seabot_safety/SafetyLog.h>
 #include <seabot_safety/SafetyDebug.h>
@@ -108,7 +108,7 @@ void depth_callback(const seabot_fusion::DepthPose::ConstPtr& msg){
   velocity= msg->velocity;
 }
 
-void pressure_callback(const pressure_89bsd_driver::PressureBsdData::ConstPtr& msg){
+void pressure_callback(const pressure_7ld_driver::PressureBsdData::ConstPtr& msg){
   time_external_sensor = ros::WallTime::now();
   if(msg->pressure > pressure_limit){
     if(!is_pressure_limit_reached){

@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <std_srvs/Trigger.h>
 
-#include <pressure_89bsd_driver/PressureBsdData.h>
+#include <pressure_7ld_driver/PressureBsdData.h>
 #include <seabot_fusion/DepthPose.h>
 
 #include <algorithm>    // std::sort
@@ -44,7 +44,7 @@ bool handle_zero_depth(std_srvs::Trigger::Request  &req,
   return true;
 }
 
-void pressure_callback(const pressure_89bsd_driver::PressureBsdData::ConstPtr& msg){
+void pressure_callback(const pressure_7ld_driver::PressureBsdData::ConstPtr& msg){
   pressure_deque.push_front(msg->pressure);
   if(pressure_deque.size()>filter_window_size)
     pressure_deque.pop_back();

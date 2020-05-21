@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <std_srvs/Trigger.h>
 
-#include <pressure_89bsd_driver/PressureBsdData.h>
+#include <pressure_7ld_driver/PressureBsdData.h>
 #include <seabot_fusion/TemperaturePose.h>
 
 #include <algorithm>    // std::sort
@@ -20,7 +20,7 @@ ros::Time time_temperature;
 
 bool new_data = false;
 
-void temperature_callback(const pressure_89bsd_driver::PressureBsdData::ConstPtr& msg){
+void temperature_callback(const pressure_7ld_driver::PressureBsdData::ConstPtr& msg){
   temperature_deque.push_front(msg->temperature);
   if(temperature_deque.size()>filter_median_size)
     temperature_deque.pop_back();
