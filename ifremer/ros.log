@@ -1,0 +1,60 @@
+## compile seabot
+cd seabot
+catkin_make -j2
+
+
+## launch ros
+roslaunch seabot driver.launch
+
+rostopic list
+rostopic echo /driver/sensor_internal   
+rostopic echo /driver/sensor_temperature
+rostopic echo /driver/sensor_external
+
+
+rostopic echo /driver/piston/state 
+
+rostopic type /driver/piston/state
+# returns
+# seabot_piston_driver/PistonState
+
+rosmsg show seabot_piston_driver/PistonState
+# return
+#time stamp
+#float32 position
+#bool switch_out
+#bool switch_in
+#uint16 state
+#bool motor_on
+#bool enable_on
+#uint16 position_set_point
+#uint16 motor_speed
+
+rostopic type /driver/piston 
+# seabot_piston_driver/PistonPosition
+rosmsg show seabot_piston_driver/PistonPosition
+# time stamp
+# uint16 position
+
+rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition '{position: 0, stamp: {secs: 1, nsecs: 0 }}'
+
+
+
+### check list prior to mission
+
+# config file
+nano seabot/src/seabot/param/config_ifremer1.yaml
+# 1/ make sure right mission file is provided in config file, 
+# 2/ check depth thresholds (kalman/enable_depth, regulation, depth_big_piston)
+# 3/ make sure safeties are back on: internal_pressure_detection
+
+# mission file:
+nano seabot/src/seabot/mission/mission_depth_only.xml
+# 1/ make sure last target depth is shallower than depth_big_piston
+
+
+# launch mission in screen: 
+screen -a
+roslaunch seabot mission.launch
+ctrl-A ctlr-D
+

@@ -386,12 +386,12 @@ int main(int argc, char *argv[]){
     double d_piston_state = (t_ref-time_piston_state).toSec();
     double d_euler = (t_ref-time_euler).toSec();
 
+    // || d_euler > d_euler_ref
     if(d_batteries > d_batteries_ref
        || d_internal_sensor > d_internal_sensor_ref
        || d_external_sensor > d_external_sensor_ref
        || d_depth > d_depth_ref
-       || d_piston_state > d_piston_state_ref
-       || d_euler > d_euler_ref){
+       || d_piston_state > d_piston_state_ref){
       ROS_WARN("[Safety] No data published by sensors (%f, %f, %f, %f, %f, %f)", d_batteries, d_internal_sensor, d_external_sensor, d_depth, d_piston_state, d_euler);
 
       safety_msg.published_frequency = true;

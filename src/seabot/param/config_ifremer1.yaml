@@ -162,11 +162,11 @@ safety:
   frequency: 1.0
 
   # Leak detection
-  # !! AP turned off for bench tests
-  safety_depressure: False
+  safety_depressure: True
   humidity_limit: 70.0
 
-  internal_pressure_detection: True
+  # !! AP turned off for bench tests
+  internal_pressure_detection: False
   delta_volume_allowed: 1.0
   delta_ref_allowed: 10.0
   volume_ref: 0.006
