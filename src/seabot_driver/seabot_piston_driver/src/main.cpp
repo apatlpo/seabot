@@ -108,6 +108,9 @@ int main(int argc, char *argv[]){
 
   const double tick_max = n_private.param<double>("tick_max", 2500);
 
+  const double depth_big_piston = n_private.param<double>("depth_big_piston", 0);
+  const double tick_big_piston = n_private.param<double>("tick_big_piston", 0);
+
   // Service (ON/OFF)
   ros::ServiceServer service_speed = n.advertiseService("speed", piston_speed);
   ros::ServiceServer service_reset = n.advertiseService("reset", piston_reset);
@@ -179,8 +182,13 @@ int main(int argc, char *argv[]){
       /// ********************************************
       // Piston set point
       if((piston_set_point != p.m_position_set_point) || (t-t_last_set_point).toSec()>30.0){
-        t_last_set_point = t;
-        p.set_piston_position(piston_set_point);
+        if ( piston_set_point>tick_big_piston || depth<depth_big_piston ){
+          t_last_set_point = t;
+          // AP: ajouter une contrainte sur le piston_set_point + profondeur pour gérer le gros piston
+          // abonner à la profondeur? - depth
+          // ajouter paramètre dans config_ifremer.yaml + driver.launch + paramètres script
+          p.set_piston_position(piston_set_point);
+        }
       }
 
       if(new_set_point){

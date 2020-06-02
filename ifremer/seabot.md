@@ -100,3 +100,39 @@ const double hold_depth_value_exit = n_private.param<double>("hold_depth_value_e
 ```
 
 
+
+
+tick = encoche = pulse
+12cm/1415
+
+- chercher les infos:
+pas de la tige filtée
+nombre d'encoches
+
+
+jeu a une influence sur la connaissance de la position du piston et la régulation
+
+GPS - Iridium
+
+Passage gros piston 
+
+waypoints -100m à 5m
+
+faire remonter le niveau de batterie via le node du piston
+dans le noeud du piston, publier dans /driver/power/battery
+ajouter un publisher dans le driver du piston
+autre l'autre solution, changer
+
+garder le noeud power allumé mais commenter tout ce dont je ne me sers pas: flasher
+
+driver.launch: activer power
+
+power.cpp:
+- commenter tous les commandes i2c non pertinentes
+- changer adresse dans get_batteries
+
+power.h:
+- changer adresse i2c PIC
+- ADC_BATTERY_LEVEL_CONV
+
+lancer une mission complète (mission_empty.xml, mission_depth_only)

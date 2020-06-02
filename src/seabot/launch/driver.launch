@@ -4,11 +4,9 @@
 	<rosparam command="dump" file="~/.ros/mission_config.yaml" />
 
 	<group ns="driver">
-		<!--
 		<node name="power" pkg="seabot_power_driver" type="power_node" output="screen" ns="power" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/power/frequency" />
 		</node>
-	  -->
 
 		<node name="piston" pkg="seabot_piston_driver" type="piston_node" output="screen" ns="piston" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/piston/frequency" />
@@ -26,6 +24,8 @@
 			<remap from="~reached_switch_off" to="/driver/piston/reached_switch_off" />
 			<remap from="~error_interval" to="/driver/piston/error_interval" />
 			<remap from="~tick_max" to="/driver/piston/tick_max" />
+			<remap from="~depth_big_piston" to="/driver/piston/depth_big_piston" />
+			<remap from="~tick_big_piston" to="/driver/piston/tick_big_piston" />
 		</node>
 
 		<!--

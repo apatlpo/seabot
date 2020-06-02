@@ -33,18 +33,18 @@ void Power::set_sleep_mode_countdown(const unsigned char &hours, const unsigned 
   buff[2] = sec;
   buff[3] = sec_to_stop;
 
-  if(i2c_smbus_write_i2c_block_data(m_file, 0x03, 4,buff)<0)
-    ROS_WARN("[Power_driver] I2C Bus Failure - Set Sleep mode countdown");
+  //if(i2c_smbus_write_i2c_block_data(m_file, 0x03, 4,buff)<0)
+  //  ROS_WARN("[Power_driver] I2C Bus Failure - Set Sleep mode countdown");
 }
 
 void Power::set_nb_flash(const unsigned char &nb) const{
-  if(i2c_smbus_write_byte_data(m_file, 0x02, nb)<0)
-    ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash Led Delay");
+  //if(i2c_smbus_write_byte_data(m_file, 0x02, nb)<0)
+  //  ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash Led Delay");
 }
 
 void Power::set_flash_enable(const bool &val) const{
-  if(i2c_smbus_write_byte_data(m_file, 0x01, val?0x01:0x00)<0)
-    ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash Led");
+  //if(i2c_smbus_write_byte_data(m_file, 0x01, val?0x01:0x00)<0)
+  //  ROS_WARN("[Power_driver] I2C Bus Failure - Set Flash Led");
 }
 
 //void Power::set_flash_enable_with_delay(const unsigned char &dt) const{
@@ -54,29 +54,29 @@ void Power::set_flash_enable(const bool &val) const{
 //}
 
 void Power::set_sleep_mode() const{
-  if(i2c_smbus_write_byte_data(m_file, 0x00, 0x02)<0)
-    ROS_WARN("[Power_driver] I2C Bus Failure - Set Sleep Mode");
+  //if(i2c_smbus_write_byte_data(m_file, 0x00, 0x02)<0)
+  //  ROS_WARN("[Power_driver] I2C Bus Failure - Set Sleep Mode");
 }
 
 void Power::stop_sleep_mode() const{
-  if(i2c_smbus_write_byte_data(m_file, 0x00, 0x01)<0)
-    ROS_WARN("[Power_driver] I2C Bus Failure - Stop Sleep Mode");
+  //if(i2c_smbus_write_byte_data(m_file, 0x00, 0x01)<0)
+  //  ROS_WARN("[Power_driver] I2C Bus Failure - Stop Sleep Mode");
 }
 
 void Power::get_batteries(){
-  uint8_t buff[8];
-  if(i2c_smbus_read_i2c_block_data(m_file, 0x00, 8,buff) != 8)
+  uint8_t buff[2];
+  if(i2c_smbus_read_i2c_block_data(m_file, 0xB0, 2,buff) != 2)
     ROS_WARN("[Power_driver] I2C Bus Failure - Get Batteries");
 
   m_level_battery[0] = (buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[1] = (buff[2] | buff[3] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[2] = (buff[4] | buff[5] << 8) * ADC_BATTERY_LEVEL_CONV;
-  m_level_battery[3] = (buff[6] | buff[7] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[1] = (buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[2] = (buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
+  m_level_battery[3] = (buff[0] | buff[1] << 8) * ADC_BATTERY_LEVEL_CONV;
 }
 
 uint8_t& Power::get_version(){
-  m_version = i2c_smbus_read_byte_data(m_file, 0xC0);
-  usleep(100);
+  //m_version = i2c_smbus_read_byte_data(m_file, 0xC0);
+  //usleep(100);
   return m_version;
 }
 

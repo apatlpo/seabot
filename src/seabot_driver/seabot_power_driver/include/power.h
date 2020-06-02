@@ -24,9 +24,10 @@ extern "C" {
 
 #include <ros/ros.h>
 
-// 150/(150+330)
+// 3.5*5/1024
 // 5V = 1024
-#define ADC_BATTERY_LEVEL_CONV 0.015625
+// pont diviseur de tension rapport 3.5
+#define ADC_BATTERY_LEVEL_CONV 0.017090
 
 class Power
 {
@@ -96,7 +97,7 @@ public:
 
 private:
   int m_file;
-  const int m_i2c_addr = 0x39;
+  const int m_i2c_addr = 0x38;
   const char* m_i2c_periph = "/dev/i2c-1";
 
   float m_level_battery[4] =  {0.0, 0.0, 0.0, 0.0};
