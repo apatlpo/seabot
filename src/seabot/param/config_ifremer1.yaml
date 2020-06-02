@@ -1,19 +1,20 @@
 # This file will be loaded by default
 mission_file_name: "mission_depth_only.xml"
+#mission_file_name: "mission_empty.xml"
 
 physics:
   rho: 1020.0
   g: 9.81
 
   # Float
-  m: 13.0??
+  m: 13.5
   diam_collerette: 0.35
-  screw_thread: 1.75e-3
+  screw_thread: 8.48e-5
   tick_per_turn: 1
   piston_diameter: 0.0195
-  piston_max_value: 1415.0??
-  piston_speed_max_tick: 20??
-  piston_ref_eq: 2100.0?? position à laquelle il pense avoir l'équilibre
+  piston_max_value: 1415.0
+  piston_speed_max_tick: 20
+  piston_ref_eq: 1000
 
 driver:
   power:
@@ -31,13 +32,14 @@ driver:
     speed_out_slope: 0.5
     speed_in_slope: 0.5
     speed_depth_layer: 5.0
-    depth_max: 50.0
+    depth_max: 500.0
     depth_big_piston: 2.0
-    tick_big_piston: 1061
+    tick_big_piston: 354
     speed_max: 50
     reached_switch_off: True
     error_interval: 6
-    tick_max: 2500??
+    # value usede to filter wrong position readings
+    tick_max: 1500
 
   pressure_ext:
     frequency: 5
@@ -80,7 +82,7 @@ filter:
     filter_median_size: 6
     filter_mean_width: 2
 
-  lambert:??
+  lambert:
     frequency: 5
     nb_sample_mean: 6
     nb_sample_between_heading: 150
@@ -94,9 +96,11 @@ iridium:
 
 kalman:
   frequency: 25.0
-  enable_depth: 0.5
+  # !! will have to be increased latter on !!
+  # need to be shallower than depth regulation parameter
+  enable_depth: 0.2
 
-  estimated_first_error_equilibrium_tick: 250
+  estimated_first_error_equilibrium_tick: 400
 
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model
@@ -107,7 +111,7 @@ kalman:
 
   gamma_init_velocity: 1.0e-1
   gamma_init_depth: 1.0e-2
-  gamma_init_offset: 2400.0?? # in ticks
+  gamma_init_offset: 500.0 # in ticks
   gamma_init_chi: 30.0 # in ticks
   gamma_init_chi2: 30.0 # in ticks
   gamma_init_cz: 0.1
@@ -125,6 +129,7 @@ regulation:
     frequency: 25.0
     divider_frequency: 5
     root_regulation: -0.2
+    # !!
     limit_depth_controller: 0.5
 
     delta_velocity_lb: -0.01
@@ -157,7 +162,8 @@ safety:
   frequency: 1.0
 
   # Leak detection
-  safety_depressure: True
+  # !! AP turned off for bench tests
+  safety_depressure: False
   humidity_limit: 70.0
 
   internal_pressure_detection: True
@@ -175,7 +181,7 @@ safety:
 
   # Depth limit
   safety_pressure_limit: True
-  pressure_limit: 6.2??
+  pressure_limit: 50.
   time_before_pressure_emergency: 3.0
 
   # Seafloor

@@ -12,38 +12,36 @@
 </offset> -->
 
 <paths>
+
 	<waypoint>
-		<duration>900</duration>
-		<depth>1.0</depth>
+		<duration>300</duration>
+		<depth>1.</depth>
 		<limit_velocity>0.05</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>
 
+<!--
 	<waypoint>
-		<duration>900</duration>
-		<depth>1.5</depth>
-		<limit_velocity>0.05</limit_velocity>
-		<approach_velocity>1.0</approach_velocity>
-	</waypoint>
-
-	<waypoint>
-		<duration>900</duration>
-		<depth>1.0</depth>
+		<duration>300</duration>
+		<depth>.5</depth>
 		<limit_velocity>0.05</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>
 
 	<waypoint>
 		<seafloor_landing>True</seafloor_landing>
-		<duration>900</duration>
-		<depth>3.5</depth>
+		<duration>300</duration>
+		<depth>1.</depth>
 		<limit_velocity>0.05</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>
+-->
+
+<!-- last point should always be shallower than depth_big_piston -->
 
 	<waypoint>
-		<duration>900</duration>
-		<depth>1.5</depth>
+		<duration>300</duration>
+		<depth>.5</depth>
 		<limit_velocity>0.05</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>

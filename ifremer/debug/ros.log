@@ -1,3 +1,371 @@
+  ~ roslaunch seabot mission.launch
+... logging to /home/pi/.ros/log/c57ebc60-a4db-11ea-8b21-e84e064b777b/roslaunch-ifremer1-6721.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://ifremer1:41775/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /driver/imu/accel_full_scale_range: 16
+ * /driver/imu/accel_low_pass_filter: 4
+ * /driver/imu/accel_max: [1, 1, 1]
+ * /driver/imu/accel_min: [-1, -1, -1]
+ * /driver/imu/axis_rotation: 4
+ * /driver/imu/compass_sample_rate: 10
+ * /driver/imu/ellipsoid_matrix0: [1, 0, 0]
+ * /driver/imu/ellipsoid_matrix1: [0, 1, 0]
+ * /driver/imu/ellipsoid_matrix2: [0, 0, 1]
+ * /driver/imu/ellipsoid_offset: [0, 0, 0]
+ * /driver/imu/fusion_type: 1
+ * /driver/imu/gyro_accel_sample_rate: 10
+ * /driver/imu/gyro_bias: [0, 0, 0]
+ * /driver/imu/gyro_full_scale_range: 16
+ * /driver/imu/gyro_low_pass_filter: 3
+ * /driver/imu/i2c_bus: 1
+ * /driver/imu/i2c_slave_address: 104
+ * /driver/imu/imu_frame: imu_link
+ * /driver/imu/imu_type: 7
+ * /driver/imu/is_i2c: False
+ * /driver/imu/mag_declination: -1.722
+ * /driver/imu/publish_euler: True
+ * /driver/imu/publish_magnetometer: True
+ * /driver/imu/spi_bus: 0
+ * /driver/imu/spi_select: 0
+ * /driver/imu/spi_speed: 500000
+ * /driver/piston/depth_big_piston: 2.0
+ * /driver/piston/depth_max: 500.0
+ * /driver/piston/distance_fast_move: 100
+ * /driver/piston/divider_frequency: 5
+ * /driver/piston/error_interval: 6
+ * /driver/piston/frequency: 25.0
+ * /driver/piston/reached_switch_off: True
+ * /driver/piston/speed_depth_layer: 5.0
+ * /driver/piston/speed_fast_move_factor: 2.0
+ * /driver/piston/speed_in_min: 15
+ * /driver/piston/speed_in_slope: 0.5
+ * /driver/piston/speed_max: 50
+ * /driver/piston/speed_out_min: 15
+ * /driver/piston/speed_out_slope: 0.5
+ * /driver/piston/speed_reset: 25
+ * /driver/piston/tick_big_piston: 354
+ * /driver/piston/tick_max: 1500
+ * /driver/power/frequency: 0.2
+ * /driver/pressure_ext/frequency: 5
+ * /driver/pressure_int/frequency: 5
+ * /driver/pressure_int/primary_i2c_address: True
+ * /driver/temperature_ext/frequency: 5
+ * /driver/thruster/allow_backward: False
+ * /driver/thruster/coeff_cmd_to_pwm: 9
+ * /driver/thruster/delay_stop: 0.5
+ * /driver/thruster/frequency: 15.0
+ * /driver/thruster/invert_left: False
+ * /driver/thruster/invert_right: True
+ * /driver/thruster/max_angular_velocity: 1.0
+ * /driver/thruster/max_engine_change: 15.0
+ * /driver/thruster/max_linear_velocity: 1.0
+ * /driver/thruster/thruster_left_pin: 0
+ * /driver/thruster/thruster_right_pin: 1
+ * /filter/batteries_filter/filter_mean_width: 2
+ * /filter/batteries_filter/filter_median_size: 6
+ * /filter/batteries_filter/frequency: 0.2
+ * /filter/depth_filter/filter_mean_half_width: 2
+ * /filter/depth_filter/filter_mean_width_velocity: 6
+ * /filter/depth_filter/filter_velocity_mean_half_width: 2
+ * /filter/depth_filter/filter_window_size: 6
+ * /filter/depth_filter/frequency: 25
+ * /filter/depth_filter/velocity_dt_sample: 5
+ * /filter/depth_filter/velocity_limit: 0.5
+ * /filter/depth_filter/zero_depth_pressure: 1.024
+ * /filter/depth_filter/zero_depth_window_size: 100
+ * /filter/internal_sensor_filter/filter_mean_width: 2
+ * /filter/internal_sensor_filter/filter_median_size: 6
+ * /filter/internal_sensor_filter/frequency: 5
+ * /filter/lambert/frequency: 5
+ * /filter/lambert/nb_sample_between_heading: 150
+ * /filter/lambert/nb_sample_mean: 6
+ * /filter/temperature_filter/filter_mean_width: 2
+ * /filter/temperature_filter/filter_mean_width_velocity: 5
+ * /filter/temperature_filter/filter_median_size: 6
+ * /filter/temperature_filter/frequency: 5
+ * /filter/temperature_filter/velocity_delta_size: 5
+ * /filter/temperature_filter/velocity_limit: 2.0
+ * /iridium/debug: False
+ * /iridium/depth_surface_limit: 0.5
+ * /iridium/duration_between_msg: 60
+ * /iridium/enable_gnss_iridium: False
+ * /iridium/wait_time_surface: 10
+ * /kalman/enable_depth: 0.2
+ * /kalman/estimated_first_error_equilibrium_tick: 400
+ * /kalman/frequency: 25.0
+ * /kalman/gamma_alpha_chi2: 0.001
+ * /kalman/gamma_alpha_chi: 0.001
+ * /kalman/gamma_alpha_cz: 0.001
+ * /kalman/gamma_alpha_depth: 1e-05
+ * /kalman/gamma_alpha_offset: 0.05
+ * /kalman/gamma_alpha_velocity: 0.001
+ * /kalman/gamma_beta_depth: 0.001
+ * /kalman/gamma_init_chi2: 30.0
+ * /kalman/gamma_init_chi: 30.0
+ * /kalman/gamma_init_cz: 0.1
+ * /kalman/gamma_init_depth: 0.01
+ * /kalman/gamma_init_offset: 500.0
+ * /kalman/gamma_init_velocity: 0.1
+ * /mission/approach_velocity_default: 1.0
+ * /mission/flash_time_next_waypoint: 3
+ * /mission/frequency: 1.0
+ * /mission/limit_velocity_default: 0.02
+ * /mission/mission_path: /home/pi/seabot/s...
+ * /mission_file_name: mission_depth_onl...
+ * /physics/diam_collerette: 0.35
+ * /physics/g: 9.81
+ * /physics/m: 13.5
+ * /physics/piston_diameter: 0.0195
+ * /physics/piston_max_value: 1415.0
+ * /physics/piston_ref_eq: 1000
+ * /physics/piston_speed_max_tick: 20
+ * /physics/rho: 1020.0
+ * /physics/screw_thread: 8.48e-05
+ * /physics/tick_per_turn: 1
+ * /regulation/depth_controller/delta_position_lb: -0.001
+ * /regulation/depth_controller/delta_position_ub: 0.001
+ * /regulation/depth_controller/delta_velocity_lb: -0.01
+ * /regulation/depth_controller/delta_velocity_ub: 0.01
+ * /regulation/depth_controller/divider_frequency: 5
+ * /regulation/depth_controller/frequency: 25.0
+ * /regulation/depth_controller/hold_depth_enable: False
+ * /regulation/depth_controller/hold_depth_value_enter: 0.05
+ * /regulation/depth_controller/hold_depth_value_exit: 0.0
+ * /regulation/depth_controller/hysteresis_piston: 0.6
+ * /regulation/depth_controller/limit_depth_controller: 0.5
+ * /regulation/depth_controller/root_regulation: -0.2
+ * /regulation/depth_controller/speed_volume_sink: 2.0
+ * /regulation/waypoint/coeff_D: 0.2
+ * /regulation/waypoint/coeff_P: 0.8
+ * /regulation/waypoint/delta_valid_time: 3.0
+ * /regulation/waypoint/depth_limit_switch_off: 0.5
+ * /regulation/waypoint/frequency: 10.0
+ * /regulation/waypoint/hysteresis_circle_in: 2.0
+ * /regulation/waypoint/hysteresis_circle_out: 4.0
+ * /regulation/waypoint/linear_speed: 1.3
+ * /regulation/waypoint/max_angular_velocity: 1.0
+ * /rosdistro: melodic
+ * /rosversion: 1.14.5
+ * /safety/battery_limit: 11.0
+ * /safety/delta_ref_allowed: 10.0
+ * /safety/delta_volume_allowed: 1.0
+ * /safety/enable_flash: True
+ * /safety/frequency: 1.0
+ * /safety/humidity_limit: 70.0
+ * /safety/internal_pressure_detection: True
+ * /safety/limit_depth_flash_enable: 0.5
+ * /safety/limit_piston_position_reset_depth: 3
+ * /safety/max_depth_reset_zero: 1.0
+ * /safety/max_speed_reset_zero: 0.1
+ * /safety/pressure_internal_max: 850.0
+ * /safety/pressure_limit: 50.0
+ * /safety/safety_battery: True
+ * /safety/safety_depressure: False
+ * /safety/safety_pressure_limit: True
+ * /safety/seafloor_detection: True
+ * /safety/time_before_pressure_emergency: 3.0
+ * /safety/time_before_seafloor_emergency: 20.0
+ * /safety/time_delay_batteries_msg: 30.0
+ * /safety/time_delay_depth_msg: 2.0
+ * /safety/time_delay_euler_msg: 1.0
+ * /safety/time_delay_external_sensor_msg: 2.0
+ * /safety/time_delay_internal_sensor_msg: 2.0
+ * /safety/time_delay_piston_state_msg: 2.0
+ * /safety/time_delay_zero_depth_condition: 20
+ * /safety/transition_tick_law: 650.0
+ * /safety/volume_ref: 0.006
+
+NODES
+  /driver/
+    gpsd_client (gpsd_client/gpsd_client)
+    pressure_ext (pressure_7ld_driver/pressure_7ld_node.py)
+    pressure_int (pressure_bme280_driver/bme280_node)
+    temperature_ext (temperature_tsys01_driver/temperature_tsys01_node)
+  /iridium/
+    iridium_node (seabot_iridium/iridium_node)
+  /mission/
+    mission (seabot_mission/mission_node)
+  /safety/
+    safety_node (seabot_safety/safety_node)
+  /
+    record (rosbag/record)
+  /driver/power/
+    power (seabot_power_driver/power_node)
+  /fusion/
+    batteries_filter (seabot_fusion/batteries_filter_node)
+    depth_filter (seabot_fusion/depth_filter_node)
+    internal_sensor_filter (seabot_fusion/internal_sensor_filter_node)
+    kalman (seabot_fusion/kalman_node)
+    lambert (seabot_fusion/lambert_node)
+    temperature_filter (seabot_fusion/temperature_filter_node)
+  /driver/piston/
+    piston (seabot_piston_driver/piston_node)
+  /regulation/
+    depth_controller (seabot_depth_controller/depth_controller)
+    waypoint (seabot_waypoint_regulation/waypoint_node)
+
+auto-starting new master
+process[master]: started with pid [6731]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to c57ebc60-a4db-11ea-8b21-e84e064b777b
+process[rosout-1]: started with pid [6742]
+started core service [/rosout]
+running rosparam dump ~/.ros/mission_config.yaml /
+process[record-2]: started with pid [6754]
+process[driver/power/power-3]: started with pid [6755]
+process[driver/piston/piston-4]: started with pid [6756]
+process[driver/pressure_ext-5]: started with pid [6762]
+process[driver/pressure_int-6]: started with pid [6768]
+[ INFO] [1591107450.213649375]: Recording to '2020-06-02-16-17-30_0.bag'.
+[ INFO] [1591107450.246479085]: Subscribing to /driver/power/battery
+process[driver/temperature_ext-7]: started with pid [6776]
+[ WARN] [1591107450.308513328]: [POWER] Wrong PIC code version
+[ INFO] [1591107450.340666585]: [POWER] Start Ok
+process[driver/gpsd_client-8]: started with pid [6778]
+[ INFO] [1591107450.508372498]: Subscribing to /rosout
+process[fusion/depth_filter-9]: started with pid [6786]
+process[fusion/temperature_filter-10]: started with pid [6787]
+[ INFO] [1591107450.777319235]: Subscribing to /rosout_agg
+process[fusion/batteries_filter-11]: started with pid [6791]
+process[fusion/internal_sensor_filter-12]: started with pid [6796]
+[ INFO] [1591107451.021699575]: [Temperature_TSYS01_driver] Start Ok
+process[fusion/lambert-13]: started with pid [6802]
+process[fusion/kalman-14]: started with pid [6809]
+process[regulation/depth_controller-15]: started with pid [6812]
+process[regulation/waypoint-16]: started with pid [6821]
+process[safety/safety_node-17]: started with pid [6830]
+process[iridium/iridium_node-18]: started with pid [6833]
+[ERROR] [1591107451.730702473]: [GPSD_Client] Failed to open GPSd
+process[mission/mission-19]: started with pid [6844]
+[ INFO] [1591107452.582237966]: [Pressure_BME280] Start Ok
+[ INFO] [1591107452.644146325]: Subscribing to /driver/sensor_internal
+[ INFO] [1591107452.646991509]: [FUSION batteries] Start Ok
+[ INFO] [1591107452.659535096]: [FUSION temperature] Start Ok
+[ INFO] [1591107452.777273586]: [FUSION internal sensor] Start Ok
+[ INFO] [1591107452.857744229]: [FUSION lambert] Start Ok
+[driver/gpsd_client-8] process has died [pid 6778, exit code 255, cmd /home/pi/seabot/devel/lib/gpsd_client/gpsd_client __name:=gpsd_client __log:=/home/pi/.ros/log/c57ebc60-a4db-11ea-8b21-e84e064b777b/driver-gpsd_client-8.log].
+log file: /home/pi/.ros/log/c57ebc60-a4db-11ea-8b21-e84e064b777b/driver-gpsd_client-8*.log
+[ INFO] [1591107453.003698355]: Subscribing to /driver/sensor_temperature
+[ INFO] [1591107453.007100565]: [FUSION depth] Start Ok
+[ INFO] [1591107453.290257176]: [Seabot_Mission] Load Waypoint 1 (t_end=1591107813, d=1.000000, E=0.000000, N=0.000000, vel=0.050000, app=1.000000)
+[ INFO] [1591107453.300389014]: [Seabot_Mission] Load Waypoint 2 (t_end=1591108113, d=0.500000, E=0.000000, N=0.000000, vel=0.050000, app=1.000000)
+[ INFO] [1591107453.300696146]: [Mission] Start Ok
+[ INFO] [1591107453.409746693]: Subscribing to /fusion/depth
+[ INFO] [1591107453.571104381]: Subscribing to /driver/piston/regulation_loop
+[ INFO] [1591107453.737259891]: Subscribing to /driver/piston/velocity
+[ INFO] [1591107453.891066605]: Subscribing to /fusion/sensor_internal
+[ INFO] [1591107453.973679677]: [Kalman depth] Start Ok
+[ INFO] [1591107454.008063748]: [Waypoint] Start Ok
+[ INFO] [1591107454.020202651]: Subscribing to /fusion/pose
+[ INFO] [1591107454.173601034]: Subscribing to /fusion/temperature
+[ INFO] [1591107454.283095483]: Subscribing to /fusion/battery
+[ INFO] [1591107454.291734938]: [DepthRegulation_Feedback] Start Ok
+[ INFO] [1591107454.325004592]: [DepthRegulation_Feedback] root_regulation = -0.200000
+[ INFO] [1591107454.365666889]: Subscribing to /driver/piston/state
+[ INFO] [1591107454.430691418]: Subscribing to /driver/piston/distance_travelled
+Error: open: Permission denied
+[ INFO] [1591107454.515314368]: Subscribing to /driver/piston/speed
+[ INFO] [1591107454.614443023]: Subscribing to /fusion/pose_mean
+[ INFO] [1591107454.719927143]: Subscribing to /mission/set_point
+[ INFO] [1591107454.763523320]: Subscribing to /iridium/status
+[ INFO] [1591107454.807097518]: Subscribing to /driver/thruster/cmd_engine
+[ INFO] [1591107454.872378608]: Subscribing to /regulation/waypoint_debug
+[ INFO] [1591107454.908171937]: Subscribing to /safety/debug
+[ INFO] [1591107454.939957385]: Subscribing to /fusion/kalman
+[ INFO] [1591107454.982187689]: Subscribing to /safety/safety
+[ INFO] [1591107455.010086245]: Subscribing to /driver/piston/position
+[ INFO] [1591107455.050084693]: Subscribing to /driver/sensor_external
+[ INFO] [1591107455.094411437]: Subscribing to /iridium/session
+[ INFO] [1591107455.126247926]: Subscribing to /iridium/received_raw
+[ INFO] [1591107455.163149006]: Subscribing to /safety/cpu
+[ INFO] [1591107455.200065451]: Subscribing to /regulation/debug
+[ INFO] [1591107469.472450902]: [Iridium] Start Ok
+[ INFO] [1591107484.894564310]: [Piston_driver] Start Ok
+[ INFO] [1591107490.932397533]: [Safety] Start Ok
+[ WARN] [1591107490.939596897]: [Safety] No data published by sensors (3.045694, 0.000106, 0.000213, 0.000153, 0.000057, 1591107490.939399)
+[ WARN] [1591107495.342529715]: [Safety] Sealing issue detected 4 (p=101379.687500, t=303.922549, h=26.725792)
+[ WARN] [1591107495.342856483]: [Safety] Ratio (333.570799 / 333.568134)
+[ WARN] [1591107500.342766595]: [Safety] No data published by sensors (0.000009, 0.000199, 0.000098, 0.000252, 0.000150, 1591107500.342569)
+[ WARN] [1591107500.343128415]: [Safety] Sealing issue detected 4 (p=101375.445557, t=303.920203, h=26.817852)
+[ WARN] [1591107500.343434402]: [Safety] Ratio (333.559417 / 333.568134)
+[ WARN] [1591107505.342747967]: [Safety] No data published by sensors (0.000012, 0.000195, 0.000097, 0.000248, 0.000151, 1591107505.342550)
+[ WARN] [1591107505.343125412]: [Safety] Sealing issue detected 4 (p=101378.247070, t=303.955147, h=26.735741)
+[ WARN] [1591107505.343322650]: [Safety] Ratio (333.530286 / 333.568134)
+[ WARN] [1591107510.342713047]: [Safety] No data published by sensors (0.000014, 0.000199, 0.000103, 0.000255, 0.000153, 1591107510.342520)
+[ WARN] [1591107510.343071117]: [Safety] Sealing issue detected 4 (p=101375.708008, t=303.964371, h=26.950722)
+[ WARN] [1591107510.343269918]: [Safety] Ratio (333.511811 / 333.568134)
+[ WARN] [1591107515.342691210]: [Safety] No data published by sensors (0.000013, 0.000286, 0.000108, 0.000341, 0.000190, 1591107515.342486)
+[ WARN] [1591107515.386116661]: [Safety] Sealing issue detected 4 (p=101377.124023, t=303.967888, h=26.926226)
+[ WARN] [1591107515.386529782]: [Safety] Ratio (333.512611 / 333.568134)
+[ WARN] [1591107520.342645529]: [Safety] No data published by sensors (0.000009, 0.000198, 0.000094, 0.000252, 0.000136, 1591107520.342457)
+[ WARN] [1591107520.343042036]: [Safety] Sealing issue detected 4 (p=101379.431152, t=303.978129, h=26.766314)
+[ WARN] [1591107520.343256774]: [Safety] Ratio (333.508965 / 333.568134)
+[ WARN] [1591107525.342744492]: [Safety] No data published by sensors (0.000010, 0.000209, 0.000105, 0.000265, 0.000152, 1591107525.342546)
+[ WARN] [1591107525.343146051]: [Safety] Sealing issue detected 4 (p=101379.290771, t=303.986727, h=26.802622)
+[ WARN] [1591107525.343360580]: [Safety] Ratio (333.499070 / 333.568134)
+[ WARN] [1591107530.342676487]: [Safety] No data published by sensors (0.000009, 0.000189, 0.000098, 0.000243, 0.000145, 1591107530.342480)
+[ WARN] [1591107530.343081223]: [Safety] Sealing issue detected 4 (p=101378.277588, t=303.990403, h=26.832262)
+[ WARN] [1591107530.343268565]: [Safety] Ratio (333.491705 / 333.568134)
+[ WARN] [1591107535.343152758]: [Safety] No data published by sensors (0.000009, 0.000224, 0.000117, 0.000279, 0.000174, 1591107535.342654)
+[ WARN] [1591107535.343682128]: [Safety] Sealing issue detected 4 (p=101380.297852, t=304.017060, h=26.713905)
+[ WARN] [1591107535.343907856]: [Safety] Ratio (333.469108 / 333.568134)
+[ WARN] [1591107540.342776338]: [Safety] No data published by sensors (0.000008, 0.000190, 0.000095, 0.000246, 0.000143, 1591107540.342563)
+[ WARN] [1591107540.385784084]: [Safety] Sealing issue detected 4 (p=101376.776123, t=304.039027, h=26.799934)
+[ WARN] [1591107540.386156789]: [Safety] Ratio (333.433432 / 333.568134)
+[ WARN] [1591107545.342678206]: [Safety] No data published by sensors (0.000009, 0.000194, 0.000098, 0.000246, 0.000145, 1591107545.342479)
+[ WARN] [1591107545.343042578]: [Safety] Sealing issue detected 4 (p=101372.619629, t=304.034884, h=26.544239)
+[ WARN] [1591107545.343252055]: [Safety] Ratio (333.424304 / 333.568134)
+[ WARN] [1591107550.342662167]: [Safety] No data published by sensors (0.000009, 0.000200, 0.000103, 0.000254, 0.000154, 1591107550.342464)
+[ WARN] [1591107550.343044195]: [Safety] Sealing issue detected 4 (p=101374.182129, t=304.027144, h=26.331997)
+[ WARN] [1591107550.343250339]: [Safety] Ratio (333.437932 / 333.568134)
+[ WARN] [1591107555.343122070]: [Safety] No data published by sensors (0.000010, 0.000198, 0.000105, 0.000256, 0.000153, 1591107555.342896)
+[ WARN] [1591107555.343498682]: [Safety] Sealing issue detected 4 (p=101374.804688, t=304.028317, h=26.659449)
+[ WARN] [1591107555.343698992]: [Safety] Ratio (333.438693 / 333.568134)
+[ WARN] [1591107560.342705846]: [Safety] No data published by sensors (0.000013, 0.000196, 0.000103, 0.000246, 0.000151, 1591107560.342508)
+[ WARN] [1591107560.343059540]: [Safety] Sealing issue detected 4 (p=101372.064209, t=304.017371, h=26.520271)
+[ WARN] [1591107560.343251153]: [Safety] Ratio (333.441685 / 333.568134)
+[ WARN] [1591107565.342742751]: [Safety] No data published by sensors (0.000008, 0.000205, 0.000100, 0.000258, 0.000145, 1591107565.342545)
+[ WARN] [1591107565.386702729]: [Safety] Sealing issue detected 4 (p=101374.957275, t=304.030817, h=26.471275)
+[ WARN] [1591107565.387427723]: [Safety] Ratio (333.436453 / 333.568134)
+[ WARN] [1591107570.342634824]: [Safety] No data published by sensors (0.000008, 0.000193, 0.000097, 0.000247, 0.000146, 1591107570.342435)
+[ WARN] [1591107570.342999560]: [Safety] Sealing issue detected 4 (p=101373.468018, t=304.032616, h=26.440088)
+[ WARN] [1591107570.343417056]: [Safety] Ratio (333.429582 / 333.568134)
+^C[mission/mission-19] killing on exit
+[safety/safety_node-17] killing on exit
+[iridium/iridium_node-18] killing on exit
+[regulation/waypoint-16] killing on exit
+[regulation/depth_controller-15] killing on exit
+[fusion/kalman-14] killing on exit
+[fusion/lambert-13] killing on exit
+[fusion/internal_sensor_filter-12] killing on exit
+[fusion/batteries_filter-11] killing on exit
+[fusion/temperature_filter-10] killing on exit
+[fusion/depth_filter-9] killing on exit
+[driver/temperature_ext-7] killing on exit
+[driver/pressure_int-6] killing on exit
+[driver/pressure_ext-5] killing on exit
+[driver/piston/piston-4] killing on exit
+[driver/power/power-3] killing on exit
+[record-2] killing on exit
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+done
+➜  ~ 
+
+
+
+
 
 ##
 rostopic echo /driver/sensor_internal
