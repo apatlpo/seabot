@@ -224,3 +224,20 @@ src/seabot/param/config_ifremer1.yaml
 check python finds the hostname:
 import socket
 socket.gethostname()
+
+
+# install ssh
+sudo apt install openssh-server
+# activate:
+sudo systemctl enable ssh.service
+sudo systemctl start ssh.service
+sudo dpkg-reconfigure openssh-server
+
+# exchange keys
+mkdir -p .ssh
+# on remote computer
+ssh-keygen
+cat .ssh/id_rsa.pub | ssh pi@192.168.2.3 'cat >> .ssh/authorized_keys'
+# on raspberry
+chmod 700 .ssh
+chmod 640 .ssh/authorized_keys
