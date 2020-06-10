@@ -89,6 +89,7 @@ i2cset -y 1 0x38 0x10 0xE8 0x03 i
 50   = 00 32
 1000 = 03 E8
 2000 = 07 D0
+5600 = 15 E0
 
 read nb_pulse
 i2cget -y 1 0x38 0x03

@@ -157,7 +157,7 @@ void init_xhat(Matrix<double, NB_STATES, 1> &xhat ){
   xhat(0) = velocity_fusion;
   xhat(1) = depth;
   xhat(2) = piston_volume_eq; // Vp
-  xhat(3) = 15.0*tick_to_volume; // chi
+  xhat(3) = -1.0*tick_to_volume; // chi
   xhat(4) = 0.*tick_to_volume; // chi2
   xhat(5) = 1.0; // Cz
 }

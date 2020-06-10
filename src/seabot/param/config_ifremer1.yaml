@@ -98,25 +98,26 @@ kalman:
   frequency: 25.0
   # !! will have to be increased latter on !!
   # need to be shallower than depth regulation parameter
-  enable_depth: 0.2
+  enable_depth: 0.1
 
+  # not used
   estimated_first_error_equilibrium_tick: 400
 
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model
-  gamma_alpha_offset: 5.0e-2 # in ticks
-  gamma_alpha_chi: 1.0e-3 # in ticks
-  gamma_alpha_chi2: 1.0e-3 # in ticks
-  gamma_alpha_cz: 1.0e-3 # in ticks
+  gamma_alpha_offset: 5.0e0 # in ticks
+  gamma_alpha_chi: 1.0e-2 # in ticks
+  gamma_alpha_chi2: 1.0e-5 # in ticks
+  gamma_alpha_cz: 1.0e-3
 
   gamma_init_velocity: 1.0e-1
   gamma_init_depth: 1.0e-2
   gamma_init_offset: 500.0 # in ticks
-  gamma_init_chi: 30.0 # in ticks
-  gamma_init_chi2: 30.0 # in ticks
+  gamma_init_chi: 1.0 # in ticks
+  gamma_init_chi2: 1.0e-2 # in ticks
   gamma_init_cz: 0.1
 
-  gamma_beta_depth: 1.0e-3
+  gamma_beta_depth: 1.0e-1
 
 mission:
   frequency: 1.0
@@ -128,15 +129,15 @@ regulation:
   depth_controller:
     frequency: 25.0
     divider_frequency: 5
-    root_regulation: -0.2
+    root_regulation: -0.5
     # !!
-    limit_depth_controller: 0.5
+    limit_depth_controller: 0.2
 
-    delta_velocity_lb: -0.01
-    delta_velocity_ub: 0.01
+    delta_velocity_lb: 0.0
+    delta_velocity_ub: 0.0
 
-    delta_position_lb: -0.001
-    delta_position_ub: 0.001
+    delta_position_lb: 0.0
+    delta_position_ub: 0.0
 
     hysteresis_piston: 0.6
     speed_volume_sink: 2.0
@@ -166,7 +167,7 @@ safety:
   humidity_limit: 70.0
 
   # !! AP turned off for bench tests
-  internal_pressure_detection: False
+  internal_pressure_detection: True
   delta_volume_allowed: 1.0
   delta_ref_allowed: 10.0
   volume_ref: 0.006
@@ -190,6 +191,7 @@ safety:
 
   # Batteries
   safety_battery: True
+  # !! was 11
   battery_limit: 11.0
 
   # Flash

@@ -15,8 +15,8 @@
 
 	<waypoint>
 		<duration>300</duration>
-		<depth>1.</depth>
-		<limit_velocity>0.05</limit_velocity>
+		<depth>1.5</depth>
+		<limit_velocity>0.1</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>
 
@@ -41,8 +41,8 @@
 
 	<waypoint>
 		<duration>300</duration>
-		<depth>.5</depth>
-		<limit_velocity>0.05</limit_velocity>
+		<depth>1.0</depth>
+		<limit_velocity>0.1</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
 	</waypoint>
 

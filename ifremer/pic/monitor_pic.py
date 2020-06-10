@@ -50,10 +50,12 @@ while True:
 	        #print(' is_init = %d'%data)
 
 		# voltage
+                # 5V = 1024, pont diviseur de tension rapport 3.5
 	        low = mybus.read_byte_data(0x38, 0xb0)
         	high = mybus.read_byte_data(0x38, 0xb1)
 		data = lh2int([low, high], signed=False)
-	        print(' voltage = %d'%data)
+                data = data*0.01709
+	        print(' voltage = %.2f'%data)
 
         except:
                 print(' Not this time')
