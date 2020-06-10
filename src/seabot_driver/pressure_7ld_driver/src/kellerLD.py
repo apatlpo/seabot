@@ -3,6 +3,14 @@ import smbus
 import struct
 import os
 
+# Keller 7LD pressure sensor specs:
+# https://keller-druck.com/en/products/pressure-transmitters/oem-pressure-transmitters/series-7ld
+# 100 bar sensor
+# relative accuracy: ±0.15%FS = 1.5 dbar = 1.5m
+# absolute accuracy: ±0.5 %FS = 5 dbar = 5m
+# resolution: 3 mbar
+# noise = ±0.015 %FS = 15 mbar = 15cm
+
 class KellerLD(object):
 
 	_SLAVE_ADDRESS = 0x40
