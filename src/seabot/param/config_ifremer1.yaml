@@ -100,8 +100,8 @@ kalman:
   # need to be shallower than depth regulation parameter
   enable_depth: 0.1
 
-  # not used
-  estimated_first_error_equilibrium_tick: 400
+  # turned on
+  estimated_first_error_equilibrium_tick: 619
 
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model

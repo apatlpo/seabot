@@ -178,8 +178,9 @@ int main(int argc, char *argv[]){
   const double tick_per_turn = n_private.param<double>("tick_per_turn", 48);
   const double piston_diameter = n_private.param<double>("piston_diameter", 0.05);
   tick_to_volume = (screw_thread/tick_per_turn)*pow(piston_diameter/2.0, 2)*M_PI;
-  piston_volume_eq = n_private.param<double>("piston_ref_eq", 2100.0)*tick_to_volume;
-
+  //piston_volume_eq = n_private.param<double>("piston_ref_eq", 2100.0)*tick_to_volume;
+  piston_volume_eq = n_private.param<double>("estimated_first_error_equilibrium_tick", 2100.0)*tick_to_volume;
+  
   const double piston_ticks_max_value = n_private.param<double>("piston_max_value", 2400.0);
   const double piston_volume_max = piston_ticks_max_value*tick_to_volume;
 

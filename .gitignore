@@ -96,3 +96,5 @@ Debug
 *.mcl
 
 # End of https://www.gitignore.io/api/mikroc
+
+.DS_Store

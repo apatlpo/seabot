@@ -14,7 +14,7 @@
 - `depth_controler` (uses `seabot_depth_controler`)
 -  `waypoint`
 
-what is a parameter remap?
+Parameters are remapped.
 
 `mission.launch` calls:
 
@@ -24,15 +24,13 @@ what is a parameter remap?
 - `iridium.launch`
 
 
-
-
 ## mission
 
 ```
 roslaunch seabot mission.launch
 ```
 
-Quel xml va être utilisé?
+Quel xml va être utilisé? celui qui correspond au hostname.
 
 
 ## regulation
@@ -100,10 +98,11 @@ const double hold_depth_value_exit = n_private.param<double>("hold_depth_value_e
 ```
 
 
-
+## discussion TLM
 
 tick = encoche = pulse
-12cm/1415
+tick_per_turn=1
+screw_thread doit être 12cm/1415 = 8.48*1e-5
 
 - chercher les infos:
 pas de la tige filtée
@@ -136,3 +135,46 @@ power.h:
 - ADC_BATTERY_LEVEL_CONV
 
 lancer une mission complète (mission_empty.xml, mission_depth_only)
+
+
+## Paramètres kalman dans xml:
+
+```
+  gamma_alpha_velocity: 1.0e-3 # Error of model
+  gamma_alpha_depth: 1.0e-5 # Error of model
+  gamma_alpha_offset: 5.0e-2 # in ticks
+  gamma_alpha_chi: 1.0e-3 # in ticks
+  gamma_alpha_chi2: 1.0e-3 # in ticks
+  gamma_alpha_cz: 1.0e-3 # in ticks
+
+  gamma_init_velocity: 1.0e-1
+  gamma_init_depth: 1.0e-2
+  gamma_init_offset: 500.0 # in ticks
+  gamma_init_chi: 30.0 # in ticks
+  gamma_init_chi2: 30.0 # in ticks
+  gamma_init_cz: 0.1
+
+  gamma_beta_depth: 1.0e-3
+```
+
+Most volume parameters should be normalized by `tick_to_volume`, for example:
+
+```
+  const double gamma_init_chi = n_private.param<double>("gamma_init_chi", 30.0)*tick_to_volume; // 20
+```
+
+```
+  tick_to_volume = (screw_thread/tick_per_turn)*pow(piston_diameter/2.0, 2)*M_PI;
+```
+
+In our case:
+
+```
+  screw_thread: 8.48e-5
+  tick_per_turn: 1
+  piston_diameter: 0.0195
+```
+
+Hence `tick_to_volume = 8.48e-5*(0.0195/2)**2*3.1415 = 2.53e-8`
+
+
