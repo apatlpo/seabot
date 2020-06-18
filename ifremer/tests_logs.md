@@ -308,6 +308,12 @@ aller a 5m tout de suite pour voir si le flotteur y va
 
 ## bassin 18/06
 
+```
+pressure: 627.672912598
+temperature: 21.2686080933
+humidity: 44.266418457
+```
+
 Mesure jeu course:
 
 **reset motor speed and error_interval**:
@@ -332,29 +338,38 @@ echo "{position: $1, stamp: {secs: 1, nsecs: 0 }}"
 
 
 2 tests a chaque fois:
-- sortie puis rentree
+
+- rentree puis sortie
+set_piston_position 400
+#set_piston_position 550
+set_piston_position 530
 set_piston_position 500
 set_piston_position 470
-set_piston_position 475
-set_piston_position 480
 
-...
-- rentree puis sortie
-set_piston_position 0
-set_piston_position 470
-set_piston_position 465
-set_piston_position 460
-...
+apres plusieurs mesures:
+400
+530-500: 0.3mm
+500-470: 2.4mm
+soit un jeu de 2mm approx 
 
-essayer plusieurs intervals:
-5, 10, 15
+### ballastage
 
-mesurer les positions a chaque deplacement
+screen 0:
+roslaunch seabot driver.launch
+
+screen1:
+set_piston_position 619
 
 
-### mission 0:
+avec leste: 255g
+leste seul: 257g
 
-follow Thomas advice:
+est donc deja ballaste
+
+
+### mission 1:
+
+follows Thomas recommendations:
 
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model
@@ -376,9 +391,37 @@ follow Thomas advice:
   init_chi2: 0.0
 
 
+roslaunch seabot mission.launch >20200618_m1.log 2>&1
+
+safety issue with piston
+
 ### mission 1:
+
+idem
+
+### mission 2:
+
+approach velocity = 10cm
+
+
+### mission 3:
+### mission 4:
+### mission 5:
+### mission 6:
+### mission 7:
+
+approach velocity = 30cm
+
+puis:
+
+gamma_alpha_offset: 20.0e0 # in ticks
+ 
+
+
+
 
 augmenter gamma_alpha_offset
 
 diminuer approach velocity pour imposer des vitesses superieures a l'erreur de mesure liee au capteur de pression
 
+scp pi@192.168.2.3:'.ros/2020-06-18*.bag' .
