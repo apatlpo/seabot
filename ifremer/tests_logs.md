@@ -351,3 +351,34 @@ essayer plusieurs intervals:
 
 mesurer les positions a chaque deplacement
 
+
+### mission 0:
+
+follow Thomas advice:
+
+  gamma_alpha_velocity: 1.0e-3 # Error of model
+  gamma_alpha_depth: 1.0e-5 # Error of model
+  gamma_alpha_offset: 5.0e0 # in ticks
+  gamma_alpha_chi: 1.0e-3 # in ticks
+  gamma_alpha_chi2: 1.0e-5 # in ticks
+  gamma_alpha_cz: 1.0e-4
+
+  gamma_init_velocity: 1.0e-1
+  gamma_init_depth: 1.0e-2
+  gamma_init_offset: 500.0 # in ticks
+  gamma_init_chi: 1.0 # in ticks
+  gamma_init_chi2: 1.0e-2 # in ticks
+  gamma_init_cz: 0.1
+
+  gamma_beta_depth: 0.5
+
+  init_chi: -1.0
+  init_chi2: 0.0
+
+
+### mission 1:
+
+augmenter gamma_alpha_offset
+
+diminuer approach velocity pour imposer des vitesses superieures a l'erreur de mesure liee au capteur de pression
+
