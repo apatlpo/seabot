@@ -46,6 +46,9 @@ qtcreator-*
 # Emacs
 .#*
 
+# Nano
+*.swap
+
 # Catkin custom files
 CATKIN_IGNORE
 

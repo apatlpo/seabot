@@ -302,3 +302,52 @@ si mauvaise conversion et nombre de tick peut aussi poser pb
 
 aller a 5m tout de suite pour voir si le flotteur y va
 
+
+
+---
+
+## bassin 18/06
+
+Mesure jeu course:
+
+**reset motor speed and error_interval**:
+
+```
+i2cset -y 1 0x38 0x12 0x1E
+#30 -> 1E
+i2cset -y 1 0x38 0x05 0x00
+python monitor_pic.py
+```
+
+**position de reference**: 
+gros piston (354) + 1cm (1415/12=118) = 472 ~ 470
+adjuste manually: 1mm = 12 pulses
+
+Create function in .zchrc to set position
+rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition '{position: 0, stamp: {secs: 1, nsecs: 0 }}'
+set_piston_position() {
+echo "{position: $1, stamp: {secs: 1, nsecs: 0 }}"
+#rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition "{position: $1, stamp: {secs: 1, nsecs: 0 }}"
+}
+
+
+2 tests a chaque fois:
+- sortie puis rentree
+set_piston_position 500
+set_piston_position 470
+set_piston_position 475
+set_piston_position 480
+
+...
+- rentree puis sortie
+set_piston_position 0
+set_piston_position 470
+set_piston_position 465
+set_piston_position 460
+...
+
+essayer plusieurs intervals:
+5, 10, 15
+
+mesurer les positions a chaque deplacement
+
