@@ -105,7 +105,7 @@ kalman:
 
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model
-  gamma_alpha_offset: 5.0e0 # in ticks
+  gamma_alpha_offset: 20.0e0 # in ticks
   gamma_alpha_chi: 1.0e-3 # in ticks
   gamma_alpha_chi2: 1.0e-5 # in ticks
   gamma_alpha_cz: 1.0e-4
@@ -132,7 +132,7 @@ regulation:
   depth_controller:
     frequency: 25.0
     divider_frequency: 5
-    root_regulation: -0.5
+    root_regulation: -0.1
     # !!
     limit_depth_controller: 0.2
 
@@ -195,7 +195,7 @@ safety:
   # Batteries
   safety_battery: True
   # !! was 11
-  battery_limit: 11.0
+  battery_limit: 9.0
 
   # Flash
   enable_flash: True
