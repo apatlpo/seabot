@@ -326,51 +326,62 @@ python monitor_pic.py
 ```
 
 **position de reference**: 
-gros piston (354) + 1cm (1415/12=118) = 472 ~ 470
-adjuste manually: 1mm = 12 pulses
 
-Create function in .zchrc to set position
+- gros piston (354) + 1cm (1415/12=118) = 472 ~ 470
+- adjust manually: 1mm = 12 pulses
+
+Create function in .zchrc to set position:
+
+```
 rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition '{position: 0, stamp: {secs: 1, nsecs: 0 }}'
 set_piston_position() {
 echo "{position: $1, stamp: {secs: 1, nsecs: 0 }}"
 #rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition "{position: $1, stamp: {secs: 1, nsecs: 0 }}"
 }
-
+```
 
 2 tests a chaque fois:
 
 - rentree puis sortie
+
+```
 set_piston_position 400
 #set_piston_position 550
 set_piston_position 530
 set_piston_position 500
 set_piston_position 470
+```
 
 apres plusieurs mesures:
+
+```
 400
 530-500: 0.3mm
 500-470: 2.4mm
 soit un jeu de 2mm approx 
+```
 
 ### ballastage
 
 screen 0:
+```
 roslaunch seabot driver.launch
+```
 
 screen1:
+```
 set_piston_position 619
-
+```
 
 avec leste: 255g
+
 leste seul: 257g
 
 est donc deja ballaste
 
+first test follows Thomas recommendations:
 
-### mission 1:
-
-follows Thomas recommendations:
-
+```
   gamma_alpha_velocity: 1.0e-3 # Error of model
   gamma_alpha_depth: 1.0e-5 # Error of model
   gamma_alpha_offset: 5.0e0 # in ticks
@@ -389,39 +400,61 @@ follows Thomas recommendations:
 
   init_chi: -1.0
   init_chi2: 0.0
+```
 
-
+```
 roslaunch seabot mission.launch >20200618_m1.log 2>&1
+```
 
 safety issue with piston
 
-### mission 1:
-
-idem
-
-### mission 2:
-
-approach velocity = 10cm
-
-
-### mission 3:
-### mission 4:
-### mission 5:
-### mission 6:
-### mission 7:
-
-approach velocity = 30cm
-
-puis:
-
-gamma_alpha_offset: 20.0e0 # in ticks
+```
+-- mission 0, pd_2020-06-18-14-18-07_0 --
+limit_velocity = 0.1, approach_velocity = 1.0
+-- mission 1, pd_2020-06-18-14-35-39_0 --
+limit_velocity = 0.1, approach_velocity = 1.0
+-- mission 2, pd_2020-06-18-14-55-40_0 --
+limit_velocity = 0.1, approach_velocity = 0.1
+-- mission 3, pd_2020-06-18-15-04-14_0 --
+limit_velocity = 0.1, approach_velocity = 0.1
+-- mission 4, pd_2020-06-18-15-15-25_0 --
+limit_velocity = 0.1, approach_velocity = 0.1
+driver->filter->iridium->kalman->mission->physics->regulation->safety :
+ -  battery_limit  :  11.0
+ +  battery_limit  :  9.0
+-- mission 5, pd_2020-06-18-15-28-29_0 --
+limit_velocity = 0.1, approach_velocity = 0.3
+-- mission 6, pd_2020-06-18-15-41-36_0 --
+limit_velocity = 0.1, approach_velocity = 0.3
+driver->filter->iridium->kalman :
+ -  gamma_alpha_offset  :  5.0
+ +  gamma_alpha_offset  :  20.0
+-- mission 7, pd_2020-06-18-15-48-45_0 --
+limit_velocity = 0.1, approach_velocity = 0.3
+-- mission 8, pd_2020-06-18-16-14-23_0 --
+limit_velocity = 0.1, approach_velocity = 0.3
+driver->filter->iridium->kalman->mission->physics->regulation->depth_controller :
+ -  root_regulation  :  -0.5
+ +  root_regulation  :  -0.1
+-- mission 9, pd_2020-06-18-16-18-45_0 --
+limit_velocity = 0.1, approach_velocity = 0.3
+```
  
+Autres recommendations de TLM:
+ 
+- augmenter gamma_alpha_offset
+- diminuer approach velocity pour imposer des vitesses superieures a l'erreur de mesure liee au capteur de pression
 
-
-
-
-augmenter gamma_alpha_offset
-
-diminuer approach velocity pour imposer des vitesses superieures a l'erreur de mesure liee au capteur de pression
-
+```
 scp pi@192.168.2.3:'.ros/2020-06-18*.bag' .
+```
+
+Force exercée par le vide sur vérin a 600 mbar:
+
+```
+diamètre gros piston = 0.08 m
+diamètre tige = 0.019 m
+3.14*(0.08/2)**2 * 100000 * 0.4 = 200.96 N (20kg)
+50 bar sur tige:
+3.14*(0.0195/2)**2 * 100000 * 50 = 1500 N (150kg)
+```
