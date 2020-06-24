@@ -458,3 +458,15 @@ diamètre tige = 0.019 m
 50 bar sur tige:
 3.14*(0.0195/2)**2 * 100000 * 50 = 1500 N (150kg)
 ```
+
+# tests paillasse:
+
+sans vide
+
+50 (a vitesse maximale): 
+1.3A puis 2A quand gros piston en mouvement
+
+30:
+0.9A puis 1.3A
+
+
