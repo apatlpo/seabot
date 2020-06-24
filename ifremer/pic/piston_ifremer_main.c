@@ -71,10 +71,12 @@ volatile unsigned int mytimer = 0; // test
 //volatile unsigned int mytimer1 = 1; // test
 volatile unsigned short butee_out = 0;
 volatile unsigned short butee_in = 0;
+volatile int butee_counter = 0;
+
 
 // Motor [0 100]
 #define MOTOR_STOP 50
-volatile short motor_speed_max = 25;
+volatile short motor_speed_max = 35;
 volatile short motor_speed_out_reset = 50;
 volatile short motor_current_speed = MOTOR_STOP;
 volatile short motor_speed_variation = 2;
@@ -100,7 +102,9 @@ enum robot_state {RESET_OUT, REGULATION,EMERGENCY};
 volatile unsigned char state = RESET_OUT;
 
 // Butee
-#define BUTEE_OUT 5660
+#define BUTEE_IN 10    // activates counter to check butee when nb_pulse<BUTEE_IN
+#define BUTEE_OUT 5650 // activates counter to check butee when nb_pulse<BUTEE_OUT
+#define BUTEE_COUNTER_LIMIT 500 // ms
 #define TIME_BUTEE_RESET 30
 volatile unsigned short butee_reset_cpt = TIME_BUTEE_RESET;
 
@@ -188,10 +192,12 @@ void i2c_write_data_to_buffer(unsigned short nb_tx_octet){
     case 0x00:
         SSPBUF = nb_pulse;
         //SSPBUF = mytimer;
+        //SSPBUF = butee_counter;
         break;
     case 0x01:
         SSPBUF = nb_pulse >> 8;
         //SSPBUF = (mytimer >> 8);
+        //SSPBUF = butee_counter >> 8;
         break;
     case 0x02:
         SSPBUF = (butee_out & 0b1)
@@ -271,18 +277,23 @@ void read_batteries_voltage(){
  * @brief Lecture des valeurs des butees
  */
 void read_butee(){
-    if(nb_pulse<=0){
+    if(nb_pulse<=BUTEE_IN){
+      if (butee_counter>=BUTEE_COUNTER_LIMIT){
         butee_out = 1;
+      }
+    }
+    else if(nb_pulse>=BUTEE_OUT){
+      if (butee_counter>=BUTEE_COUNTER_LIMIT){
+        butee_in = 1;
+      }
     }
     else{
         butee_out = 0;
-    }
-
-    if(nb_pulse>=BUTEE_OUT){
-        butee_in = 1;
-    }
-    else{
         butee_in = 0;
+        butee_counter = 0;
+    }
+    if (butee_counter>BUTEE_COUNTER_LIMIT){
+      butee_counter=BUTEE_COUNTER_LIMIT;
     }
 }
 
@@ -468,6 +479,8 @@ void read_optical_fork(){
             nb_pulse++;
         else if(new_state == 0x3)
             nb_pulse_debug++;
+        else if(new_state == 0x00)
+            butee_counter++;
         break;
     case 0x01:
         if(new_state == 0x3)
@@ -476,6 +489,8 @@ void read_optical_fork(){
             nb_pulse++;
         else if(new_state == 0x2)
             nb_pulse_debug++;
+        else if(new_state == 0x1)
+            butee_counter++;
         break;
     case 0x02:
         if(new_state == 0x0)
@@ -484,14 +499,20 @@ void read_optical_fork(){
             nb_pulse++;
         else if(new_state == 0x1)
             nb_pulse_debug++;
+        else if(new_state == 0x2)
+            butee_counter++;
         break;
     case 0x03:
         if(new_state == 0x1)
             nb_pulse++;
         else if(new_state == 0x2)
             nb_pulse--;
-        else if(new_state == 0x0)
+        else if(new_state == 0x0){
             nb_pulse_debug++;
+            //butee_counter++;
+        }
+        else if(new_state == 0x3)
+            butee_counter++;
         break;
     default:
         break;
@@ -753,7 +774,7 @@ void main(){
         asm CLRWDT;
 
         // Global actions
-        read_butee();
+        //read_butee();
 
         // test: frequency = 56000 Hz but can go down to 15000Hz
         //mytimer0++;
@@ -765,6 +786,7 @@ void main(){
         //read_optical_fork(); // test
         if(flag_optical_fork==1){
             read_optical_fork();
+            read_butee();
             flag_optical_fork=0;
         }
 
