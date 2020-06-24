@@ -470,3 +470,6 @@ sans vide
 0.9A puis 1.3A
 
 
+qd ralentit avant d'arriver a la position souhaitee:
+[ WARN] [1593002976.714680837]: [Temperature_TSYS01] Error Reading T
+
