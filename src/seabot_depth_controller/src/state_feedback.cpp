@@ -244,7 +244,7 @@ int main(int argc, char *argv[]){
         if(depth_set_point<limit_depth_regulation)
           regulation_state = STATE_SURFACE;
         else if(depth_fusion>=limit_depth_regulation){
-          if((ros::Time::now()-time_last_state).toSec()<1.0){
+          if((ros::Time::now()-time_last_state).toSec()<10.0){
 
             x(2) = -piston_position*tick_to_volume;
 
