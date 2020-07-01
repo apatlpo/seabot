@@ -185,6 +185,7 @@ int main(int argc, char *argv[]){
         if ( piston_set_point<tick_big_piston && depth>depth_big_piston ){
           t_last_set_point = t;
           p.set_piston_position(tick_big_piston);
+        }
         else if ( piston_set_point>tick_big_piston || depth<depth_big_piston ){
           t_last_set_point = t;
           // AP: ajouter une contrainte sur le piston_set_point + profondeur pour gérer le gros piston
