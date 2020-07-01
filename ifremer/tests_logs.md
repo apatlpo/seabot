@@ -131,3 +131,69 @@ on augment approach velocity
 on pourrait diminuer limit velocity
 on pourrait diminuer root regulation
 
+ne remonte pas, pb diagnostique dans le driver piston relié au cas big piston
+
+## mission 3
+
+roslaunch seabot mission.launch >20200701_m3.log 2>&1
+
+pb big piston devrait etre corrige
+
+il faudra changer la derniere profondeur de la mission la prochaine fois
+
+looks good !
+
+## mission 4
+
+roslaunch seabot mission.launch >20200701_m4.log 2>&1
+
+pareil avec plus de paliers
+
+looks good !!
+
+## mission 5 
+
+roslaunch seabot mission.launch >20200701_m5.log 2>&1
+
+try hold depth avec contrainte sur la vitesse
+
+mais rate à caus de la valeur de hold_depth_exit (0.)
+
+50cm / 1cm/s = 50 s 
+
+
+sonde:
+sal = 36.6
+temp = 16.6
+a la surface
+
+
+
+
+##
+
+roslaunch seabot mission.launch >20200701_m6.log 2>&1
+
+hold depth still not on
+
+found bug in velocity condition
+
+##
+
+decrease traveling velocity
+
+roslaunch seabot mission.launch >20200701_m7.log 2>&1
+
+larger depth differences
+
+##
+
+try increasing the reactivity of the float
+root = 0.2
+roslaunch seabot mission.launch >20200701_m8.log 2>&1
+
+##
+
+reincrease velocity to 10cm/s
+roslaunch seabot mission.launch >20200701_m9.log 2>&1
+
