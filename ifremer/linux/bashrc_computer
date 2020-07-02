@@ -1,0 +1,35 @@
+# to have tap to click working with touchpad
+#synclient TapButton1=1 TapButton2=3 TapButton3=2
+#synclient TouchpadOff=0
+
+# path for ROS Kinetic
+#source /opt/ros/kinetic/setup.bash
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/export/home/localuser/Cognac/flotteur/RTIMULib2/RTIMULib/_install/lib
+
+# added by Miniconda3 installer
+#export PATH="/export/home/localuser/.miniconda3/bin:$PATH"
+#. /export/home/localuser/.miniconda3/etc/profile.d/conda.sh
+#conda activate cognac
+# conda may interfere with ros 
+
+alias aconda=". /export/home/localuser/.miniconda3/etc/profile.d/conda.sh; conda activate cognac"
+
+
+alias rtsys_source='ssh root@192.168.20.204'
+alias seabot='ssh pi@192.168.0.10'
+
+function pybag(){
+  python ~/seabot/tools/rosbag/log.py $1
+}
+
+function pandabag(){
+  python ~/cognac/float/bag.py $1
+}
+
+# path to ROS Melodic
+#source /opt/ros/melodic/setup.bash
+# path for ROS Kinetic
+source /opt/ros/kinetic/setup.bash
+
+export LC_ALL=C
+
