@@ -132,20 +132,20 @@ regulation:
   depth_controller:
     frequency: 25.0
     divider_frequency: 25
-    root_regulation: -0.2
+    root_regulation: -0.15
     # !!
     limit_depth_controller: 0.2
 
-    delta_velocity_lb: 0.0
-    delta_velocity_ub: 0.0
+    delta_velocity_lb: -0.01
+    delta_velocity_ub:  0.01
 
-    delta_position_lb: 0.0
-    delta_position_ub: 0.0
+    delta_position_lb: -0.1
+    delta_position_ub:  0.1
 
     hysteresis_piston: 0.6
     speed_volume_sink: 10.0
 
-    hold_depth_enable: True
+    hold_depth_enable: False
     hold_depth_value_enter: 0.30
     hold_depth_value_exit: 0.30
 

@@ -14,7 +14,7 @@
 <paths>
 
 	<waypoint>
-		<duration>300</duration>
+		<duration>400</duration>
 		<depth>5</depth>
 		<limit_velocity>0.1</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>
@@ -40,7 +40,7 @@
 <!-- last point should always be shallower than depth_big_piston -->
 
 	<waypoint>
-		<duration>300</duration>
+		<duration>400</duration>
 		<depth>2.5</depth>
 		<limit_velocity>0.1</limit_velocity>
 		<approach_velocity>1.0</approach_velocity>

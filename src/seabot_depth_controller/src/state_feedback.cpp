@@ -263,7 +263,7 @@ int main(int argc, char *argv[]){
             u=optimize_u(u_tab);
 
             // Mechanical limits (in = v_min, out = v_max)
-            if(((piston_switch_in || ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston) )) && u<0) || (piston_switch_out && u>0))
+            if(((piston_switch_in || ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston+10) )) && u<0) || (piston_switch_out && u>0))
               u = 0.0;
           }
           else{
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]){
         // piston_set_point = piston_position - u/(tick_to_volume*control_loop_frequency);
 
         // forbid regulation with big piston
-        piston_set_point = max(piston_set_point, tick_big_piston)
+        piston_set_point = max(piston_set_point, tick_big_piston+10);
 
         if(hold_depth_enable && abs(depth_set_point-x(1))<hold_depth_value_enter)
           // && abs(x(0))<0.01
