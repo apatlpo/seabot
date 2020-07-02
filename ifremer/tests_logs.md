@@ -197,3 +197,51 @@ roslaunch seabot mission.launch >20200701_m8.log 2>&1
 reincrease velocity to 10cm/s
 roslaunch seabot mission.launch >20200701_m9.log 2>&1
 
+
+
+
+# bassin3
+
+scp pi@192.168.2.3:'.ros/2020-07-02*.bag' .
+scp pi@192.168.2.3:'20200702*.log' .
+
+
+## mission0
+
+roslaunch seabot mission.launch >20200702_m0.log 2>&1
+
+condition sur la vitesse enlevee
+big piston considere dans state regulation
+
+
+## mission1
+
+roslaunch seabot mission.launch >20200702_m1.log 2>&1
+
+essaie les delta
+eteint hold depth
+
+    delta_velocity_lb: -0.01
+    delta_velocity_ub:  0.01
+
+    delta_position_lb: -0.1
+    delta_position_ub:  0.1
+
+    hysteresis_piston: 0.6
+    speed_volume_sink: 10.0
+
+    hold_depth_enable: False
+    hold_depth_value_enter: 0.30
+    hold_depth_value_exit: 0.30
+
+## mission2
+
+roslaunch seabot mission.launch >20200702_m2.log 2>&1
+
+idem mais avec modif dans state_regulation
+
+
+
+
+
+

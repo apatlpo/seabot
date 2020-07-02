@@ -285,6 +285,9 @@ int main(int argc, char *argv[]){
         // Previous form do not allow movement under 1 tick
         // piston_set_point = piston_position - u/(tick_to_volume*control_loop_frequency);
 
+        // forbid regulation with big piston
+        piston_set_point = max(piston_set_point, tick_big_piston)
+
         if(hold_depth_enable && abs(depth_set_point-x(1))<hold_depth_value_enter)
           // && abs(x(0))<0.01
           // bad form: add constraint on velocity: (<1cm/s)
