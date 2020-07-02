@@ -264,6 +264,8 @@ int main(int argc, char *argv[]){
 
             // Mechanical limits (in = v_min, out = v_max)
             if(((piston_switch_in || ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston+10) )) && u<0) || (piston_switch_out && u>0))
+            // AP this part should be commented in the future: ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston) )
+            // AP (redondance with max statement line 291)
               u = 0.0;
           }
           else{
