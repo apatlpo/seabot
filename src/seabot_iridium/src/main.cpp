@@ -141,30 +141,30 @@ void call_sleep_param(const int &hours, const int &min, const int &sec, const in
   srv.request.min = min;
   srv.request.hours = hours;
   srv.request.sec_to_sleep = sec_to_sleep;
-  if (!service_sleep_param.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call sleep param");
-  }
+  //if (!service_sleep_param.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call sleep param");
+  //}
 }
 
 void call_sleep(){
   std_srvs::Empty srv;
-  if(!service_sleep_mode.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call sleep mode");
-  }
+  //if(!service_sleep_mode.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call sleep mode");
+  //}
 }
 
 void call_reload_mission(){
   std_srvs::Empty srv;
-  if(!service_reload_mission.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call reload mission");
-  }
+  //if(!service_reload_mission.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call reload mission");
+  //}
 }
 
 void call_enable_mission(const bool &enable_mission){
   seabot_mission::MissionEnable srv;
   srv.request.enable_mission = enable_mission;
-  if(!service_enable_mission.call(srv))
-    ROS_ERROR("[Iridium] Failed to call reload mission");
+  //if(!service_enable_mission.call(srv))
+  //  ROS_ERROR("[Iridium] Failed to call reload mission");
 }
 
 

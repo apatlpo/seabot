@@ -105,6 +105,18 @@ sudo nano /etc/rc.local
 
 sudo sh -c 'echo 3 >/sys/module/i2c_bcm2835/parameters/debug'
 
+# Iridium DTR (Active low)
+echo "20" > /sys/class/gpio/export
+sleep 0.1
+echo "out" > /sys/class/gpio/gpio20/direction
+echo "0" > /sys/class/gpio/gpio20/value
+
+# Power On Iridium (Active high)
+echo "5" > /sys/class/gpio/export
+sleep 0.1
+echo "out" > /sys/class/gpio/gpio5/direction
+echo "1" > /sys/class/gpio/gpio5/value
+
 exit 0
 ---
 
@@ -445,5 +457,60 @@ process[iridium/iridium_node-15]: started with pid [2767]
 [ INFO] [1594898156.849472034]: Subscribing to /fusion/sensor_internal
 [ INFO] [1594898188.071189414]: [Piston_driver] Start Ok
 
+
+
+NODES
+  /iridium/
+    iridium_node (seabot_iridium/iridium_node)
+
+auto-starting new master
+process[master]: started with pid [5409]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 15a1e67a-c770-11ea-b166-e84e064b777b
+process[rosout-1]: started with pid [5420]
+started core service [/rosout]
+process[iridium/iridium_node-2]: started with pid [5423]
+Error: open: Permission denied
+[ INFO] [1594909499.951388293]: [Iridium] Start Ok
+
+
+lsmod:
+
+Module                  Size  Used by
+rfcomm                 77824  16
+fuse                  106496  3
+pps_ldisc              16384  2
+bnep                   24576  2
+hci_uart              114688  1
+btbcm                  16384  1 hci_uart
+btqca                  16384  1 hci_uart
+btintel                16384  1 hci_uart
+bluetooth             544768  43 hci_uart,btintel,btqca,bnep,btbcm,rfcomm
+ecdh_generic           28672  1 bluetooth
+serdev                 20480  1 hci_uart
+binfmt_misc            20480  1
+arc4                   16384  2
+rt2800usb              28672  0
+rt2800lib             110592  1 rt2800usb
+rt2x00usb              20480  1 rt2800usb
+rt2x00lib              57344  3 rt2800lib,rt2800usb,rt2x00usb
+mac80211              802816  3 rt2800lib,rt2x00lib,rt2x00usb
+brcmfmac              311296  0
+brcmutil               16384  1 brcmfmac
+cfg80211              626688  3 rt2x00lib,mac80211,brcmfmac
+cdc_acm                32768  2
+uio_pdrv_genirq        16384  0
+uio                    20480  1 uio_pdrv_genirq
+sch_fq_codel           20480  7
+pps_gpio               16384  1
+parport_pc             20480  0
+ppdev                  20480  0
+lp                     20480  0
+parport                36864  3 lp,parport_pc,ppdev
+ip_tables              24576  0
+x_tables               28672  1 ip_tables
+crc32_arm_ce           16384  2
+sdhci_iproc            16384  0
 
 
