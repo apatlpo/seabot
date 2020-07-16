@@ -70,9 +70,11 @@ dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
 dtparam=spi=on
 dtparam=watchdog=on 
 
+dtoverlay=pps-gpio,gpiopin=24
+
 # /etc/modules
 i2c-dev
-#pps-gpio
+pps-gpio
 
 # install i2c tools
 sudo apt install -y i2c-tools
@@ -241,3 +243,72 @@ cat .ssh/id_rsa.pub | ssh pi@192.168.2.3 'cat >> .ssh/authorized_keys'
 # on raspberry
 chmod 700 .ssh
 chmod 640 .ssh/authorized_keys
+
+
+## GPS
+
+# /etc/udev/rules.d/90-gps.rules
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1546", ATTRS{idProduct}=="01a8", SYMLINK+="gps$
+
+# /boot/firmware/usercfg.txt 
+dtoverlay=pps-gpio,gpiopin=24
+
+
+# /etc/default/gpsd
+# sudo usermod -a -G dialout gpsd
+# Default settings for the gpsd init script and the hotplug wrapper.
+
+START_DAEMON="true"
+GPSD_OPTIONS="/dev/ttyACM0 -n"
+DEVICES=""
+USBAUTO="true"
+GPSD_SOCKET="/var/run/gpsd.sock"
+
+## /etc/systemd/system/gpsd.service  
+
+[Unit]
+Description=GPS (Global Positioning System) Daemon
+Requires=gpsd.socket
+# Needed with chrony SOCK refclock
+After=chronyd.service
+
+[Service]
+EnvironmentFile=-/etc/default/gpsd
+EnvironmentFile=-/etc/sysconfig/gpsd
+ExecStart=/usr/sbin/gpsd -N $GPSD_OPTIONS $DEVICES
+
+[Install]
+WantedBy=multi-user.target
+Also=gpsd.socket
+
+
+
+# /lib/systemd/system/gpsd.socket
+[Unit]
+Description=GPS (Global Positioning System) Daemon Sockets
+
+[Socket]
+ListenStream=/var/run/gpsd.sock
+ListenStream=[::1]:2947
+ListenStream=127.0.0.1:2947
+#ListenStream=0.0.0.0:2947
+SocketMode=0600
+
+[Install]
+WantedBy=sockets.target
+
+
+## /etc/ntp.conf
+# Servers (shared memory provide by gpsd)
+server 127.127.28.0 minpoll 4 maxpoll 4 prefer
+fudge 127.127.28.0 time1 0.000 flag1 1 refid GPS
+
+server 127.127.22.0 minpoll 4 maxpoll 4
+fudge  127.127.22.0 flag1 1 refid PPS
+
+## test:
+lsmod
+ps -aux | grep gpsd
+gpsmon /dev/ttyACM0
+
+## iridium 
