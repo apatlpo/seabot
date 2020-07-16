@@ -163,7 +163,8 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 
 ## other libraries
 sudo apt install screen
-#sudo apt install gpsd # may not be necessary given next install
+sudo apt install gpsd       N
+# may not be necessary given next install
 sudo apt install libgps-dev
 sudo apt install ntp
 sudo apt install libi2c-dev
@@ -314,6 +315,39 @@ gpsmon /dev/ttyACM0
 sudo service gpsd status
 sudo service gpsd start
 
+● gpsd.service - GPS (Global Positioning System) Daemon
+   Loaded: loaded (/etc/systemd/system/gpsd.service; disabled; vendor preset: enab
+   Active: failed (Result: exit-code) since Thu 2020-07-16 13:01:33 CEST; 2min 8s 
+  Process: 8773 ExecStart=/usr/sbin/gpsd -N $GPSD_OPTIONS $DEVICES (code=exited, s
+ Main PID: 8773 (code=exited, status=203/EXEC)
+
+juil. 16 13:01:33 ifremer1 systemd[1]: Started GPS (Global Positioning System) Dae
+juil. 16 13:01:33 ifremer1 systemd[8773]: gpsd.service: Failed to execute command:
+juil. 16 13:01:33 ifremer1 systemd[8773]: gpsd.service: Failed at step EXEC spawni
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Main process exited, code=exi
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Failed with result 'exit-code
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Start request repeated too qu
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Failed with result 'exit-code
+juil. 16 13:01:33 ifremer1 systemd[1]: Failed to start GPS (Global Positioning Sys
+~
+
+apres install gpsd: green light
+
+[sudo] password for pi: 
+● gpsd.service - GPS (Global Positioning System) Daemon
+   Loaded: loaded (/etc/systemd/system/gpsd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2020-05-05 16:00:06 CEST; 2 months 11 days ago
+ Main PID: 730 (gpsd)
+    Tasks: 2 (limit: 2152)
+   CGroup: /system.slice/gpsd.service
+           └─730 /usr/sbin/gpsd -N /dev/ttyACM0 -n
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unava
+➜  ~ 
+
+
+
+
 # verifie port sur lequel le gpsd est monté
 dmesg
 cable blanc ne marche pas 
@@ -363,3 +397,53 @@ process[iridium/iridium_node-2]: started with pid [6513]
 [ INFO] [1594896231.521424616]: waitForService: Service [/driver/power/sleep_mode] has not been advertised, waiting...
 
 et ne va pas plus loin
+
+
+
+on essaie d'ajouter iridium a base.launch
+
+[ INFO] [1594898153.459168428]: [POWER] Start Ok
+process[fusion/depth_filter-9]: started with pid [2735]
+[ INFO] [1594898153.568341282]: Recording to '2020-07-16-13-15-53_0.bag'.
+process[fusion/temperature_filter-10]: started with pid [2740]
+process[fusion/batteries_filter-11]: started with pid [2747]
+[ INFO] [1594898153.834983689]: Subscribing to /driver/power/battery
+process[fusion/internal_sensor_filter-12]: started with pid [2754]
+process[fusion/lambert-13]: started with pid [2755]
+process[fusion/kalman-14]: started with pid [2757]
+[ INFO] [1594898154.257843855]: Subscribing to /rosout
+process[iridium/iridium_node-15]: started with pid [2767]
+[ INFO] [1594898154.686343417]: [GPSD_Client] Start Ok
+[ INFO] [1594898154.776295224]: [Temperature_TSYS01_driver] Start Ok
+[ INFO] [1594898154.860475931]: Subscribing to /rosout_agg
+[ INFO] [1594898155.198316179]: [FUSION batteries] Start Ok
+[ INFO] [1594898155.314012691]: [FUSION temperature] Start Ok
+[ INFO] [1594898155.365454416]: [FUSION lambert] Start Ok
+[ INFO] [1594898155.433705608]: [FUSION internal sensor] Start Ok
+[ INFO] [1594898155.469665851]: [FUSION depth] Start Ok
+[ INFO] [1594898155.570671076]: [Pressure_BME280] Start Ok
+[ INFO] [1594898155.912602984]: [Kalman depth] Start Ok
+[ INFO] [1594898155.964269348]: waitForService: Service [/mission/reload_mission] has not been advertised, waiting...
+[ INFO] [1594898156.111227215]: Subscribing to /iridium/status
+[ INFO] [1594898156.131280291]: Subscribing to /driver/piston/velocity
+[ INFO] [1594898156.147338204]: Subscribing to /fusion/temperature
+[ INFO] [1594898156.160631521]: Subscribing to /driver/piston/state
+[ INFO] [1594898156.208069711]: Subscribing to /fusion/pose_mean
+[ INFO] [1594898156.248299800]: Subscribing to /fusion/depth
+[ INFO] [1594898156.283369384]: Subscribing to /driver/piston/speed
+[ INFO] [1594898156.331623402]: Subscribing to /fusion/kalman
+[ INFO] [1594898156.373245610]: Subscribing to /driver/sensor_internal
+[ INFO] [1594898156.414893970]: Subscribing to /fusion/pose
+[ INFO] [1594898156.450470399]: Subscribing to /driver/piston/regulation_loop
+[ INFO] [1594898156.503932123]: Subscribing to /driver/sensor_temperature
+[ INFO] [1594898156.557649953]: Subscribing to /driver/piston/distance_travelled
+[ INFO] [1594898156.604548008]: Subscribing to /driver/fix
+[ INFO] [1594898156.655283062]: Subscribing to /driver/sensor_external
+[ INFO] [1594898156.700771651]: Subscribing to /iridium/session
+[ INFO] [1594898156.760977246]: Subscribing to /iridium/received_raw
+[ INFO] [1594898156.806177950]: Subscribing to /fusion/battery
+[ INFO] [1594898156.849472034]: Subscribing to /fusion/sensor_internal
+[ INFO] [1594898188.071189414]: [Piston_driver] Start Ok
+
+
+
