@@ -39,7 +39,7 @@ bool is_surface = false;
 ros::WallTime time_last_communication;
 
 string mission_file_path;
-ros::ServiceClient service_sleep_mode, service_sleep_param, service_reload_mission, service_enable_mission;
+//ros::ServiceClient service_sleep_mode, service_sleep_param, service_reload_mission, service_enable_mission;
 ros::Publisher iridium_pub;
 
 bool valid_fix = false;
@@ -239,15 +239,15 @@ int main(int argc, char *argv[]){
   ros::Publisher iridium_status_pub = n.advertise<seabot_iridium::IridiumStatus>("status", 1);
 
   // Services
-  ros::service::waitForService("/driver/power/sleep_mode");
-  ros::service::waitForService("/driver/power/sleep_mode_param");
-  ros::service::waitForService("/mission/reload_mission");
-  ros::service::waitForService("/mission/enable_mission");
+  //ros::service::waitForService("/driver/power/sleep_mode");
+  //ros::service::waitForService("/driver/power/sleep_mode_param");
+  //ros::service::waitForService("/mission/reload_mission");
+  //ros::service::waitForService("/mission/enable_mission");
 
-  service_sleep_mode = n.serviceClient<std_srvs::Empty>("/driver/power/sleep_mode");
-  service_sleep_param = n.serviceClient<seabot_power_driver::SleepModeParam>("/driver/power/sleep_mode_param");
-  service_reload_mission = n.serviceClient<std_srvs::Empty>("/mission/reload_mission");
-  service_enable_mission = n.serviceClient<seabot_mission::MissionEnable>("/mission/enable_mission");
+  //service_sleep_mode = n.serviceClient<std_srvs::Empty>("/driver/power/sleep_mode");
+  //service_sleep_param = n.serviceClient<seabot_power_driver::SleepModeParam>("/driver/power/sleep_mode_param");
+  //service_reload_mission = n.serviceClient<std_srvs::Empty>("/mission/reload_mission");
+  //service_enable_mission = n.serviceClient<seabot_mission::MissionEnable>("/mission/enable_mission");
 
   ros::Rate loop_rate(frequency);
   time_last_communication.fromSec(0);
