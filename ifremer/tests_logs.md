@@ -240,8 +240,23 @@ roslaunch seabot mission.launch >20200702_m2.log 2>&1
 
 idem mais avec modif dans state_regulation
 
+pb: a essaye d'utiliser le gros piston pour se reguler
+
+## mission 3
+
+roslaunch seabot mission.launch >20200702_m3.log 2>&1
+
+interdiction d'utiliser le gros piston pendant la regulation
+
+    root_regulation: -0.2
+
+rate pour le pb de gros piston
+regul meilleure
 
 
+## mission 4
+
+roslaunch seabot mission.launch >20200702_m4.log 2>&1
 
 
 
