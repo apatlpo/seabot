@@ -282,7 +282,6 @@ WantedBy=multi-user.target
 Also=gpsd.socket
 
 
-
 # /lib/systemd/system/gpsd.socket
 [Unit]
 Description=GPS (Global Positioning System) Daemon Sockets
@@ -311,4 +310,56 @@ lsmod
 ps -aux | grep gpsd
 gpsmon /dev/ttyACM0
 
+
+sudo service gpsd status
+sudo service gpsd start
+
+# verifie port sur lequel le gpsd est monté
+dmesg
+cable blanc ne marche pas 
+cable noir d'olivier marche
+
+[ 3175.527519] Voltage normalised (0x00000000)
+[ 3280.516739] usb 1-1.4: new full-speed USB device number 8 using dwc_otg
+[ 3280.619015] usb 1-1.4: New USB device found, idVendor=1546, idProduct=01a8
+[ 3280.619033] usb 1-1.4: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[ 3280.619044] usb 1-1.4: Product: u-blox GNSS receiver
+[ 3280.619054] usb 1-1.4: Manufacturer: u-blox AG - www.u-blox.com
+[ 3280.688791] cdc_acm 1-1.4:1.0: ttyACM0: USB ACM device
+[ 3280.689769] usbcore: registered new interface driver cdc_acm
+[ 3280.689780] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[ 3290.440930] Under-voltage detected! (0x00050005)
+➜  ~ 
+
+ls /dev/ttyACM0
+
+sudo cat /dev/ttyACM0
+
+$GNGSA,A,3,78,79,81,77,88,,,,,,,,1.46,0.95,1.11*1A
+$GPGSV,3,1,11,07,16,319,35,08,32,282,40,10,31,136,40,11,08,248,35*70
+$GPGSV,3,2,11,16,79,205,37,20,42,096,39,21,82,110,36,23,,,30*4D
+$GPGSV,3,3,11,26,43,158,39,27,65,297,45,36,25,136,37*45
+$GLGSV,2,1,07,77,11,177,26,78,54,216,41,79,46,310,43,80,00,340,*6C
+$GLGSV,2,2,07,81,39,263,41,87,36,050,26,88,71,004,39*50
+$GNGLL,4821.47344,N,00433.61031,W,104239.00,A,A*66
+
+
 ## iridium 
+
+roslaunch seabot iridium
+
+NODES
+  /iridium/
+    iridium_node (seabot_iridium/iridium_node)
+
+auto-starting new master
+process[master]: started with pid [6499]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 39ed6ffa-c751-11ea-9d2f-85866bcc4987
+process[rosout-1]: started with pid [6510]
+started core service [/rosout]
+process[iridium/iridium_node-2]: started with pid [6513]
+[ INFO] [1594896231.521424616]: waitForService: Service [/driver/power/sleep_mode] has not been advertised, waiting...
+
+et ne va pas plus loin
