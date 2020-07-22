@@ -167,21 +167,15 @@ n'est pas complètement testé mais intègre les derniers développements où il
 
 ## zsh
 sudo apt update
-sudo apt install curl
-sudo apt install zsh
+sudo apt install -y curl zsh
 whereis zsh
 sudo usermod -s /usr/bin/zsh $(whoami)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 
 ## other libraries
-sudo apt install screen
-sudo apt install gpsd       N
-# may not be necessary given next install
-sudo apt install libgps-dev
-sudo apt install ntp
-sudo apt install libi2c-dev
-sudo apt install libproj-dev
+sudo apt install -y screen libgps-dev gpsd ntp libi2c-dev libproj-dev minicom
+
 
 ## ROS
 
@@ -206,14 +200,14 @@ echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
 source ~/.zshrc
 
 6/
-sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+sudo apt install -y python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
 sudo rosdep init
 rosdep update
 
 # extra ROS package required
-sudo apt install ros-melodic-geometry
+sudo apt install -y ros-melodic-geometry
 
-## compile seabot
+## compile seabot HERE
 cd seabot
 catkin_make -j2
 
@@ -243,7 +237,7 @@ socket.gethostname()
 
 
 # install ssh
-sudo apt install openssh-server
+sudo apt install -y openssh-server
 # activate:
 sudo systemctl enable ssh.service
 sudo systemctl start ssh.service
@@ -263,9 +257,6 @@ chmod 640 .ssh/authorized_keys
 
 # /etc/udev/rules.d/90-gps.rules
 SUBSYSTEM=="tty", ATTRS{idVendor}=="1546", ATTRS{idProduct}=="01a8", SYMLINK+="gps$
-
-# /boot/firmware/usercfg.txt 
-dtoverlay=pps-gpio,gpiopin=24
 
 
 # /etc/default/gpsd
@@ -319,14 +310,11 @@ fudge 127.127.28.0 time1 0.000 flag1 1 refid GPS
 server 127.127.22.0 minpoll 4 maxpoll 4
 fudge  127.127.22.0 flag1 1 refid PPS
 
-## test:
+## test: HERE
 lsmod
 ps -aux | grep gpsd
-gpsmon /dev/ttyACM0
-
-
+sudo cat /dev/ttyACM0
 sudo service gpsd status
-sudo service gpsd start
 
 ● gpsd.service - GPS (Global Positioning System) Daemon
    Loaded: loaded (/etc/systemd/system/gpsd.service; disabled; vendor preset: enab
@@ -514,4 +502,15 @@ x_tables               28672  1 ip_tables
 crc32_arm_ce           16384  2
 sdhci_iproc            16384  0
 
+whoami    # seabot
+ls -lh /dev/ttyAMA0  # crw--w---- 1 root tty 204, 64 juil. 22 14:54 /dev/ttyAMA0
+sudo adduser seabot tty
+sudo adduser seabot dialout
+getent group tty
+
+minicom -D /dev/ttyAMA0 -b 19200
+
+try to disable console in /boot/firmware/nobtcmd.txt
+#net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
+net.ifnames=0 dwc_otg.lpm_enable=0 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
 
