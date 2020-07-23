@@ -553,3 +553,16 @@ process[iridium/iridium_node-2]: started with pid [10220]
 [ INFO] [1595492834.204251660]: [Iridium] Start a session
 [ INFO] [1595492842.493916891]: [Iridium] Session result 0
 
+
+## QGIS
+
+sur mac:
+mkdir ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins
+cp -r seabot/tools/qgis/seabot ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins/seabot
+
+In Settings/Options/System/Environment add:
+QGIS_PLUGINPATH: /Users/aponte/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/
+
+
+
+
