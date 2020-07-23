@@ -510,7 +510,46 @@ getent group tty
 
 minicom -D /dev/ttyAMA0 -b 19200
 
-try to disable console in /boot/firmware/nobtcmd.txt
+# disables console in /boot/firmware/nobtcmd.txt
 #net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
 net.ifnames=0 dwc_otg.lpm_enable=0 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
+
+and works ! at least communications with modem
+but no signal
+
+AT
+
+# signal strength
+AT+CSQ 
+
+# send message
+AT+SBDWT=hello
+AT+SBDIX
+
+
+
+
+[ INFO] [1595492188.007554572]: [Iridium] Start Ok
+[ INFO] [1595492339.317098191]: [Iridium] Start a session
+[ INFO] [1595492360.369610447]: [Iridium] Session result 18
+[ INFO] [1595492360.575275165]: [Iridium] Start a session
+[ INFO] [1595492390.586712902]: [Iridium] End of session not received
+[iridium/iridium_node-2] process has died [pid 9953, exit code 1, cmd /home/seabot/seabot/devel/lib/seabot_iridium/iridium_node ~duration_between_msg:=/iridium/duration_between_msg ~wait_time_surface:=/iridium/wait_time_surface ~depth_surface_limit:=/iridium/depth_surface_limit ~debug:=/iridium/debug ~enable_gnss_iridium:=/iridium/enable_gnss_iridium ~mission_file_name:=/mission_file_name ~mission_path:=/mission/mission_path __name:=iridium_node __log:=/home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2.log].
+log file: /home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2*.log
+[iridium/iridium_node-2] restarting process
+process[iridium/iridium_node-2]: started with pid [10154]
+[ INFO] [1595492410.897465203]: [Iridium] Start Ok
+[ INFO] [1595492414.207245231]: [Iridium] Start a session
+[ INFO] [1595492430.030367646]: [Iridium] Session result 32
+[ INFO] [1595492430.213659091]: [Iridium] Start a session
+[ INFO] [1595492460.224977625]: [Iridium] End of session not received
+[iridium/iridium_node-2] process has died [pid 10154, exit code 1, cmd /home/seabot/seabot/devel/lib/seabot_iridium/iridium_node ~duration_between_msg:=/iridium/duration_between_msg ~wait_time_surface:=/iridium/wait_time_surface ~depth_surface_limit:=/iridium/depth_surface_limit ~debug:=/iridium/debug ~enable_gnss_iridium:=/iridium/enable_gnss_iridium ~mission_file_name:=/mission_file_name ~mission_path:=/mission/mission_path __name:=iridium_node __log:=/home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2.log].
+log file: /home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2*.log
+[iridium/iridium_node-2] restarting process
+process[iridium/iridium_node-2]: started with pid [10220]
+[ INFO] [1595492480.588100500]: [Iridium] Start Ok
+[ INFO] [1595492483.898013161]: [Iridium] Start a session
+[ INFO] [1595492491.857042162]: [Iridium] Session result 0
+[ INFO] [1595492834.204251660]: [Iridium] Start a session
+[ INFO] [1595492842.493916891]: [Iridium] Session result 0
 

@@ -286,6 +286,9 @@ int main(int argc, char *argv[]){
           loop_rate.sleep();
           ros::spinOnce();
 
+          // AP debug iridium
+	  //is_surface = true;
+
           // State machine
           ros::WallTime t = ros::WallTime::now();
           if(is_surface
