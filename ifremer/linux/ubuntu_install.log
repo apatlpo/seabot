@@ -8,8 +8,9 @@ https://ubuntu-mate.org/download/armhf/bionic/
 # copy image on mac and transfer with balenaEtcher (mac os)
 # when booting the system, set the computer name appropriately, e.g.: 
 # ifremer1, ifremer2, ...
-# see:
-https://ubuntu-mate.org/faq/usb-image/#macos
+# see: https://ubuntu-mate.org/faq/usb-image/#macos
+# Disk Utility, MS-DOS (FAT), GUID Partition Map
+# balenaEtcher
 
 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
@@ -563,6 +564,24 @@ cp -r seabot/tools/qgis/seabot ~/Library/Application\ Support/QGIS/QGIS3/profile
 In Settings/Options/System/Environment add:
 QGIS_PLUGINPATH: /Users/aponte/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/
 
+## clone sdcard
+# http://pi.bek.no/cloneSDcard/
 
+# find disk name
+diskutil list
+# /dev/disk2
 
+# create a compressed image 
+sudo dd if=/dev/rdisk2 bs=1m | gzip > pi_20200723.gz
+# without compression
+sudo dd if=/dev/rdisk2 of=pi_20200723.img bs=1m
+
+# unmount disk
+diskutil unmountDisk /dev/disk2
+
+# flash sdcard
+df -h # disk2s2
+diskutil unmountDisk /dev/disk2
+
+gzip -dc pi_20200723.gz | sudo dd of=/dev/rdisk2 bs=1m
 
