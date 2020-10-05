@@ -103,7 +103,8 @@ volatile unsigned char state = RESET_OUT;
 
 // Butee
 #define BUTEE_IN 10    // activates counter to check butee when nb_pulse<BUTEE_IN
-#define BUTEE_OUT 5650 // activates counter to check butee when nb_pulse<BUTEE_OUT
+//#define BUTEE_OUT 5650 // vérin1: activates counter to check butee when nb_pulse<BUTEE_OUT
+#define BUTEE_OUT 9810 // verin2 : activates counter to check butee when nb_pulse<BUTEE_OUT
 #define BUTEE_COUNTER_LIMIT 500 // ms
 #define TIME_BUTEE_RESET 30
 volatile unsigned short butee_reset_cpt = TIME_BUTEE_RESET;
@@ -144,7 +145,7 @@ void i2c_read_data_from_buffer(){
                 LED1 = (rxbuffer_tab[i+1]!=0x00);
                 break;
             case 0x05:
-                error_interval = rxbuffer_tab[i+1];
+                //error_interval = rxbuffer_tab[i+1];
                 break;
             case 0x07:
                 // not used !!
