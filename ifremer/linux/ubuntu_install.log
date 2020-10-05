@@ -8,21 +8,14 @@ https://ubuntu-mate.org/download/armhf/bionic/
 # copy image on mac and transfer with balenaEtcher (mac os)
 # when booting the system, set the computer name appropriately, e.g.: 
 # ifremer1, ifremer2, ...
-# see:
-https://ubuntu-mate.org/faq/usb-image/#macos
+# see: https://ubuntu-mate.org/faq/usb-image/#macos
+# Disk Utility, MS-DOS (FAT), GUID Partition Map
+# balenaEtcher
 
 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 shasum -a 256 ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995  ubuntu-mate-18.04.2-beta1-desktop-armhf+raspi-ext4.img.xz
 bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
-
-
-## get seabot library (to update install commands)
-sudo apt update
-sudo apt install -y git
-git clone https://github.com/apatlpo/seabot.git
-cd seabot
-git checkout -b devel_ifremer origin/devel_ifremer
 
 ##
 # figure out distrib and system informations
@@ -58,21 +51,32 @@ sudo dpkg -i --force-all /var/cache/apt/archives/linux-firmware-raspi2_1.2019081
 # finish up upgrade
 sudo apt upgrade
 
+## get seabot library (to update install commands)
+sudo apt update
+sudo apt install -y git
+sudo apt install -y terminator
+git clone https://github.com/apatlpo/seabot.git
+cd seabot
+git checkout -b devel_ifremer origin/devel_ifremer
 
 ## turn i2c on
 lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
 
 # (/boot/config.txt) prior to system upgrade
-# /boot/firmware/syscfg.txt and /boot/firmware/usercfg.txt
+# /boot/firmware/syscfg.txt
 dtparam=audio=off
 dtparam=i2c_arm=on 
 dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
 dtparam=spi=on
 dtparam=watchdog=on 
 
+# /boot/firmware/usercfg.txt
+dtoverlay=pps-gpio,gpiopin=24
+dtoverlay=pi3-disable-bt
+
 # /etc/modules
 i2c-dev
-#pps-gpio
+pps-gpio
 
 # install i2c tools
 sudo apt install -y i2c-tools
@@ -102,6 +106,18 @@ sudo nano /etc/rc.local
 # By default this script does nothing.
 
 sudo sh -c 'echo 3 >/sys/module/i2c_bcm2835/parameters/debug'
+
+# Iridium DTR (Active low)
+echo "20" > /sys/class/gpio/export
+sleep 0.1
+echo "out" > /sys/class/gpio/gpio20/direction
+echo "0" > /sys/class/gpio/gpio20/value
+
+# Power On Iridium (Active high)
+echo "5" > /sys/class/gpio/export
+sleep 0.1
+echo "out" > /sys/class/gpio/gpio5/direction
+echo "1" > /sys/class/gpio/gpio5/value
 
 exit 0
 ---
@@ -152,20 +168,15 @@ n'est pas complètement testé mais intègre les derniers développements où il
 
 ## zsh
 sudo apt update
-sudo apt install curl
-sudo apt install zsh
+sudo apt install -y curl zsh
 whereis zsh
 sudo usermod -s /usr/bin/zsh $(whoami)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 
 ## other libraries
-sudo apt install screen
-#sudo apt install gpsd # may not be necessary given next install
-sudo apt install libgps-dev
-sudo apt install ntp
-sudo apt install libi2c-dev
-sudo apt install libproj-dev
+sudo apt install -y screen libgps-dev gpsd ntp libi2c-dev libproj-dev minicom
+
 
 ## ROS
 
@@ -190,14 +201,14 @@ echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
 source ~/.zshrc
 
 6/
-sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+sudo apt install -y python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
 sudo rosdep init
 rosdep update
 
 # extra ROS package required
-sudo apt install ros-melodic-geometry
+sudo apt install -y ros-melodic-geometry
 
-## compile seabot
+## compile seabot HERE
 cd seabot
 catkin_make -j2
 
@@ -227,7 +238,7 @@ socket.gethostname()
 
 
 # install ssh
-sudo apt install openssh-server
+sudo apt install -y openssh-server
 # activate:
 sudo systemctl enable ssh.service
 sudo systemctl start ssh.service
@@ -241,3 +252,336 @@ cat .ssh/id_rsa.pub | ssh pi@192.168.2.3 'cat >> .ssh/authorized_keys'
 # on raspberry
 chmod 700 .ssh
 chmod 640 .ssh/authorized_keys
+
+
+## GPS
+
+# /etc/udev/rules.d/90-gps.rules
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1546", ATTRS{idProduct}=="01a8", SYMLINK+="gps$
+
+
+# /etc/default/gpsd
+# sudo usermod -a -G dialout gpsd
+# Default settings for the gpsd init script and the hotplug wrapper.
+
+START_DAEMON="true"
+GPSD_OPTIONS="/dev/ttyACM0 -n"
+DEVICES=""
+USBAUTO="true"
+GPSD_SOCKET="/var/run/gpsd.sock"
+
+## /etc/systemd/system/gpsd.service  
+
+[Unit]
+Description=GPS (Global Positioning System) Daemon
+Requires=gpsd.socket
+# Needed with chrony SOCK refclock
+After=chronyd.service
+
+[Service]
+EnvironmentFile=-/etc/default/gpsd
+EnvironmentFile=-/etc/sysconfig/gpsd
+ExecStart=/usr/sbin/gpsd -N $GPSD_OPTIONS $DEVICES
+
+[Install]
+WantedBy=multi-user.target
+Also=gpsd.socket
+
+
+# /lib/systemd/system/gpsd.socket
+[Unit]
+Description=GPS (Global Positioning System) Daemon Sockets
+
+[Socket]
+ListenStream=/var/run/gpsd.sock
+ListenStream=[::1]:2947
+ListenStream=127.0.0.1:2947
+#ListenStream=0.0.0.0:2947
+SocketMode=0600
+
+[Install]
+WantedBy=sockets.target
+
+
+## /etc/ntp.conf
+# Servers (shared memory provide by gpsd)
+server 127.127.28.0 minpoll 4 maxpoll 4 prefer
+fudge 127.127.28.0 time1 0.000 flag1 1 refid GPS
+
+server 127.127.22.0 minpoll 4 maxpoll 4
+fudge  127.127.22.0 flag1 1 refid PPS
+
+## test: HERE
+lsmod
+ps -aux | grep gpsd
+sudo cat /dev/ttyACM0
+sudo service gpsd status
+
+● gpsd.service - GPS (Global Positioning System) Daemon
+   Loaded: loaded (/etc/systemd/system/gpsd.service; disabled; vendor preset: enab
+   Active: failed (Result: exit-code) since Thu 2020-07-16 13:01:33 CEST; 2min 8s 
+  Process: 8773 ExecStart=/usr/sbin/gpsd -N $GPSD_OPTIONS $DEVICES (code=exited, s
+ Main PID: 8773 (code=exited, status=203/EXEC)
+
+juil. 16 13:01:33 ifremer1 systemd[1]: Started GPS (Global Positioning System) Dae
+juil. 16 13:01:33 ifremer1 systemd[8773]: gpsd.service: Failed to execute command:
+juil. 16 13:01:33 ifremer1 systemd[8773]: gpsd.service: Failed at step EXEC spawni
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Main process exited, code=exi
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Failed with result 'exit-code
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Start request repeated too qu
+juil. 16 13:01:33 ifremer1 systemd[1]: gpsd.service: Failed with result 'exit-code
+juil. 16 13:01:33 ifremer1 systemd[1]: Failed to start GPS (Global Positioning Sys
+~
+
+apres install gpsd: green light
+
+[sudo] password for pi: 
+● gpsd.service - GPS (Global Positioning System) Daemon
+   Loaded: loaded (/etc/systemd/system/gpsd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2020-05-05 16:00:06 CEST; 2 months 11 days ago
+ Main PID: 730 (gpsd)
+    Tasks: 2 (limit: 2152)
+   CGroup: /system.slice/gpsd.service
+           └─730 /usr/sbin/gpsd -N /dev/ttyACM0 -n
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unava
+➜  ~ 
+
+
+
+
+# verifie port sur lequel le gpsd est monté
+dmesg
+cable blanc ne marche pas 
+cable noir d'olivier marche
+
+[ 3175.527519] Voltage normalised (0x00000000)
+[ 3280.516739] usb 1-1.4: new full-speed USB device number 8 using dwc_otg
+[ 3280.619015] usb 1-1.4: New USB device found, idVendor=1546, idProduct=01a8
+[ 3280.619033] usb 1-1.4: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[ 3280.619044] usb 1-1.4: Product: u-blox GNSS receiver
+[ 3280.619054] usb 1-1.4: Manufacturer: u-blox AG - www.u-blox.com
+[ 3280.688791] cdc_acm 1-1.4:1.0: ttyACM0: USB ACM device
+[ 3280.689769] usbcore: registered new interface driver cdc_acm
+[ 3280.689780] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[ 3290.440930] Under-voltage detected! (0x00050005)
+➜  ~ 
+
+ls /dev/ttyACM0
+
+sudo cat /dev/ttyACM0
+
+$GNGSA,A,3,78,79,81,77,88,,,,,,,,1.46,0.95,1.11*1A
+$GPGSV,3,1,11,07,16,319,35,08,32,282,40,10,31,136,40,11,08,248,35*70
+$GPGSV,3,2,11,16,79,205,37,20,42,096,39,21,82,110,36,23,,,30*4D
+$GPGSV,3,3,11,26,43,158,39,27,65,297,45,36,25,136,37*45
+$GLGSV,2,1,07,77,11,177,26,78,54,216,41,79,46,310,43,80,00,340,*6C
+$GLGSV,2,2,07,81,39,263,41,87,36,050,26,88,71,004,39*50
+$GNGLL,4821.47344,N,00433.61031,W,104239.00,A,A*66
+
+
+## iridium 
+
+roslaunch seabot iridium
+
+NODES
+  /iridium/
+    iridium_node (seabot_iridium/iridium_node)
+
+auto-starting new master
+process[master]: started with pid [6499]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 39ed6ffa-c751-11ea-9d2f-85866bcc4987
+process[rosout-1]: started with pid [6510]
+started core service [/rosout]
+process[iridium/iridium_node-2]: started with pid [6513]
+[ INFO] [1594896231.521424616]: waitForService: Service [/driver/power/sleep_mode] has not been advertised, waiting...
+
+et ne va pas plus loin
+
+
+
+on essaie d'ajouter iridium a base.launch
+
+[ INFO] [1594898153.459168428]: [POWER] Start Ok
+process[fusion/depth_filter-9]: started with pid [2735]
+[ INFO] [1594898153.568341282]: Recording to '2020-07-16-13-15-53_0.bag'.
+process[fusion/temperature_filter-10]: started with pid [2740]
+process[fusion/batteries_filter-11]: started with pid [2747]
+[ INFO] [1594898153.834983689]: Subscribing to /driver/power/battery
+process[fusion/internal_sensor_filter-12]: started with pid [2754]
+process[fusion/lambert-13]: started with pid [2755]
+process[fusion/kalman-14]: started with pid [2757]
+[ INFO] [1594898154.257843855]: Subscribing to /rosout
+process[iridium/iridium_node-15]: started with pid [2767]
+[ INFO] [1594898154.686343417]: [GPSD_Client] Start Ok
+[ INFO] [1594898154.776295224]: [Temperature_TSYS01_driver] Start Ok
+[ INFO] [1594898154.860475931]: Subscribing to /rosout_agg
+[ INFO] [1594898155.198316179]: [FUSION batteries] Start Ok
+[ INFO] [1594898155.314012691]: [FUSION temperature] Start Ok
+[ INFO] [1594898155.365454416]: [FUSION lambert] Start Ok
+[ INFO] [1594898155.433705608]: [FUSION internal sensor] Start Ok
+[ INFO] [1594898155.469665851]: [FUSION depth] Start Ok
+[ INFO] [1594898155.570671076]: [Pressure_BME280] Start Ok
+[ INFO] [1594898155.912602984]: [Kalman depth] Start Ok
+[ INFO] [1594898155.964269348]: waitForService: Service [/mission/reload_mission] has not been advertised, waiting...
+[ INFO] [1594898156.111227215]: Subscribing to /iridium/status
+[ INFO] [1594898156.131280291]: Subscribing to /driver/piston/velocity
+[ INFO] [1594898156.147338204]: Subscribing to /fusion/temperature
+[ INFO] [1594898156.160631521]: Subscribing to /driver/piston/state
+[ INFO] [1594898156.208069711]: Subscribing to /fusion/pose_mean
+[ INFO] [1594898156.248299800]: Subscribing to /fusion/depth
+[ INFO] [1594898156.283369384]: Subscribing to /driver/piston/speed
+[ INFO] [1594898156.331623402]: Subscribing to /fusion/kalman
+[ INFO] [1594898156.373245610]: Subscribing to /driver/sensor_internal
+[ INFO] [1594898156.414893970]: Subscribing to /fusion/pose
+[ INFO] [1594898156.450470399]: Subscribing to /driver/piston/regulation_loop
+[ INFO] [1594898156.503932123]: Subscribing to /driver/sensor_temperature
+[ INFO] [1594898156.557649953]: Subscribing to /driver/piston/distance_travelled
+[ INFO] [1594898156.604548008]: Subscribing to /driver/fix
+[ INFO] [1594898156.655283062]: Subscribing to /driver/sensor_external
+[ INFO] [1594898156.700771651]: Subscribing to /iridium/session
+[ INFO] [1594898156.760977246]: Subscribing to /iridium/received_raw
+[ INFO] [1594898156.806177950]: Subscribing to /fusion/battery
+[ INFO] [1594898156.849472034]: Subscribing to /fusion/sensor_internal
+[ INFO] [1594898188.071189414]: [Piston_driver] Start Ok
+
+
+
+NODES
+  /iridium/
+    iridium_node (seabot_iridium/iridium_node)
+
+auto-starting new master
+process[master]: started with pid [5409]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 15a1e67a-c770-11ea-b166-e84e064b777b
+process[rosout-1]: started with pid [5420]
+started core service [/rosout]
+process[iridium/iridium_node-2]: started with pid [5423]
+Error: open: Permission denied
+[ INFO] [1594909499.951388293]: [Iridium] Start Ok
+
+
+lsmod:
+
+Module                  Size  Used by
+rfcomm                 77824  16
+fuse                  106496  3
+pps_ldisc              16384  2
+bnep                   24576  2
+hci_uart              114688  1
+btbcm                  16384  1 hci_uart
+btqca                  16384  1 hci_uart
+btintel                16384  1 hci_uart
+bluetooth             544768  43 hci_uart,btintel,btqca,bnep,btbcm,rfcomm
+ecdh_generic           28672  1 bluetooth
+serdev                 20480  1 hci_uart
+binfmt_misc            20480  1
+arc4                   16384  2
+rt2800usb              28672  0
+rt2800lib             110592  1 rt2800usb
+rt2x00usb              20480  1 rt2800usb
+rt2x00lib              57344  3 rt2800lib,rt2800usb,rt2x00usb
+mac80211              802816  3 rt2800lib,rt2x00lib,rt2x00usb
+brcmfmac              311296  0
+brcmutil               16384  1 brcmfmac
+cfg80211              626688  3 rt2x00lib,mac80211,brcmfmac
+cdc_acm                32768  2
+uio_pdrv_genirq        16384  0
+uio                    20480  1 uio_pdrv_genirq
+sch_fq_codel           20480  7
+pps_gpio               16384  1
+parport_pc             20480  0
+ppdev                  20480  0
+lp                     20480  0
+parport                36864  3 lp,parport_pc,ppdev
+ip_tables              24576  0
+x_tables               28672  1 ip_tables
+crc32_arm_ce           16384  2
+sdhci_iproc            16384  0
+
+whoami    # seabot
+ls -lh /dev/ttyAMA0  # crw--w---- 1 root tty 204, 64 juil. 22 14:54 /dev/ttyAMA0
+sudo adduser seabot tty
+sudo adduser seabot dialout
+getent group tty
+
+minicom -D /dev/ttyAMA0 -b 19200
+
+# disables console in /boot/firmware/nobtcmd.txt
+#net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
+net.ifnames=0 dwc_otg.lpm_enable=0 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
+
+and works ! at least communications with modem
+but no signal
+
+AT
+
+# signal strength
+AT+CSQ 
+
+# send message
+AT+SBDWT=hello
+AT+SBDIX
+
+
+
+
+[ INFO] [1595492188.007554572]: [Iridium] Start Ok
+[ INFO] [1595492339.317098191]: [Iridium] Start a session
+[ INFO] [1595492360.369610447]: [Iridium] Session result 18
+[ INFO] [1595492360.575275165]: [Iridium] Start a session
+[ INFO] [1595492390.586712902]: [Iridium] End of session not received
+[iridium/iridium_node-2] process has died [pid 9953, exit code 1, cmd /home/seabot/seabot/devel/lib/seabot_iridium/iridium_node ~duration_between_msg:=/iridium/duration_between_msg ~wait_time_surface:=/iridium/wait_time_surface ~depth_surface_limit:=/iridium/depth_surface_limit ~debug:=/iridium/debug ~enable_gnss_iridium:=/iridium/enable_gnss_iridium ~mission_file_name:=/mission_file_name ~mission_path:=/mission/mission_path __name:=iridium_node __log:=/home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2.log].
+log file: /home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2*.log
+[iridium/iridium_node-2] restarting process
+process[iridium/iridium_node-2]: started with pid [10154]
+[ INFO] [1595492410.897465203]: [Iridium] Start Ok
+[ INFO] [1595492414.207245231]: [Iridium] Start a session
+[ INFO] [1595492430.030367646]: [Iridium] Session result 32
+[ INFO] [1595492430.213659091]: [Iridium] Start a session
+[ INFO] [1595492460.224977625]: [Iridium] End of session not received
+[iridium/iridium_node-2] process has died [pid 10154, exit code 1, cmd /home/seabot/seabot/devel/lib/seabot_iridium/iridium_node ~duration_between_msg:=/iridium/duration_between_msg ~wait_time_surface:=/iridium/wait_time_surface ~depth_surface_limit:=/iridium/depth_surface_limit ~debug:=/iridium/debug ~enable_gnss_iridium:=/iridium/enable_gnss_iridium ~mission_file_name:=/mission_file_name ~mission_path:=/mission/mission_path __name:=iridium_node __log:=/home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2.log].
+log file: /home/seabot/.ros/log/c319b002-ccbc-11ea-b1b6-b827ebe168e8/iridium-iridium_node-2*.log
+[iridium/iridium_node-2] restarting process
+process[iridium/iridium_node-2]: started with pid [10220]
+[ INFO] [1595492480.588100500]: [Iridium] Start Ok
+[ INFO] [1595492483.898013161]: [Iridium] Start a session
+[ INFO] [1595492491.857042162]: [Iridium] Session result 0
+[ INFO] [1595492834.204251660]: [Iridium] Start a session
+[ INFO] [1595492842.493916891]: [Iridium] Session result 0
+
+
+## QGIS
+
+sur mac:
+mkdir ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins
+cp -r seabot/tools/qgis/seabot ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins/seabot
+
+In Settings/Options/System/Environment add:
+QGIS_PLUGINPATH: /Users/aponte/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/
+
+## clone sdcard
+# http://pi.bek.no/cloneSDcard/
+
+# find disk name
+diskutil list
+# /dev/disk2
+
+# create a compressed image 
+sudo dd if=/dev/rdisk2 bs=1m | gzip > pi_20200723.gz
+# without compression
+sudo dd if=/dev/rdisk2 of=pi_20200723.img bs=1m
+
+# unmount disk
+diskutil unmountDisk /dev/disk2
+
+# flash sdcard
+df -h # disk2s2
+diskutil unmountDisk /dev/disk2
+
+gzip -dc pi_20200723.gz | sudo dd of=/dev/rdisk2 bs=1m
+

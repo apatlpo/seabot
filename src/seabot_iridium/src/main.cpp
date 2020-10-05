@@ -39,7 +39,7 @@ bool is_surface = false;
 ros::WallTime time_last_communication;
 
 string mission_file_path;
-ros::ServiceClient service_sleep_mode, service_sleep_param, service_reload_mission, service_enable_mission;
+//ros::ServiceClient service_sleep_mode, service_sleep_param, service_reload_mission, service_enable_mission;
 ros::Publisher iridium_pub;
 
 bool valid_fix = false;
@@ -141,30 +141,30 @@ void call_sleep_param(const int &hours, const int &min, const int &sec, const in
   srv.request.min = min;
   srv.request.hours = hours;
   srv.request.sec_to_sleep = sec_to_sleep;
-  if (!service_sleep_param.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call sleep param");
-  }
+  //if (!service_sleep_param.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call sleep param");
+  //}
 }
 
 void call_sleep(){
   std_srvs::Empty srv;
-  if(!service_sleep_mode.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call sleep mode");
-  }
+  //if(!service_sleep_mode.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call sleep mode");
+  //}
 }
 
 void call_reload_mission(){
   std_srvs::Empty srv;
-  if(!service_reload_mission.call(srv)){
-    ROS_ERROR("[Iridium] Failed to call reload mission");
-  }
+  //if(!service_reload_mission.call(srv)){
+  //  ROS_ERROR("[Iridium] Failed to call reload mission");
+  //}
 }
 
 void call_enable_mission(const bool &enable_mission){
   seabot_mission::MissionEnable srv;
   srv.request.enable_mission = enable_mission;
-  if(!service_enable_mission.call(srv))
-    ROS_ERROR("[Iridium] Failed to call reload mission");
+  //if(!service_enable_mission.call(srv))
+  //  ROS_ERROR("[Iridium] Failed to call reload mission");
 }
 
 
@@ -239,15 +239,15 @@ int main(int argc, char *argv[]){
   ros::Publisher iridium_status_pub = n.advertise<seabot_iridium::IridiumStatus>("status", 1);
 
   // Services
-  ros::service::waitForService("/driver/power/sleep_mode");
-  ros::service::waitForService("/driver/power/sleep_mode_param");
-  ros::service::waitForService("/mission/reload_mission");
-  ros::service::waitForService("/mission/enable_mission");
+  //ros::service::waitForService("/driver/power/sleep_mode");
+  //ros::service::waitForService("/driver/power/sleep_mode_param");
+  //ros::service::waitForService("/mission/reload_mission");
+  //ros::service::waitForService("/mission/enable_mission");
 
-  service_sleep_mode = n.serviceClient<std_srvs::Empty>("/driver/power/sleep_mode");
-  service_sleep_param = n.serviceClient<seabot_power_driver::SleepModeParam>("/driver/power/sleep_mode_param");
-  service_reload_mission = n.serviceClient<std_srvs::Empty>("/mission/reload_mission");
-  service_enable_mission = n.serviceClient<seabot_mission::MissionEnable>("/mission/enable_mission");
+  //service_sleep_mode = n.serviceClient<std_srvs::Empty>("/driver/power/sleep_mode");
+  //service_sleep_param = n.serviceClient<seabot_power_driver::SleepModeParam>("/driver/power/sleep_mode_param");
+  //service_reload_mission = n.serviceClient<std_srvs::Empty>("/mission/reload_mission");
+  //service_enable_mission = n.serviceClient<seabot_mission::MissionEnable>("/mission/enable_mission");
 
   ros::Rate loop_rate(frequency);
   time_last_communication.fromSec(0);
@@ -285,6 +285,9 @@ int main(int argc, char *argv[]){
         while(ros::ok()){
           loop_rate.sleep();
           ros::spinOnce();
+
+          // AP debug iridium
+	  //is_surface = true;
 
           // State machine
           ros::WallTime t = ros::WallTime::now();

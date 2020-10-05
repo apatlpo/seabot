@@ -155,6 +155,10 @@ int main(int argc, char *argv[]){
   coeff_A = g*rho/m;
   coeff_B = 0.5*rho*Cf/m;
 
+  // other parameters
+  const double depth_big_piston = n_private.param<double>("depth_big_piston", 0);
+  const double tick_big_piston = n_private.param<double>("tick_big_piston", 0);
+
   // Compute regulation constant
   s = n_private.param<double>("root_regulation", -1.0);
   double limit_depth_regulation = n_private.param<double>("limit_depth_controller", 0.5);
@@ -244,7 +248,7 @@ int main(int argc, char *argv[]){
         if(depth_set_point<limit_depth_regulation)
           regulation_state = STATE_SURFACE;
         else if(depth_fusion>=limit_depth_regulation){
-          if((ros::Time::now()-time_last_state).toSec()<1.0){
+          if((ros::Time::now()-time_last_state).toSec()<10.0){
 
             x(2) = -piston_position*tick_to_volume;
 
@@ -259,7 +263,10 @@ int main(int argc, char *argv[]){
             u=optimize_u(u_tab);
 
             // Mechanical limits (in = v_min, out = v_max)
-            if((piston_switch_in && u<0) || (piston_switch_out && u>0))
+            if(((piston_switch_in || ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston+10) )) && u<0) || (piston_switch_out && u>0))
+            // AP offset by 10 to account for tick variability
+            // AP this part should be commented in the future: ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston) )
+            // AP (redondance with max statement line 291)
               u = 0.0;
           }
           else{
@@ -281,7 +288,13 @@ int main(int argc, char *argv[]){
         // Previous form do not allow movement under 1 tick
         // piston_set_point = piston_position - u/(tick_to_volume*control_loop_frequency);
 
+        // forbid regulation with big piston
+        // AP offset by 10 to account for tick variability
+        piston_set_point = max(piston_set_point, tick_big_piston+10);
+
         if(hold_depth_enable && abs(depth_set_point-x(1))<hold_depth_value_enter)
+          // && abs(x(0))<0.01
+          // bad form: add constraint on velocity: (<1cm/s)
           regulation_state = STATE_HOLD_DEPTH;
 
         break;
