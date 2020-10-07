@@ -20,6 +20,10 @@
 		<remap from="~hold_depth_value_enter" to="/regulation/depth_controller/hold_depth_value_enter"/>
 		<remap from="~hold_depth_value_exit" to="/regulation/depth_controller/hold_depth_value_exit"/>
 
+		<remap from="~no_motions_enable" to="/regulation/depth_controller/no_motions_enable"/>
+		<remap from="~no_motions_period_long" to="/regulation/depth_controller/no_motions_period_long"/>
+		<remap from="~no_motions_period_short" to="/regulation/depth_controller/no_motions_period_short"/>
+
 		<remap from="~rho" to="/physics/rho"/>
 		<remap from="~g" to="/physics/g"/>
 		<remap from="~m" to="/physics/m"/>
@@ -48,4 +52,3 @@
 	</node>
 
 </launch>
-

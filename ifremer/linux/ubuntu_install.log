@@ -2,11 +2,11 @@
 ## prepare sim card
 
 # note: you need 32bit version of ubuntu mate !
-# see: 
+# see:
 https://ubuntu-mate.org/download/armhf/bionic/
 
 # copy image on mac and transfer with balenaEtcher (mac os)
-# when booting the system, set the computer name appropriately, e.g.: 
+# when booting the system, set the computer name appropriately, e.g.:
 # ifremer1, ifremer2, ...
 # see: https://ubuntu-mate.org/faq/usb-image/#macos
 # Disk Utility, MS-DOS (FAT), GUID Partition Map
@@ -19,7 +19,7 @@ bb74b607da2f4d417851e006fadd5de1304f84681db9c4bd8f17ff1b1d410995
 
 ##
 # figure out distrib and system informations
-pi@seabot:~$ cat /etc/os-release 
+pi@seabot:~$ cat /etc/os-release
 NAME="Ubuntu"
 VERSION="18.04.2 LTS (Bionic Beaver)"
 ID=ubuntu
@@ -37,7 +37,7 @@ pi@seabot:~$ uname -a
 Linux seabot 4.15.0-1032-raspi2 #34-Ubuntu SMP PREEMPT Wed Feb 6 11:50:42 UTC 2019 armv7l armv7l armv7l GNU/Linux
 
 # Raspberry board version
-cat /sys/firmware/devicetree/base/model 
+cat /sys/firmware/devicetree/base/model
 Raspberry Pi 3 Model B Rev 1.2
 
 ## install libraries
@@ -65,10 +65,10 @@ lsmod | grep i2c # shows nothing even though i2cdetect shows i2c-1
 # (/boot/config.txt) prior to system upgrade
 # /boot/firmware/syscfg.txt
 dtparam=audio=off
-dtparam=i2c_arm=on 
+dtparam=i2c_arm=on
 dtparam=i2c_arm_baudrate=100000 # sensitivity to baudrate was not tested
 dtparam=spi=on
-dtparam=watchdog=on 
+dtparam=watchdog=on
 
 # /boot/firmware/usercfg.txt
 dtoverlay=pps-gpio,gpiopin=24
@@ -133,36 +133,36 @@ dmesg | grep i2c
 ##
 # email Thomas
 
-Le mieux pour ROS c'est de suivre le tuto en ligne : 
+Le mieux pour ROS c'est de suivre le tuto en ligne :
 http://wiki.ros.org/melodic/Installation/Ubuntu
 Tu peux installer seulement la version ros-base (sans-GUI) puisqu'à priori on se connecte en ligne de commande.
 
-Dans les packages pratiques à installer : 
+Dans les packages pratiques à installer :
 gpsd, ntp, screen, crontab, éventuellement zsh suivant les préférences.
-Si tu as déjà les paquets pour l'i2c, normalement je dirais qu'il y a pas besoins de choses supplémentaires 
-(j'utilise eigen, proj4 mais ça doit être déjà installé par défaut ou avec ROS). 
-J'en ai peut-être oublié mais de toute façon il te le dira à la compilation. 
-Pour info, j'ai intégré directement le code de l'IMU (dont tu n'as pas besoin) 
+Si tu as déjà les paquets pour l'i2c, normalement je dirais qu'il y a pas besoins de choses supplémentaires
+(j'utilise eigen, proj4 mais ça doit être déjà installé par défaut ou avec ROS).
+J'en ai peut-être oublié mais de toute façon il te le dira à la compilation.
+Pour info, j'ai intégré directement le code de l'IMU (dont tu n'as pas besoin)
 dans le projet ROS, donc il n'y a plus de dépendance extérieur (RTIUMLib).
 
 Pour le réglage de l'heure automatiquement à partir du gps, il faut configurer ntp
- (et peut-être gpsd, mais ça n'est pas sûr). 
- Normalement il y a les fichiers utilisés ici : 
+ (et peut-être gpsd, mais ça n'est pas sûr).
+ Normalement il y a les fichiers utilisés ici :
  https://github.com/ThomasLeMezo/seabot/tree/master/linux
 
 Pour le plan de travail :
 Installation et compilation de ROS
-Lancer driver.launch et vérifier que tu peux piloter le piston et que tu accèdes 
-à tous les capteurs. 
+Lancer driver.launch et vérifier que tu peux piloter le piston et que tu accèdes
+à tous les capteurs.
 Il y aura peut-être des modifications à faire pour désactiver certains capteurs (à regarder).
 Lancer base.launch et vérifier que tu as bien le log des datas
 Lancer mission.launch avec une mission factice pour voir le comportement général
  du flotteur (même si il faudrait un bassin si tu arrives à cette étape).
-Pour info, la régulation qui est sur le répertoire github (branche devel) 
+Pour info, la régulation qui est sur le répertoire github (branche devel)
 n'est pas complètement testé mais intègre les derniers développements où il y a
- une estimation quadratique de la compressibilité, ainsi qu'une estimation du 
- coefficient de frottement. 
- L'algo d'estimation fonctionnait bien sur des données enregistrés mais je n'ai 
+ une estimation quadratique de la compressibilité, ainsi qu'une estimation du
+ coefficient de frottement.
+ L'algo d'estimation fonctionnait bien sur des données enregistrés mais je n'ai
  pas testé la boucle complète avec le régulateur dans un bassin.
 
 
@@ -182,10 +182,10 @@ sudo apt install -y screen libgps-dev gpsd ntp libi2c-dev libproj-dev minicom
 
 http://wiki.ros.org/melodic/Installation/Ubuntu
 
-1/ Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can follow the Ubuntu guide for instructions on doing this. 
+1/ Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can follow the Ubuntu guide for instructions on doing this.
 https://help.ubuntu.com/community/Repositories/Ubuntu
 
-2/ 
+2/
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 
 
@@ -270,7 +270,7 @@ DEVICES=""
 USBAUTO="true"
 GPSD_SOCKET="/var/run/gpsd.sock"
 
-## /etc/systemd/system/gpsd.service  
+## /etc/systemd/system/gpsd.service
 
 [Unit]
 Description=GPS (Global Positioning System) Daemon
@@ -319,7 +319,7 @@ sudo service gpsd status
 
 ● gpsd.service - GPS (Global Positioning System) Daemon
    Loaded: loaded (/etc/systemd/system/gpsd.service; disabled; vendor preset: enab
-   Active: failed (Result: exit-code) since Thu 2020-07-16 13:01:33 CEST; 2min 8s 
+   Active: failed (Result: exit-code) since Thu 2020-07-16 13:01:33 CEST; 2min 8s
   Process: 8773 ExecStart=/usr/sbin/gpsd -N $GPSD_OPTIONS $DEVICES (code=exited, s
  Main PID: 8773 (code=exited, status=203/EXEC)
 
@@ -335,7 +335,7 @@ juil. 16 13:01:33 ifremer1 systemd[1]: Failed to start GPS (Global Positioning S
 
 apres install gpsd: green light
 
-[sudo] password for pi: 
+[sudo] password for pi:
 ● gpsd.service - GPS (Global Positioning System) Daemon
    Loaded: loaded (/etc/systemd/system/gpsd.service; enabled; vendor preset: enabled)
    Active: active (running) since Tue 2020-05-05 16:00:06 CEST; 2 months 11 days ago
@@ -345,14 +345,14 @@ apres install gpsd: green light
            └─730 /usr/sbin/gpsd -N /dev/ttyACM0 -n
 
 Warning: Journal has been rotated since unit was started. Log output is incomplete or unava
-➜  ~ 
+➜  ~
 
 
 
 
 # verifie port sur lequel le gpsd est monté
 dmesg
-cable blanc ne marche pas 
+cable blanc ne marche pas
 cable noir d'olivier marche
 
 [ 3175.527519] Voltage normalised (0x00000000)
@@ -365,7 +365,7 @@ cable noir d'olivier marche
 [ 3280.689769] usbcore: registered new interface driver cdc_acm
 [ 3280.689780] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
 [ 3290.440930] Under-voltage detected! (0x00050005)
-➜  ~ 
+➜  ~
 
 ls /dev/ttyACM0
 
@@ -380,7 +380,7 @@ $GLGSV,2,2,07,81,39,263,41,87,36,050,26,88,71,004,39*50
 $GNGLL,4821.47344,N,00433.61031,W,104239.00,A,A*66
 
 
-## iridium 
+## iridium
 
 roslaunch seabot iridium
 
@@ -521,7 +521,7 @@ but no signal
 AT
 
 # signal strength
-AT+CSQ 
+AT+CSQ
 
 # send message
 AT+SBDWT=hello
@@ -564,6 +564,22 @@ cp -r seabot/tools/qgis/seabot ~/Library/Application\ Support/QGIS/QGIS3/profile
 In Settings/Options/System/Environment add:
 QGIS_PLUGINPATH: /Users/aponte/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/
 
+missing libraries:
+ls -la /Applications/QGIS3.10.app/Contents/MacOS/bin/
+lrwxr-xr-x   1 aponte  admin      93 19 jul 23:04 python3 -> ../../Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python
+
+#from qgis python console:
+#import subprocess
+#subprocess.check_call(['python', '-m', 'pip', 'install', 'oyaml'])
+
+import sys
+print(sys.version)
+
+
+export PYTHONPATH=/Applications/QGIS3.10.app/Contents/MacOS/bin/python3
+
+oyaml
+
 ## clone sdcard
 # http://pi.bek.no/cloneSDcard/
 
@@ -571,7 +587,7 @@ QGIS_PLUGINPATH: /Users/aponte/Library/Application Support/QGIS/QGIS3/profiles/d
 diskutil list
 # /dev/disk2
 
-# create a compressed image 
+# create a compressed image
 sudo dd if=/dev/rdisk2 bs=1m | gzip > pi_20200723.gz
 # without compression
 sudo dd if=/dev/rdisk2 of=pi_20200723.img bs=1m
@@ -584,4 +600,3 @@ df -h # disk2s2
 diskutil unmountDisk /dev/disk2
 
 gzip -dc pi_20200723.gz | sudo dd of=/dev/rdisk2 bs=1m
-

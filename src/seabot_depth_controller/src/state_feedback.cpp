@@ -28,6 +28,7 @@ double limit_velocity = 0.0;
 double approach_velocity = 1.0;
 ros::Time time_last_state;
 ros::Time time_depth_data;
+ros::Time time_last_no_motions;
 
 bool emergency = true; // Wait safety clearance on startup
 
@@ -38,8 +39,9 @@ double tick_to_volume = 0.;
 
 double depth_fusion = 0.0;
 
-enum STATE_MACHINE {STATE_SURFACE, STATE_SINK, STATE_REGULATION, STATE_STATIONARY, STATE_EMERGENCY, STATE_PISTON_ISSUE, STATE_HOLD_DEPTH};
+enum STATE_MACHINE {STATE_SURFACE, STATE_SINK, STATE_REGULATION, STATE_STATIONARY, STATE_EMERGENCY, STATE_PISTON_ISSUE, STATE_HOLD_DEPTH, STATE_NO_MOTIONS};
 STATE_MACHINE regulation_state = STATE_SURFACE;
+//STATE_MACHINE last_regulation_state = STATE_SURFACE;
 
 seabot_depth_controller::RegulationDebug debug_msg;
 
@@ -172,6 +174,11 @@ int main(int argc, char *argv[]){
   const double hold_depth_value_enter = n_private.param<double>("hold_depth_value_enter", 0.05);
   const double hold_depth_value_exit = n_private.param<double>("hold_depth_value_exit", 0.1);
 
+  // No motions parameters
+  const bool no_motions_enable = n_private.param<bool>("no_motions_enable", false);
+  const double no_motions_period_long = n_private.param<double>("no_motions_period_long", 300.0);
+  const double no_motions_period_short = n_private.param<double>("no_motions_period_short", 30.0);
+
   /// ************************* ROS Communication *************************
   // Subscriber
   ros::Subscriber kalman_sub = n.subscribe("/fusion/kalman", 1, kalman_callback);
@@ -268,6 +275,13 @@ int main(int argc, char *argv[]){
             // AP this part should be commented in the future: ( (x(1)>depth_big_piston) && (piston_set_point<tick_big_piston) )
             // AP (redondance with max statement line 291)
               u = 0.0;
+
+            if ( no_motions_enable && ((ros::Time::now()-time_last_no_motions).toSec() >= no_motions_period_long) ){
+              regulation_state = STATE_NO_MOTIONS;
+              time_last_no_motions = ros::Time::now();
+              u = 0.0;
+            }
+
           }
           else{
             // Did not received state => resurfacing
@@ -275,6 +289,7 @@ int main(int argc, char *argv[]){
             ROS_INFO("[DepthRegulation] Timing issue");
           }
         }
+
         else
           regulation_state = STATE_SINK;
 
@@ -319,6 +334,13 @@ int main(int argc, char *argv[]){
           regulation_state = STATE_SURFACE;
         break;
 
+      case STATE_NO_MOTIONS:
+        u = 0.0; // should not be necessary
+        if ( (ros::Time::now()-time_last_no_motions).toSec() >= no_motions_period_short ){
+          regulation_state = STATE_REGULATION;
+        }
+        break;
+
       default:
         break;
       }
@@ -354,4 +376,3 @@ int main(int argc, char *argv[]){
 
   return 0;
 }
-
