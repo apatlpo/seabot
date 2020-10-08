@@ -9,10 +9,10 @@ physics:
   # Float
   m: 13.5
   diam_collerette: 0.35
-  screw_thread: 8.48e-5
+  screw_thread: 8.11e-5
   tick_per_turn: 1
   piston_diameter: 0.0195
-  piston_max_value: 1415.0
+  piston_max_value: 2460.0
   piston_speed_max_tick: 20
   piston_ref_eq: 1000
 
