@@ -24,6 +24,7 @@
 			<remap from="~reached_switch_off" to="/driver/piston/reached_switch_off" />
 			<remap from="~error_interval" to="/driver/piston/error_interval" />
 			<remap from="~tick_max" to="/driver/piston/tick_max" />
+			<remap from="~piston_velocity_max" to="/driver/piston/piston_velocity_max" />
 			<remap from="~depth_big_piston" to="/driver/piston/depth_big_piston" />
 			<remap from="~tick_big_piston" to="/driver/piston/tick_big_piston" />
 		</node>
@@ -35,7 +36,7 @@
                 -->
 		<node name="pressure_ext" pkg="pressure_7ld_driver" type="pressure_7ld_node.py" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_ext/frequency" />
-		</node> 
+		</node>
 
 		<node name="pressure_int" pkg="pressure_bme280_driver" type="bme280_node" output="screen" respawn="true" respawn_delay="5">
 			<remap from="~frequency" to="/driver/pressure_int/frequency" />

@@ -1,6 +1,6 @@
 # Tests Ifremer 07/2020
 
---- 
+---
 
 ## cheat sheet
 
@@ -107,7 +107,7 @@ coule au fond et y reste
 inspection bag le flotteur a l'air mal balaste
 
 pesee la surface en position balastage: pese 7g
-donc besoin d'enlever 7/0.9 = 7.7 (air) 
+donc besoin d'enlever 7/0.9 = 7.7 (air)
 arrondi a 8g
 
 on enleve 107g et rajoute 72+26=98g
@@ -151,7 +151,7 @@ pareil avec plus de paliers
 
 looks good !!
 
-## mission 5 
+## mission 5
 
 roslaunch seabot mission.launch >20200701_m5.log 2>&1
 
@@ -159,7 +159,7 @@ try hold depth avec contrainte sur la vitesse
 
 mais rate à caus de la valeur de hold_depth_exit (0.)
 
-50cm / 1cm/s = 50 s 
+50cm / 1cm/s = 50 s
 
 
 sonde:
@@ -260,3 +260,22 @@ roslaunch seabot mission.launch >20200702_m4.log 2>&1
 
 
 
+
+
+# actions prises suites tests ifremer octobre 2020
+
+- Lignes suivantes commentées dans `seabot_safety/src/main.cpp`
+
+```
+// ifremer: not useful for soft switches
+//if(piston_switch_in && piston_switch_out){
+//  safety_msg.depressurization = true;
+//  warning_number = 7;
+//}
+```
+
+- add `bad_i2c` filter in `seabot_piston_driver/src/main.src`
+
+- vérification baud rate bus i2C sur raspberry:
+
+- diminution cadence i2c TSYS01:
