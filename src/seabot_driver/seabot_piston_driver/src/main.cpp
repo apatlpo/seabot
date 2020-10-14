@@ -49,6 +49,10 @@ ros::Time time_depth_data;
 
 size_t cpt_message_publisher;
 
+bool bad_i2c = false;
+ros::Time time_first_bad_i2c;
+double time_bad_i2c;
+
 bool piston_reset(std_srvs::Empty::Request  &req,
                   std_srvs::Empty::Response &res){
   p.set_piston_reset();
@@ -107,6 +111,7 @@ int main(int argc, char *argv[]){
   const int error_interval = n_private.param<int>("error_interval", 6);
 
   const double tick_max = n_private.param<double>("tick_max", 2500);
+  const double piston_velocity_max = n_private.param<double>("piston_velocity_max", 100);
 
   const double depth_big_piston = n_private.param<double>("depth_big_piston", 0);
   const double tick_big_piston = n_private.param<double>("tick_big_piston", 0);
@@ -180,39 +185,44 @@ int main(int argc, char *argv[]){
       /// ********************************************
       /// ******** Send Command to the piston ********
       /// ********************************************
-      // Piston set point
-      if((piston_set_point != p.m_position_set_point) || (t-t_last_set_point).toSec()>30.0){
-        if ( piston_set_point<tick_big_piston && depth>depth_big_piston ){
-          t_last_set_point = t;
-          p.set_piston_position(tick_big_piston);
-        }
-        else if ( piston_set_point>tick_big_piston || depth<depth_big_piston ){
-          t_last_set_point = t;
-          // AP: ajouter une contrainte sur le piston_set_point + profondeur pour gérer le gros piston
-          // abonner à la profondeur? - depth
-          // ajouter paramètre dans config_ifremer.yaml + driver.launch + paramètres script
-          p.set_piston_position(piston_set_point);
-        }
-      }
 
-      if(new_set_point){
-        regulation_loop_msg.dt = ros::Time::now() - time_depth_data;
-        new_set_point = false;
-        regulation_loop.publish(regulation_loop_msg);
-      }
+      if(!bad_i2c){
 
-      // Fast speed if position is far from position
-      if(abs(piston_set_point - p.m_position)>distance_fast_move){
-        if(!fast_move){
-          new_speed = true;
-          fast_move = true;
+        // Piston set point
+        if((piston_set_point != p.m_position_set_point) || (t-t_last_set_point).toSec()>30.0){
+          if ( piston_set_point<tick_big_piston && depth>depth_big_piston ){
+            t_last_set_point = t;
+            p.set_piston_position(tick_big_piston);
+          }
+          else if ( piston_set_point>tick_big_piston || depth<depth_big_piston ){
+            t_last_set_point = t;
+            // AP: ajouter une contrainte sur le piston_set_point + profondeur pour gérer le gros piston
+            // abonner à la profondeur? - depth
+            // ajouter paramètre dans config_ifremer.yaml + driver.launch + paramètres script
+            p.set_piston_position(piston_set_point);
+          }
         }
-      }
-      else{
-        if(fast_move){
-          new_speed = true;
-          fast_move = false;
+
+        if(new_set_point){
+          regulation_loop_msg.dt = ros::Time::now() - time_depth_data;
+          new_set_point = false;
+          regulation_loop.publish(regulation_loop_msg);
         }
+
+        // Fast speed if position is far from position
+        if(abs(piston_set_point - p.m_position)>distance_fast_move){
+          if(!fast_move){
+            new_speed = true;
+            fast_move = true;
+          }
+        }
+        else{
+          if(fast_move){
+            new_speed = true;
+            fast_move = false;
+          }
+        }
+
       }
 
       // Compute new speed index (20% hysteresis) from depth
@@ -247,77 +257,117 @@ int main(int argc, char *argv[]){
 
       state_msg.stamp = ros::Time::now();
       p.get_piston_all_data();
-      state_msg.position = p.m_position;
-      if(state_msg.position > tick_max) // Filter
-        state_msg.position = tick_max;
-      state_msg.switch_out = p.m_switch_out;
-      state_msg.switch_in = p.m_switch_in;
-      state_msg.state = p.m_state;
-      state_msg.motor_on = p.m_motor_on;
-      state_msg.enable_on = p.m_enable_on;
-      state_msg.position_set_point = p.m_position_set_point;
-      state_msg.motor_speed = p.m_motor_speed;
-      state_pub.publish(state_msg);
 
-      // Piston Velocity publisher
+      // add checks with counter for sanity of PIC data
       double delta_t = (t - t_last_velocity).toSec();
       if(delta_t > 1.0){
         velocity = (p.m_position - position_last)/delta_t;
-        t_last_velocity = t;
-        position_last = p.m_position;
-        velocity_msg.velocity =velocity;
-        velocity_pub.publish(velocity_msg);
       }
 
-      // Distance travelled
-      distance_travelled += abs(p.m_position-last_piston_position_hf);
-      last_piston_position_hf = p.m_position;
-      distance_travelled_msg.distance = round(distance_travelled);
-      distance_travelled_pub.publish(distance_travelled_msg);
+      if( (p.m_switch_out==p.m_switch_in) || (p.m_position>tick_max) || (p.m_position<-100) || (p.m_position_set_point>tick_max) || (p.m_position_set_point<-100) || (abs(velocity)>piston_velocity_max) ){
 
-      // Analyze speed issue (update speed_table)
-      if(p.m_motor_speed!=50 && abs(velocity)==0.0 && p.m_state==1){
-        if(!velocity_issue_detected){
-          time_velocity_issue_detected = ros::Time::now();
-          velocity_issue_detected = true;
+        if(bad_i2c){
+          time_first_bad_i2c = ros::Time::now();
+          ROS_WARN("[Piston_driver] Bad i2c detected start");
         }
-        else{
-          if((ros::Time::now()-time_velocity_issue_detected).toSec()>3.0){
-            for(size_t i=layer_number_last; i<speed_table_in.size(); i++){
-              if(p.m_position_set_point > p.m_position){ // Sens of movement
-                speed_table_in[i] = min(speed_max, speed_table_in[i]+speed_step_increase);
-              }
-              else{
-                speed_table_out[i] = min(speed_max, speed_table_out[i]+speed_step_increase);
-              }
-            }
-            velocity_issue_detected = false;
-            new_speed = true;
-            ROS_WARN("[Piston_driver] Velocity Issue detected - speed was increased of %zu for layer %f", speed_step_increase, layer_number_last);
-          }
-        }
-      }
-      else
-        velocity_issue_detected=false;
 
-      if(p.m_switch_in && p.m_switch_out){
-        if(!is_sealing_issue){
-          ROS_WARN("[Piston_driver] Sealing issue detected");
-          time_sealing_issue = ros::Time::now();
-          is_sealing_issue = true;
-        }
         else{
-          if((ros::Time::now()-time_sealing_issue).toSec()>15.0){
-            ROS_WARN("[Piston_driver] Sealing issue detected - Start emergency procedure");
+
+          bad_i2c = true;
+          time_bad_i2c = (ros::Time::now()-time_first_bad_i2c).toSec();
+          ROS_WARN("[Piston_driver] Bad i2c detected for %f", time_bad_i2c);
+
+          if(time_bad_i2c>30.0){
+            ROS_WARN("[Piston_driver] Major i2c issue - Start emergency procedure");
             p.set_piston_emergency();
             sleep(30);
             p.set_piston_reset();
           }
         }
+
       }
+
       else{
-        is_sealing_issue = false;
+
+        bad_i2c = false;
+
+        state_msg.position = p.m_position;
+        //if(state_msg.position > tick_max) // Filter
+        //  state_msg.position = tick_max;
+        state_msg.switch_out = p.m_switch_out;
+        state_msg.switch_in = p.m_switch_in;
+        state_msg.state = p.m_state;
+        state_msg.motor_on = p.m_motor_on;
+        state_msg.enable_on = p.m_enable_on;
+        state_msg.position_set_point = p.m_position_set_point;
+        state_msg.motor_speed = p.m_motor_speed;
+        //state_pub.publish(state_msg);
+
+        // Piston Velocity publisher
+        //double delta_t = (t - t_last_velocity).toSec();
+        if(delta_t > 1.0){
+          //velocity = (p.m_position - position_last)/delta_t;
+          t_last_velocity = t;
+          position_last = p.m_position;
+          velocity_msg.velocity =velocity;
+          //velocity_pub.publish(velocity_msg);
+        }
+
+        // Distance travelled
+        distance_travelled += abs(p.m_position-last_piston_position_hf);
+        last_piston_position_hf = p.m_position;
+        distance_travelled_msg.distance = round(distance_travelled);
+        //distance_travelled_pub.publish(distance_travelled_msg);
+
+        // Analyze speed issue (update speed_table)
+        if(p.m_motor_speed!=50 && abs(velocity)==0.0 && p.m_state==1){
+          if(!velocity_issue_detected){
+            time_velocity_issue_detected = ros::Time::now();
+            velocity_issue_detected = true;
+          }
+          else{
+            if((ros::Time::now()-time_velocity_issue_detected).toSec()>3.0){
+              for(size_t i=layer_number_last; i<speed_table_in.size(); i++){
+                if(p.m_position_set_point > p.m_position){ // Sens of movement
+                  speed_table_in[i] = min(speed_max, speed_table_in[i]+speed_step_increase);
+                }
+                else{
+                  speed_table_out[i] = min(speed_max, speed_table_out[i]+speed_step_increase);
+                }
+              }
+              velocity_issue_detected = false;
+              new_speed = true;
+              ROS_WARN("[Piston_driver] Velocity Issue detected - speed was increased of %zu for layer %f", speed_step_increase, layer_number_last);
+            }
+          }
+        }
+        else
+          velocity_issue_detected=false;
       }
+
+      // publish all messages
+      state_pub.publish(state_msg);
+      velocity_pub.publish(velocity_msg);
+      distance_travelled_pub.publish(distance_travelled_msg);
+
+      //if(p.m_switch_in && p.m_switch_out){
+      //  if(!is_sealing_issue){
+      //    ROS_WARN("[Piston_driver] Sealing issue detected");
+      //    time_sealing_issue = ros::Time::now();
+      //    is_sealing_issue = true;
+      //  }
+      //  else{
+      //    if((ros::Time::now()-time_sealing_issue).toSec()>15.0){
+      //      ROS_WARN("[Piston_driver] Sealing issue detected - Start emergency procedure");
+      //      p.set_piston_emergency();
+      //      sleep(30);
+      //      p.set_piston_reset();
+      //    }
+      //  }
+      //}
+      //else{
+      //  is_sealing_issue = false;
+      //}
     }
 
     loop_rate.sleep();
@@ -325,4 +375,3 @@ int main(int argc, char *argv[]){
 
   return 0;
 }
-

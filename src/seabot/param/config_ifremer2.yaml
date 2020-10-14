@@ -38,8 +38,9 @@ driver:
     speed_max: 50
     reached_switch_off: True
     error_interval: 6
-    # value usede to filter wrong position readings
+    # below max values used to filter wrong pic i2c readings
     tick_max: 3000
+    piston_velocity_max: 100.
 
   pressure_ext:
     frequency: 5
