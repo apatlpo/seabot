@@ -51,7 +51,7 @@ size_t cpt_message_publisher;
 
 bool bad_i2c = false;
 ros::Time time_first_bad_i2c;
-int position_diff
+double time_bad_i2c;
 
 bool piston_reset(std_srvs::Empty::Request  &req,
                   std_srvs::Empty::Response &res){
@@ -273,10 +273,11 @@ int main(int argc, char *argv[]){
 
         else{
 
-          bad_i2c = true
-          ROS_WARN("[Piston_driver] Bad i2c detected for %f", (ros::WallTime::now()-time_first_bad_i2c).toSec());
+          bad_i2c = true;
+          time_bad_i2c = (ros::Time::now()-time_first_bad_i2c).toSec();
+          ROS_WARN("[Piston_driver] Bad i2c detected for %f", time_bad_i2c);
 
-          if((ros::Time::now()-time_first_bad_i2c).toSec()>30.0){
+          if(time_bad_i2c>30.0){
             ROS_WARN("[Piston_driver] Major i2c issue - Start emergency procedure");
             p.set_piston_emergency();
             sleep(30);
@@ -288,7 +289,7 @@ int main(int argc, char *argv[]){
 
       else{
 
-        bad_i2c = false
+        bad_i2c = false;
 
         state_msg.position = p.m_position;
         //if(state_msg.position > tick_max) // Filter
