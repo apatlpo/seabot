@@ -7,7 +7,8 @@ from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph.console
 from pyqtgraph.dockarea import *
 import datetime
-from PyQt4.QtCore import QTime, QTimer
+#from PyQt4.QtCore import QTime, QTimer
+from PyQt5.QtCore import QTime, QTimer
 
 from scipy import signal, interpolate
 import numpy as np

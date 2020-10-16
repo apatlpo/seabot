@@ -600,3 +600,33 @@ df -h # disk2s2
 diskutil unmountDisk /dev/disk2
 
 gzip -dc pi_20200723.gz | sudo dd of=/dev/rdisk2 bs=1m
+
+
+
+
+
+
+
+
+# install PC
+
+# system update
+sudo apt update
+sudo apt upgrade # triggers major upgrade
+
+sudo apt update
+sudo apt install -y git
+sudo apt install -y terminator
+git clone https://github.com/apatlpo/seabot.git
+cd seabot
+git checkout -b devel_ifremer origin/devel_ifremer
+
+sudo apt install -y screen libgps-dev gpsd ntp libi2c-dev libproj-dev minicom
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+sudo apt update
+sudo apt install ros-noetic-desktop-full
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
