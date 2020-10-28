@@ -557,6 +557,26 @@ process[iridium/iridium_node-2]: started with pid [10220]
 
 ## QGIS
 
+Mail TLM:
+
+```
+Pour installer le plugin qgis :
+ Dans qgis, cocher l'option Plugins>Manage and Install Plugins...>Settings>Show also experimental plugins
+Dans ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins, ajouter un lien symbolique vers le répertoire tools/qgis/seabot du workspace
+(ln -s ~/seabot/tools/qgis/seabot ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/seabot)
+Puis dans Qgis,
+Installer le plugin dans le gestionnaire de plugin (Plugins>Manage and Install Plugins..., chercher "Seabot" et cocher la case)
+Lancer le plugin : soit l'icone avec une petite prise, soit dans le menu Plugins)
+Dans l'onglet "Config" du plugin, remplir le email account pour récupérer les messages (attention le mot de passe est stocké en clair dans la base de donnée (Seabot_iridium.db dans le repertoire tools/qgis/seabot)
+à noter, si tu branches un gps sur ton ordinateur avec le deamon gpsd, tu peux voir ta position sur la carte (Enable Boat Position)
+Tu peux également charger le fichier de mission que tu as mis dans le flotteur : il est parssé et permet de suivre en temps réel la profondeur du flotteur et le temps avant qu'il ne remonte.
+Dans "State", tu peux suivre l'état des différents flotteurs et les valeurs de batteries, pression etc.
+
+Autre plugins intéressant :
+QuickMapServices pour avoir les cartes d'OSM (ajouter une carte dans l'onglet Web>QuickMapServices>OSM>OSM Standard)
+```
+
+
 sur mac:
 mkdir ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins
 cp -r seabot/tools/qgis/seabot ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins/seabot
@@ -632,7 +652,7 @@ echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
 sudo apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
 sudo apt install -y python3-pyqtgraph
-sudo apt-get install -y python3-pyqt5  
+sudo apt-get install -y python3-pyqt5
 sudo rosdep init
 rosdep update
 
@@ -653,5 +673,3 @@ sudo add-apt-repository "deb https://qgis.org/debian `lsb_release -c -s` main"
 sudo apt update
 
 sudo apt install qgis qgis-plugin-grass
-
-
