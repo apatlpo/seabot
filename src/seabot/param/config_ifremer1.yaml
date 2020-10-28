@@ -94,6 +94,7 @@ iridium:
   depth_surface_limit: 0.5
   debug: False
   enable_gnss_iridium: False
+  version: 1
 
 kalman:
   frequency: 25.0

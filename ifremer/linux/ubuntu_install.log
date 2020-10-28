@@ -227,6 +227,8 @@ rm -rf build/ devel/
 
 # add hostname in .profile:
 export HOSTNAME="ifremer1"
+# and in .zshrc (for ssh logins)
+export HOSTNAME="ifremer1"
 
 # create appropriate param file, for example
 src/seabot/param/config_ifremer1.yaml
@@ -511,6 +513,27 @@ getent group tty
 
 minicom -D /dev/ttyAMA0 -b 19200
 
++-------------------------------------------------------------------+
+|                      Minicom Command Summary                      |
+|                                                                   |
+|              Commands can be called by CTRL-A <key>               |
+|                                                                   |
+|               Main Functions                  Other Functions     |
+|                                                                   |
+| Dialing directory..D  run script (Go)....G | Clear Screen.......C |
+| Send files.........S  Receive files......R | cOnfigure Minicom..O |
+| comm Parameters....P  Add linefeed.......A | Suspend minicom....J |
+| Capture on/off.....L  Hangup.............H | eXit and reset.....X |
+| send break.........F  initialize Modem...M | Quit with no reset.Q |
+| Terminal settings..T  run Kermit.........K | Cursor key mode....I |
+| lineWrap on/off....W  local Echo on/off..E | Help screen........Z |
+| Paste file.........Y  Timestamp toggle...N | scroll Back........B |
+| Add Carriage Ret...U                                              |
+|                                                                   |
+|             Select function or press Enter for none.              |
++-------------------------------------------------------------------+
+
+
 # disables console in /boot/firmware/nobtcmd.txt
 #net.ifnames=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
 net.ifnames=0 dwc_otg.lpm_enable=0 console=tty1 root=LABEL="writable" rootfstype=ext4 elevator=deadline rootwait
@@ -526,8 +549,6 @@ AT+CSQ
 # send message
 AT+SBDWT=hello
 AT+SBDIX
-
-
 
 
 [ INFO] [1595492188.007554572]: [Iridium] Start Ok
@@ -635,8 +656,9 @@ sudo apt update
 sudo apt upgrade # triggers major upgrade
 
 sudo apt update
-sudo apt install -y git
+sudo apt install -y git python3-pip
 sudo apt install -y terminator
+sudo apt install net-tools   # ifconfig
 git clone https://github.com/apatlpo/seabot.git
 cd seabot
 git checkout -b devel_ifremer origin/devel_ifremer
@@ -673,3 +695,14 @@ sudo add-apt-repository "deb https://qgis.org/debian `lsb_release -c -s` main"
 sudo apt update
 
 sudo apt install qgis qgis-plugin-grass
+
+
+
+mkdir  ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
+ln -s ~/seabot/tools/qgis/seabot/ ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/seabot
+
+pip3 install oyaml gps
+
+ping eusa.ifremer.fr
+134.246.142.199
+

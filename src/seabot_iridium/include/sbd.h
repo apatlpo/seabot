@@ -138,6 +138,13 @@ public:
    */
   void set_debug(const bool &val);
 
+  /**
+   * @brief set_version
+   * @param val
+   * @return
+   */
+  void set_version(const int &val);
+
 private:
 
   /**
@@ -162,6 +169,7 @@ private:
 
   omp_lock_t lock_data;
 
+  int m_version = 0;
 
   int m_STATUS_MO = -2;
   int m_STATUS_MOMSN = -2;

@@ -5,6 +5,7 @@
 		<remap from="~depth_surface_limit" to="/iridium/depth_surface_limit" />
 		<remap from="~debug" to="/iridium/debug" />
 		<remap from="~enable_gnss_iridium" to="/iridium/enable_gnss_iridium" />
+		<remap from="~version" to="/iridium/version" />
 
 		<remap from="~mission_file_name" to="/mission_file_name" />
 		<remap from="~mission_path" to="/mission/mission_path" />

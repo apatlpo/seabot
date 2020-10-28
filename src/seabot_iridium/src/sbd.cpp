@@ -346,7 +346,7 @@ int SBD::cmd_session(){
 
   ROS_INFO("[Iridium] Start a session");
   string cmd = "AT+SBDIX" + string(answer?"A":"");
-  if(m_valid_gnss){
+  if(m_valid_gnss){ // AP: comment out?
     int lat_deg = int(m_latitude);
     double lat_min = int(abs(m_latitude - lat_deg)*60000.)/1000.;
     int lon_deg = int(m_longitude);
@@ -399,7 +399,12 @@ int SBD::cmd_enable_alert(const bool &enable){
 int SBD::cmd_enable_indicator_reporting(const bool &enable){
   string cmd = "AT+CIER=";
   cmd += string(enable?"1":"0");
-  cmd += ",1,1,1,0";
+  if(m_version==0){
+    cmd += ",1,1,1,0";
+  }
+  else if(m_version==1){
+    cmd += ",1,1"; // earlier Iridium
+  }
   write(cmd);
   return 0;
 }
