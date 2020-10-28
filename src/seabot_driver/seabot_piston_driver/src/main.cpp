@@ -140,6 +140,7 @@ int main(int argc, char *argv[]){
   ros::Time t_last_velocity, t_last_set_point;
   double velocity = 0.0;
   double position_last = 0.0;
+  bool first_velocity = true;
 
   // Sensor initialization
   p.i2c_open();
@@ -260,7 +261,10 @@ int main(int argc, char *argv[]){
 
       // add checks with counter for sanity of PIC data
       double delta_t = (t - t_last_velocity).toSec();
-      if(delta_t > 1.0){
+      if (first_velocity){
+        velocity = 0.;
+      }
+      else if(delta_t > 1.0){
         velocity = (p.m_position - position_last)/delta_t;
       }
 
@@ -311,6 +315,7 @@ int main(int argc, char *argv[]){
           position_last = p.m_position;
           velocity_msg.velocity =velocity;
           //velocity_pub.publish(velocity_msg);
+          first_velocity = false;
         }
 
         // Distance travelled
