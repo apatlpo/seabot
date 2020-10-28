@@ -268,6 +268,8 @@ int main(int argc, char *argv[]){
         velocity = (p.m_position - position_last)/delta_t;
       }
 
+
+      ROS_WARN("[Piston_driver] Switch_out, switch_in =(%d,%d)", p.m_switch_out,p.m_switch_in);
       if( (p.m_switch_out==p.m_switch_in) || (p.m_position>tick_max) || (p.m_position<-100) || (p.m_position_set_point>tick_max) || (p.m_position_set_point<-100) || (abs(velocity)>piston_velocity_max) ){
 
         if(bad_i2c){
