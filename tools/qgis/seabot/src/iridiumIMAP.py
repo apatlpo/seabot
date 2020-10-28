@@ -100,7 +100,10 @@ class ImapServer(QObject):
 			self.serverIMAP = imaplib.IMAP4_SSL(login_data["server_ip"], login_data["server_port"])
 			rsp = self.serverIMAP.login(login_data["email"], login_data["password"])
 
-			if(rsp[1][0].decode()=="LOGIN completed."):
+			_rsp = rsp[1][0].decode()
+			#print(_rsp)
+			#print('Logged in' in _rsp)
+			if(_rsp=="LOGIN completed.") | ('Logged in' in _rsp) :
 				self.is_connected = True
 				self.is_first_connection = True
 				rsp, nb_message_inbox = self.serverIMAP.select(mailbox=self.mailbox, readonly=False)
