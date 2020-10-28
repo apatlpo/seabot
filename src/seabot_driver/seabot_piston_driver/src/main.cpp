@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
 
   bool new_speed = true;
 
-  ROS_INFO("[Piston_driver] Start Ok, code check 7e8099c7");
+  ROS_INFO("[Piston_driver] Start Ok, code check wip0");
   ros::Rate loop_rate(frequency);
   cpt_message_publisher = divider_frequency;
   while (ros::ok()){
@@ -260,14 +260,16 @@ int main(int argc, char *argv[]){
       p.get_piston_all_data();
 
       // add checks with counter for sanity of PIC data
-      double delta_t = (t - t_last_velocity).toSec();
       if (first_velocity){
         velocity = 0.;
+        position_last = p.m_position
+        t_last_velocity = t;
+	delta_t = 0.1
       }
       else if(delta_t > 1.0){
+	double delta_t = (t - t_last_velocity).toSec();
         velocity = (p.m_position - position_last)/delta_t;
       }
-
 
       ROS_WARN("[Piston_driver] Switch_out, switch_in =(%d,%d)", p.m_switch_out,p.m_switch_in);
       if( (p.m_switch_out==p.m_switch_in) || (p.m_position>tick_max) || (p.m_position<-100) || (p.m_position_set_point>tick_max) || (p.m_position_set_point<-100) || (abs(velocity)>piston_velocity_max) ){
