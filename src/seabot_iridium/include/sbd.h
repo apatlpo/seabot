@@ -250,6 +250,10 @@ inline void SBD::set_debug(const bool &val){
   m_debug = val;
 }
 
+inline void SBD::set_version(const int &val){
+  m_version = val;
+}
+
 inline void SBD::set_gnss(const double &latitude, const double &longitude){
   m_latitude = latitude;
   m_longitude = longitude;

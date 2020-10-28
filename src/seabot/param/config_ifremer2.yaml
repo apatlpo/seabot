@@ -92,7 +92,7 @@ iridium:
   duration_between_msg: 60
   wait_time_surface: 10
   depth_surface_limit: 0.5
-  debug: False
+  debug: True
   enable_gnss_iridium: False
   version: 1
 

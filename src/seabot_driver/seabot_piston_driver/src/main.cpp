@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
 
   bool new_speed = true;
 
-  ROS_INFO("[Piston_driver] Start Ok");
+  ROS_INFO("[Piston_driver] Start Ok, code check 7e8099c7");
   ros::Rate loop_rate(frequency);
   cpt_message_publisher = divider_frequency;
   while (ros::ok()){
