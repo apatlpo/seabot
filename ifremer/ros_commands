@@ -1,0 +1,21 @@
+# launch mission
+screen -a
+#   check gps and restart if necessary with gps_restart
+gps_check
+roslaunch seabot mission.launch >20201102_m0.log 2>&1
+# ctrl-A ctrl-D
+rostopic echo /driver/sensor_internal   
+
+
+# check internal pressure ...
+screen -a
+roslaunch seabot driver.launch
+# ctrl-A ctrl-D
+rostopic echo /driver/sensor_internal
+# move to balast position
+balast_position
+
+
+# compilation
+cd seabot
+catkin_make -j2
