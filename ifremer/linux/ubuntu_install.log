@@ -706,3 +706,39 @@ pip3 install oyaml gps
 ping eusa.ifremer.fr
 134.246.142.199
 
+## conda qgis environment
+
+```
+conda create -n seabot python=3.8 -c conda-forge jupyterlab
+conda activate seabot
+
+import imaplib
+login_data = {'email': 'aponte',
+              'server_ip': '134.246.142.199',
+              'server_port': '993',
+              }
+login_data['password'] = ''
+serverIMAP = imaplib.IMAP4_SSL(login_data["server_ip"], login_data["server_port"])
+rsp = serverIMAP.login(login_data["email"], login_data["password"])
+
+mailbox = 'INBOX'
+rsp, nb_message_inbox = serverIMAP.select(mailbox=mailbox, readonly=False)
+
+typ, msgnums = serverIMAP.search(None, 'RECENT')
+# 'OK', 0
+
+typ, msgnums = serverIMAP.search(None, 'FROM', '"sbdservice@sbd.iridium.com"')
+
+list_msg_num = msgnums[0].split()
+for num in list_msg_num:
+  print(num)
+  typ, flags = serverIMAP.fetch(num, '(FLAGS)')
+  #print(flags)
+  if 'Seen' in str(flags[0]):
+    print(flags)
+  serverIMAP.store(num, '+FLAGS', '\\Seen') # marks message as seen
+  #serverIMAP.store(num, '-FLAGS', '\\Seen') # mark as unseen
+
+#FLAGS
+
+```
