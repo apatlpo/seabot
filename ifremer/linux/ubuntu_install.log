@@ -175,7 +175,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 
 
 ## other libraries
-sudo apt install -y screen libgps-dev gpsd ntp libi2c-dev libproj-dev minicom
+sudo apt install -y screen libgps-dev gpsd gpsd-clients ntp libi2c-dev libproj-dev minicom
 
 
 ## ROS
@@ -380,6 +380,12 @@ $GPGSV,3,3,11,26,43,158,39,27,65,297,45,36,25,136,37*45
 $GLGSV,2,1,07,77,11,177,26,78,54,216,41,79,46,310,43,80,00,340,*6C
 $GLGSV,2,2,07,81,39,263,41,87,36,050,26,88,71,004,39*50
 $GNGLL,4821.47344,N,00433.61031,W,104239.00,A,A*66
+
+
+# 
+cgps
+
+sudo service gpsd restart
 
 
 ## iridium
@@ -659,6 +665,7 @@ sudo apt update
 sudo apt install -y git python3-pip
 sudo apt install -y terminator
 sudo apt install net-tools   # ifconfig
+sudo apt-get install arp-scan
 git clone https://github.com/apatlpo/seabot.git
 cd seabot
 git checkout -b devel_ifremer origin/devel_ifremer
@@ -696,15 +703,26 @@ sudo apt update
 
 sudo apt install qgis qgis-plugin-grass
 
-
+plugins utils:
+open street + Plugin Reloader
 
 mkdir  ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-ln -s ~/seabot/tools/qgis/seabot/ ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/seabot
+
+git clone https://github.com/apatlpo/seabot2-qgis.git
+
+ln -s ~/seabot2-qgis/ ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/seabot
 
 pip3 install oyaml gps
 
 ping eusa.ifremer.fr
 134.246.142.199
+
+# install conda environment (jupyter , ...)
+
+https://docs.conda.io/en/latest/miniconda.html#linux-installers
+
+conda config --set auto_activate_base false
+
 
 ## conda qgis environment
 
@@ -742,3 +760,26 @@ for num in list_msg_num:
 #FLAGS
 
 ```
+
+
+
+
+A faire sur autre flotteur:
+
+sudo apt install gpsd-clients
+
+ajuster .zshrc:
+
+# move float piston to balast position: need roslaunch seabot driver.launch in screen
+alias balast_position="rostopic pub -r 1 /driver/piston/position seabot_piston_driver/PistonPosition '{position: 1056, stamp: {secs: 1, nsecs: 0 }}'"
+
+# gps
+alias gps_restart="sudo service gpsd restart"
+alias gps_check="cgps"
+
+
+
+lancer mission au démarrage via crontab pour gérer pb gps
+ou vérifier avec cgps et relancer gpsd: sudo service gpsd restart
+
+

@@ -241,7 +241,7 @@ def plot_regulation_state(dock):
     dock.addWidget(pg_regulation_state)
 
     tab = np.array(regulationData.mode)
-    for i in np.where(tab[:-1] != tab[1:])[0]:
+    for i in np.where(tab[:-1] != tab[1:])[0]: # debug
         text_write_plot(pg_regulation_state, regulationData.time[i+1], tab[i+1], regulation_state[tab[i+1]])
     return pg_regulation_state
 
@@ -268,7 +268,9 @@ regulation_state = {
     2: "Regulation",
     3: "Stationary",
     4: "Emergency",
-    5: "Piston issue"
+    5: "Piston issue",
+    6: "Hold depth",
+    7: "No motion",
 }
 
 safety_warning = {

@@ -279,3 +279,16 @@ roslaunch seabot mission.launch >20200702_m4.log 2>&1
 - vérification baud rate bus i2C sur raspberry:
 
 - diminution cadence i2c TSYS01:
+
+
+
+# bassin 02/11/2020
+
+roslaunch seabot mission.launch >20201102_m1.log 2>&1
+
+scp seabot@192.168.2.103:'.ros/2020-11-02*.bag' .
+scp seabot@192.168.2.103:'20201102*.log' .
+
+
+
+
