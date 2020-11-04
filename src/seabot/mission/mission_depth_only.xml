@@ -14,10 +14,10 @@
 <paths>
 
 	<waypoint>
-		<duration>800</duration>
-		<depth>5</depth>
+		<duration>600</duration>
+		<depth>10</depth>
 		<limit_velocity>0.1</limit_velocity>
-		<approach_velocity>1.0</approach_velocity>
+		<approach_velocity>2.0</approach_velocity>
 	</waypoint>
 
 <!--
@@ -40,10 +40,10 @@
 <!-- last point should always be shallower than depth_big_piston -->
 
 	<waypoint>
-		<duration>400</duration>
-		<depth>2.5</depth>
+		<duration>600</duration>
+		<depth>5</depth>
 		<limit_velocity>0.1</limit_velocity>
-		<approach_velocity>1.0</approach_velocity>
+		<approach_velocity>2.0</approach_velocity>
 	</waypoint>
 
 </paths>

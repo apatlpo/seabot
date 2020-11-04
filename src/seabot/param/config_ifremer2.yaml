@@ -14,7 +14,7 @@ physics:
   piston_diameter: 0.0195
   piston_max_value: 2460.0
   piston_speed_max_tick: 20
-  piston_ref_eq: 1000
+  piston_ref_eq: 2000
 
 driver:
   power:
@@ -92,7 +92,7 @@ iridium:
   duration_between_msg: 60
   wait_time_surface: 10
   depth_surface_limit: 0.5
-  debug: False
+  debug: True
   enable_gnss_iridium: False
   version: 1
 
@@ -141,8 +141,8 @@ regulation:
     delta_velocity_lb: -0.01
     delta_velocity_ub:  0.01
 
-    delta_position_lb: -0.1
-    delta_position_ub:  0.1
+    delta_position_lb: -1.
+    delta_position_ub:  1.
 
     hysteresis_piston: 0.6
     speed_volume_sink: 10.0
@@ -151,7 +151,7 @@ regulation:
     hold_depth_value_enter: 0.30
     hold_depth_value_exit: 0.30
 
-    no_motions_enable: False
+    no_motions_enable: True
     no_motions_period_long: 300.0
     no_motions_period_short: 60.0
 
@@ -201,7 +201,7 @@ safety:
   # Batteries
   safety_battery: True
   # !! was 11
-  battery_limit: 9.0
+  battery_limit: 12.0
 
   # Flash
   enable_flash: True
