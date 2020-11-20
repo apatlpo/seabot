@@ -27,6 +27,8 @@
 			<remap from="~piston_velocity_max" to="/driver/piston/piston_velocity_max" />
 			<remap from="~depth_big_piston" to="/driver/piston/depth_big_piston" />
 			<remap from="~tick_big_piston" to="/driver/piston/tick_big_piston" />
+			<remap from="~tick_limit_balast" to="/driver/piston/tick_limit_balast" />
+			<remap from="~depth_limit_balast" to="/driver/piston/depth_limit_balast" />
 		</node>
 
 		<!--

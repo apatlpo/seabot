@@ -158,8 +158,11 @@ int main(int argc, char *argv[]){
   coeff_B = 0.5*rho*Cf/m;
 
   // other parameters
-  const double depth_big_piston = n_private.param<double>("depth_big_piston", 0);
-  const double tick_big_piston = n_private.param<double>("tick_big_piston", 0);
+  const double depth_big_piston = n_private.param<double>("depth_big_piston", 0.0);
+  const double tick_big_piston = n_private.param<double>("tick_big_piston", 0.0);
+
+  const double tick_limit_balast = n_private.param<double>("tick_limit_balast", 0.0);
+  const double depth_limit_balast = n_private.param<double>("depth_limit_balast", 1.0);
 
   // Compute regulation constant
   s = n_private.param<double>("root_regulation", -1.0);
@@ -205,6 +208,8 @@ int main(int argc, char *argv[]){
   double piston_set_point=0.;
   size_t piston_set_point_msg = 0;
 
+  bool bad_balast = false;
+
   cpt_divider_frequency = divider_frequency; // To reduce delay
   double control_loop_frequency = frequency/(double)divider_frequency;
 
@@ -232,9 +237,11 @@ int main(int argc, char *argv[]){
 
         break;
       case STATE_SINK:
-
-        if(depth_set_point<limit_depth_regulation)
+        if( (depth_fusion>depth_limit_balast) && (piston_position<tick_limit_balast) )
+          bad_balast = true;
+        if( (depth_set_point<limit_depth_regulation) || bad_balast ){
           regulation_state = STATE_SURFACE;
+        }
         else if(depth_fusion<limit_depth_regulation){
           u = -speed_volume_sink*tick_to_volume;
           double ref_eq = (x(3)+x(4)*limit_depth_regulation+x(5)*pow(limit_depth_regulation,2))/tick_to_volume;

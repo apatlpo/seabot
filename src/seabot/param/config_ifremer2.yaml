@@ -33,8 +33,10 @@ driver:
     speed_in_slope: 0.5
     speed_depth_layer: 5.0
     depth_max: 500.0
-    depth_big_piston: 2.0
+    depth_big_piston: 4.0
     tick_big_piston: 300
+    tick_limit_balast: 660
+    depth_limit_balast: 1.0
     speed_max: 50
     reached_switch_off: True
     error_interval: 6
@@ -100,7 +102,7 @@ kalman:
   frequency: 25.0
   # !! will have to be increased latter on !!
   # need to be shallower than depth regulation parameter
-  enable_depth: 0.1
+  enable_depth: 0.5
 
   # turned on
   estimated_first_error_equilibrium_tick: 619
@@ -136,7 +138,7 @@ regulation:
     divider_frequency: 25
     root_regulation: -0.15
     # !!
-    limit_depth_controller: 0.2
+    limit_depth_controller: 2.0
 
     delta_velocity_lb: -0.01
     delta_velocity_ub:  0.01
