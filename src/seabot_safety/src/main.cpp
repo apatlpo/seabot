@@ -391,7 +391,8 @@ int main(int argc, char *argv[]){
        || d_internal_sensor > d_internal_sensor_ref
        || d_external_sensor > d_external_sensor_ref
        || d_depth > d_depth_ref
-       || d_piston_state > d_piston_state_ref){
+       || d_piston_state > d_piston_state_ref
+       || d_euler > d_euler_ref){
       ROS_WARN("[Safety] No data published by sensors (%f, %f, %f, %f, %f, %f)", d_batteries, d_internal_sensor, d_external_sensor, d_depth, d_piston_state, d_euler);
 
       safety_msg.published_frequency = true;

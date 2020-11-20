@@ -9,6 +9,7 @@ from pyqtgraph.dockarea import *
 import datetime
 #from PyQt4.QtCore import QTime, QTimer
 from PyQt5.QtCore import QTime, QTimer
+from PyQt5.QtWidgets import QFileDialog, QInputDialog
 
 from scipy import signal, interpolate
 import numpy as np
@@ -49,12 +50,20 @@ def save_gpx():
     gpx_track = gpxpy.gpx.GPXTrack()
     gpx_segment = gpxpy.gpx.GPXTrackSegment()
 
+    filepath = QFileDialog.getSaveFileName(win,"Save file", str(filename[:-4])+".gpx","GPX (*.gpx)")
+    print(filepath)
+    if(filepath[0]==''):
+        return
+    sec_delay, ok = QInputDialog.getDouble(win, "GPX Export : sample rate","Seconds between two points", 0.0, 0.0, 1000.0, 1)
+    if(not ok):
+        return
+
     for i in range(len(fixData.latitude)):
-        if(abs(last_fix_time-fixData.time[i])>30.):
+        if(abs(last_fix_time-fixData.time[i])>float(sec_delay)):
             if(fixData.status[i]==3):
                 last_fix_time = fixData.time[i]
 
-                gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(latitude=fixData.latitude[i], 
+                gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(latitude=fixData.latitude[i],
                     longitude=fixData.longitude[i],
                     elevation=fixData.altitude[i],
                     time=datetime.datetime.fromtimestamp(fixData.time[i]+startTime),
@@ -64,14 +73,14 @@ def save_gpx():
     gpx_track.segments.append(gpx_segment)
     gpx.tracks.append(gpx_track)
 
-    file = open(filename+".gpx","w") 
-    file.write(gpx.to_xml()) 
+    file = open(filepath[0],"w")
+    file.write(gpx.to_xml())
     file.close()
 
 def export_mag():
         global lr_mag
         t_bounds = lr_mag.getRegion()
-        
+
         lr_TP_bounds = t_bounds
         ub = np.where(magData.time <= np.max((1,t_bounds[1])))[0][-1]
         lb = np.where(magData.time >= np.min((magData.time[-1],t_bounds[0])))[0][0]
@@ -114,7 +123,7 @@ def export_mag():
         for direction in (-1, 1):
             for point in np.diag(direction * MAX * np.array([1, 1, 1])):
                 ax.plot([point[0]], [point[1]], [point[2]], 'w')
-                
+
         #ax.scatter(dataC[:,0], dataC[:,1], dataC[:,2], marker='o', color='g')
         ax.scatter(dataC2[:, 0], dataC2[:, 1], dataC2[:, 2], marker='o', color='b')
         ax.scatter(dataE[:, 0], dataE[:, 1], dataE[:, 2], marker='o', color='r')
@@ -179,7 +188,7 @@ tick_to_volume = (1.75e-3/48.0)*((0.05/2.0)**2)*np.pi
 
 app = QtGui.QApplication([])
 win = QtGui.QMainWindow()
-win.showMaximized() 
+win.showMaximized()
 win.setWindowTitle("Seabot log - " + sys.argv[1])
 
 tab = QtGui.QTabWidget()
@@ -301,6 +310,25 @@ def text_write_safety_msg(p, t, msg, data):
         if(tab[i+1]==1):
             text_write_plot(p, t[i+1], tab[i+1], msg)
 
+# https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value/12141511#12141511
+from bisect import bisect_left
+def take_closest_index(myList, myNumber):
+    """
+    Assumes myList is sorted. Returns closest value to myNumber.
+
+    If two numbers are equally close, return the smallest number.
+    """
+    pos = bisect_left(myList, myNumber)
+    if pos == 0:
+        return 0
+    if pos == len(myList):
+        return len(myList)-1
+    before = myList[pos - 1]
+    after = myList[pos]
+    if after - myNumber < myNumber - before:
+       return pos
+    else:
+       return pos-1
 #################### Safety ####################
 
 #### Safety Debug ####
@@ -349,7 +377,7 @@ if(len(safetyCpu.time)>0):
 
     pg_safety_debug_ram.setXLink(pg_safety_debug_cpu)
 
-#### Safety #### 
+#### Safety ####
 if(len(safetyData.time)>0):
     dock_safety = Dock("Safety")
     area_safety.addDock(dock_safety, 'above', dock_safety_debug)
@@ -364,7 +392,7 @@ if(len(safetyData.time)>0):
     text_write_safety_msg(pg_safety, safetyData.time, "depth_limit", safetyData.depth_limit)
     text_write_safety_msg(pg_safety, safetyData.time, "batteries_limit", safetyData.batteries_limit)
     text_write_safety_msg(pg_safety, safetyData.time, "depressurization", safetyData.depressurization)
-    text_write_safety_msg(pg_safety, safetyData.time, "seafloor", safetyData.seafloor)   
+    text_write_safety_msg(pg_safety, safetyData.time, "seafloor", safetyData.seafloor)
     dock_safety.addWidget(pg_safety)
 
     if(len(safetyDebugData.time)>0):
@@ -446,7 +474,7 @@ if(len(temperatureData.time)>0 and len(depthFusionData.time)>0):
     if(len(depthFusionData.depth)>0):
         pg_temp_depth = pg.PlotWidget()
         set_plot_options(pg_temp_depth)
-        
+
         f_temp = interpolate.interp1d(temperatureData.time, temperatureData.temperature, bounds_error=False)
         f_depth = interpolate.interp1d(depthFusionData.time, depthFusionData.depth, bounds_error=False)
 
@@ -463,7 +491,7 @@ if(len(temperatureData.time)>0 and len(depthFusionData.time)>0):
         pg_temp_depth.setDownsampling(mode='peak') # ToCheck
         pg_temp_depth.setLabel('left', "Depth")
         pg_temp_depth.setLabel('bottom', "Temperature")
-        
+
         pg_temp_depth.getViewBox().invertY(True)
         dock_temp.addWidget(pg_temp_depth)
 
@@ -560,7 +588,7 @@ if(len(magData.time)>0):
 
     exportMagBtn = QtGui.QPushButton('Export Mag Calibration')
     dock_mag.addWidget(exportMagBtn, row=2, col=0)
-    
+
     pg_mag2.setXLink(pg_mag1)
 
     exportMagBtn.clicked.connect(export_mag)
@@ -592,7 +620,7 @@ if(len(imuData.time)>0):
     def export_acc():
         global lr_acc
         t_bounds = lr_acc.getRegion()
-        
+
         lr_TP_bounds = t_bounds
         ub = np.where(imuData.time <= np.max((1,t_bounds[1])))[0][-1]
         lb = np.where(imuData.time >= np.min((imuData.time[-1],t_bounds[0])))[0][0]
@@ -645,7 +673,7 @@ if(len(imuData.time)>0):
     def export_gyro():
         global lr_gyro
         t_bounds = lr_gyro.getRegion()
-        
+
         lr_TP_bounds = t_bounds
         ub = np.where(imuData.time <= np.max((1,t_bounds[1])))[0][-1]
         lb = np.where(imuData.time >= np.min((imuData.time[-1],t_bounds[0])))[0][0]
@@ -736,7 +764,7 @@ if(np.size(pistonStateData.time)>0):
     pg_piston_speed = pg.PlotWidget()
     set_plot_options(pg_piston_speed)
     pg_piston_speed.plot(pistonStateData.time, pistonStateData.motor_speed[:-1], pen=(255,0,0), name="speed", stepMode=True)
-    
+
     if(len(pistonSpeedData.speed_in)>1):
         pg_piston_speed.plot(pistonSpeedData.time, 50-np.array(pistonSpeedData.speed_in)[:-1], pen=(0,255,0), name="speed_max_in", stepMode=True)
         pg_piston_speed.plot(pistonSpeedData.time, 50+np.array(pistonSpeedData.speed_out)[:-1], pen=(0,255,0), name="speed_max_out", stepMode=True)
@@ -766,7 +794,7 @@ if(len(regulationData.time)>0):
     pg_regulation_velocity.plot(kalmanData.time, kalmanData.velocity[:-1], pen=(255,0,0), name="velocity", stepMode=True)
     pg_regulation_velocity.plot(missionData.time, missionData.limit_velocity[:-1], pen=(0,255,0), name="target_velocity_max", stepMode=True)
     pg_regulation_velocity.plot(missionData.time, -np.array(missionData.limit_velocity[:-1]), pen=(0,255,0), name="target_velocity_min", stepMode=True)
-    
+
     z_bar = missionData.depth
     beta = missionData.limit_velocity * 2./np.pi
     alpha = missionData.approach_velocity
@@ -908,7 +936,7 @@ if(len(regulationHeadingData.time)>0):
     pg_regulation_heading_command.plot(regulationHeadingData.time, regulationHeadingData.command[:-1], pen=(255,0,0), name="command", stepMode=True)
     pg_regulation_heading_command.plot(regulationHeadingData.time, regulationHeadingData.command_limit[:-1], pen=(0,255,0), name="command_limit", stepMode=True)
     dock_regulation_heading.addWidget(pg_regulation_heading_command)
-    
+
     pg_regulation_heading_var.setXLink(pg_regulation_heading_error)
     pg_regulation_heading_command.setXLink(pg_regulation_heading_error)
     if(len(eulerData.time)>0):
@@ -1062,7 +1090,7 @@ if(len(poseFusionData.east)>0 and len(fixData.time)>0):
     dock_gps2.addWidget(saveBtn, row=1, col=0)
     saveBtn.clicked.connect(save_gpx)
 
-####  Heading #### 
+####  Heading ####
 if(len(eulerData.time)>0 and len(fixData.time)>0):
     dock_euler = Dock("Heading")
     area_position.addDock(dock_euler, 'above', dock_gps)
@@ -1071,7 +1099,7 @@ if(len(eulerData.time)>0 and len(fixData.time)>0):
     pg_euler1.plot(eulerData.time, np.array(eulerData.z[:-1])*180.0/np.pi, pen=(0,0,255), name="Heading", stepMode=True)
     dock_euler.addWidget(pg_euler1)
 
-####  Speed & Heading GPS #### 
+####  Speed & Heading GPS ####
 if(len(fixData.time)>0):
     dock_gps_speed_track = Dock("GPS Speed/Track")
     area_position.addDock(dock_gps_speed_track, 'above', dock_gps)
@@ -1087,7 +1115,7 @@ if(len(fixData.time)>0):
 
     pg_gps_track.setXLink(pg_gps_speed)
 
-####  Error GPS #### 
+####  Error GPS ####
 if(len(fixData.time)>0):
     dock_gps_error = Dock("GPS Error")
     area_position.addDock(dock_gps_error, 'above', dock_gps)
@@ -1103,7 +1131,7 @@ if(len(fixData.time)>0):
 
     pg_gps_vert.setXLink(pg_gps_horz)
 
-####  Dop GPS #### 
+####  Dop GPS ####
 if(len(fixData.time)>0):
     dock_gps_dop = Dock("GPS DOP")
     area_position.addDock(dock_gps_dop, 'above', dock_gps)
@@ -1119,7 +1147,7 @@ if(len(fixData.time)>0):
 
     pg_gps_vdop.setXLink(pg_gps_hdop)
 
-####  Dop GPS #### 
+####  Dop GPS ####
 if(len(fixData.time)>0):
     dock_gps_alt = Dock("GPS Alti")
     area_position.addDock(dock_gps_alt, 'above', dock_gps)
@@ -1166,6 +1194,25 @@ if(len(iridiumSessionData.time)>0):
     pg_depth = plot_depth(dock_iridium_session)
 
     pg_iridium_session_result.setXLink(pg_depth)
+
+    # Add text message
+    text = pg.TextItem(html='<div style="text-align: left"><span style="color: #FFF;">0</span></div>', anchor=(-0.1, 0.1),border='w', fill=(0, 0, 200, 255))
+    pg_iridium_session_result.addItem(text)
+    vLine = pg.InfiniteLine(angle=90, movable=False)
+    pg_iridium_session_result.addItem(vLine, ignoreBounds=True)
+
+    # Add message identification
+
+    def mouseMoved(evt):
+        pos = evt[0]  ## using signal proxy turns original arguments into a tuple
+        if pg_iridium_session_result.sceneBoundingRect().contains(pos):
+            mousePoint = pg_iridium_session_result.getViewBox().mapSceneToView(pos)
+            index = take_closest_index(iridiumSessionData.time, mousePoint.x())
+            text.setText(map_mo_msg[iridiumSessionData.mo[index]]+"\n"+map_mt_msg[iridiumSessionData.mt[index]])
+            text.setPos(mousePoint.x(), mousePoint.y())
+            vLine.setPos(iridiumSessionData.time[index])
+
+    proxy = pg.SignalProxy(pg_iridium_session_result.scene().sigMouseMoved, rateLimit=60, slot=mouseMoved)
 
     # # /iridium/session
     # time_iridium_session = []
@@ -1351,7 +1398,7 @@ if(np.size(engineData.time)>0 and np.size(regulationWaypointData.time)>0 and len
 # pg_thruster_linear.plot(engineCmdData.time, engineCmdData.linear[:-1], pen=(255,0,0), name="linear", stepMode=True)
 # pg_thruster_linear.setLabel('left', "linear")
 # dock_regulation_output.addWidget(pg_thruster_linear)
-    
+
 # regulationWaypointData.yaw_set_point
 # regulationWaypointData.yaw_error
 # regulationWaypointData.distance_error
@@ -1362,8 +1409,42 @@ if(np.size(engineData.time)>0 and np.size(regulationWaypointData.time)>0 and len
 
 ###################################################
 
+map_mo_msg = dict([\
+(0, "0 - MO message, if any, transferred successfully."),\
+(1, "1 - MO message, if any, transferred successfully, but the MT message in the queue was too big to be transferred."),\
+(2, "2 - MO message, if any, transferred successfully, but the requested Location Update was not accepted."),\
+(3, "3 - Reserved, but indicate MO session success if used."),\
+(5, "5 - Reserved, but indicate MO session failure if used."),\
+(10, "10 - GSS reported that the call did not complete in the allowed time."),\
+(11, "11 - MO message queue at the GSS is full."),\
+(12, "12 - MO message has too many segments."),\
+(13, "13 - GSS reported that the session did not complete."),\
+(14, "14 - Invalid segment size."),\
+(15, "15 - Access is denied."),\
+(16, "16 - ISU has been locked and may not make SBD calls (see +CULK command)."),\
+(17, "17 - Gateway not responding (local session timeout)."),\
+(18, "18 - Connection lost (RF drop)."),\
+(19, "19 - Link failure (A protocol error caused termination of the call)."),\
+(20, "20 - Reserved, but indicate failure if used."),\
+(32, "32 - No network service, unable to initiate call."),\
+(33, "33 - Antenna fault, unable to initiate call."),\
+(34, "34 - Radio is disabled, unable to initiate call (see *Rn command)."),\
+(35, "35 - ISU is busy, unable to initiate call."),\
+(36, "36 - Try later, must wait 3 minutes since last registration."),\
+(37, "37 - SBD service is temporarily disabled."),\
+(38, "38 - Try later, traffic management period (see +SBDLOE command)"),\
+(39, "39 - Reserved, but indicate failure if used."),\
+(64, "64 - Band violation (attempt to transmit outside permitted frequency band)."),\
+(65, "65 - PLL lock failure; hardware error during attempted transmit.")\
+])
+
+map_mt_msg = dict([\
+(0, "0 - No SBD message to receive from the GSS."),\
+(1, "1 - SBD message successfully received from the GSS."),\
+(2, "2 - An error occurred while attempting to perform a mailbox check or receive a message from the GSS.")\
+])
 win.show()
-    
+
 ## Start Qt event loop unless running in interactive mode or using pyside.
 if __name__ == '__main__':
     import sys

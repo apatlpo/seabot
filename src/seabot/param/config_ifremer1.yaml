@@ -150,6 +150,9 @@ regulation:
     hold_depth_enable: False
     hold_depth_value_enter: 0.30
     hold_depth_value_exit: 0.30
+    hold_velocity_enter: 0.01
+
+    safety_no_data: 10.0
 
     no_motions_enable: True
     no_motions_period_long: 300.0

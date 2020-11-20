@@ -19,7 +19,6 @@ public:
    * @param baud_rate
    * @param timeout (in ms)
    */
-  SBD(const std::string &serial_port_name, const unsigned int &baud_rate);
   SBD();
 
   ~SBD();
@@ -138,13 +137,6 @@ public:
    */
   void set_debug(const bool &val);
 
-  /**
-   * @brief set_version
-   * @param val
-   * @return
-   */
-  void set_version(const int &val);
-
 private:
 
   /**
@@ -172,7 +164,6 @@ private:
 
   omp_lock_t lock_data;
 
-  int m_version = 0;
 
   int m_STATUS_MO = -2;
   int m_STATUS_MOMSN = -2;
@@ -253,10 +244,6 @@ public:
 
 inline void SBD::set_debug(const bool &val){
   m_debug = val;
-}
-
-inline void SBD::set_version(const int &val){
-  m_version = val;
 }
 
 inline void SBD::set_gnss(const double &latitude, const double &longitude){
@@ -446,7 +433,6 @@ inline bool SBD::is_in_session(){
   omp_unset_lock(&lock_data);
   return result;
 }
-
 
 inline bool SBD::is_flush_valid(){
     omp_set_lock(&lock_data);

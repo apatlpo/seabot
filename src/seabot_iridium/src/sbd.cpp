@@ -33,11 +33,6 @@ void SBD::init(const string &serial_port_name, const unsigned int &baud_rate){
   disable_echo(); // Disable echo from SBD
 }
 
-SBD::SBD(const string &serial_port_name, const unsigned int &baud_rate){
-  omp_init_lock(&lock_data);
-  init();
-}
-
 SBD::~SBD(){
   m_serial.close();
   omp_destroy_lock(&lock_data);
@@ -335,6 +330,7 @@ int SBD::cmd_flush_message(const bool &MO, const bool &MT){
   else
     cmd += to_string(1);
   write(cmd);
+
   for(size_t i=0; i<4*30; i++){
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if(is_flush_return()==true){
@@ -347,6 +343,7 @@ int SBD::cmd_flush_message(const bool &MO, const bool &MT){
         }
     }
   }
+
   return 0;
 }
 
@@ -370,7 +367,7 @@ int SBD::cmd_session(){
 
   ROS_INFO("[Iridium] Start a session");
   string cmd = "AT+SBDIX" + string(answer?"A":"");
-  if(m_valid_gnss){ // AP: comment out?
+  if(m_valid_gnss){
     int lat_deg = int(m_latitude);
     double lat_min = int(abs(m_latitude - lat_deg)*60000.)/1000.;
     int lon_deg = int(m_longitude);
@@ -410,7 +407,6 @@ int SBD::cmd_session(){
   ROS_INFO("[Iridium] End of session not received");
 
   exit(1);
-  return 1;
 }
 
 int SBD::cmd_enable_alert(const bool &enable){
@@ -423,12 +419,7 @@ int SBD::cmd_enable_alert(const bool &enable){
 int SBD::cmd_enable_indicator_reporting(const bool &enable){
   string cmd = "AT+CIER=";
   cmd += string(enable?"1":"0");
-  if(m_version==0){
-    cmd += ",1,1,1,0";
-  }
-  else if(m_version==1){
-    cmd += ",1,1"; // earlier Iridium
-  }
+  cmd += ",1,1,1,0";
   write(cmd);
   return 0;
 }
@@ -457,7 +448,7 @@ bool SBD::sbd_power(const bool &enable){
       return false;
     }
 
-    setvalgpio << enable?1:0;//write value to value file
+    setvalgpio << (enable?1:0);//write value to value file
     setvalgpio.close();// close value file
 
     m_iridium_power_state = enable;

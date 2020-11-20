@@ -41,7 +41,6 @@ double depth_fusion = 0.0;
 
 enum STATE_MACHINE {STATE_SURFACE, STATE_SINK, STATE_REGULATION, STATE_STATIONARY, STATE_EMERGENCY, STATE_PISTON_ISSUE, STATE_HOLD_DEPTH, STATE_NO_MOTIONS};
 STATE_MACHINE regulation_state = STATE_SURFACE;
-//STATE_MACHINE last_regulation_state = STATE_SURFACE;
 
 seabot_depth_controller::RegulationDebug debug_msg;
 
@@ -173,6 +172,9 @@ int main(int argc, char *argv[]){
   const bool hold_depth_enable = n_private.param<bool>("hold_depth", false);
   const double hold_depth_value_enter = n_private.param<double>("hold_depth_value_enter", 0.05);
   const double hold_depth_value_exit = n_private.param<double>("hold_depth_value_exit", 0.1);
+  const double hold_velocity_enter = n_private.param<double>("hold_velocity_enter", 0.01);
+
+  const double safety_no_data = n_private.param<double>("safety_no_data", 5.0);
 
   // No motions parameters
   const bool no_motions_enable = n_private.param<bool>("no_motions_enable", false);
@@ -255,7 +257,7 @@ int main(int argc, char *argv[]){
         if(depth_set_point<limit_depth_regulation)
           regulation_state = STATE_SURFACE;
         else if(depth_fusion>=limit_depth_regulation){
-          if((ros::Time::now()-time_last_state).toSec()<10.0){
+          if((ros::Time::now()-time_last_state).toSec()<safety_no_data){
 
             x(2) = -piston_position*tick_to_volume;
 

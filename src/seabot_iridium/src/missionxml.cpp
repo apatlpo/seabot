@@ -18,34 +18,50 @@ MissionXML::MissionXML(LogData &log){
 
 void MissionXML::write(const std::string &filename) const{
   // Create an empty property tree object.
-  pt::ptree tree;
+  pt::ptree m_tree;
 
   /// ******************** HEADER ******************** ///
-  tree.put("offset.north", m_log.m_offset_north);
-  tree.put("offset.east", m_log.m_offset_east);
+
 
   // TODO !!! WRONG
-  time_t rawtime = 0.0;//m_log.m_offset_time;
-  time(&rawtime);
-  struct tm *timeinfo = localtime(&rawtime);
+  if(m_log.m_msg_type == CMD_MISSION_NEW){
+      time_t gtime = static_cast<time_t>(m_log.m_start_time);
+      struct tm *timeinfo = gmtime(&gtime);
 
-  tree.put("offset.start_time_utc.year", timeinfo->tm_year+1900);
-  tree.put("offset.start_time_utc.month", timeinfo->tm_mon+1);
-  tree.put("offset.start_time_utc.day", timeinfo->tm_mday);
-  tree.put("offset.start_time_utc.hour", timeinfo->tm_hour);
-  tree.put("offset.start_time_utc.min", timeinfo->tm_min);
+      pt::ptree tree_offset;
+      tree_offset.put("year", timeinfo->tm_year+1900);
+      tree_offset.put("month", timeinfo->tm_mon+1);
+      tree_offset.put("day", timeinfo->tm_mday);
+      tree_offset.put("hour", timeinfo->tm_hour);
+      tree_offset.put("min", timeinfo->tm_min);
+
+      m_tree.add_child("mission.offset.start_time_utc", tree_offset);
+      m_tree.put("mission.paths.<xmlattr>.type", "0");
+  }
+  else{
+      // Load xml
+      pt::read_xml(filename, m_tree, 4);
+  }
 
   for(const Waypoint &w:m_log.m_waypoint_list){
-    pt::ptree sub_tree;
-    sub_tree.put("waypoint.duration_since_start", w.time_end);
-    sub_tree.put("waypoint.east", w.east);
-    sub_tree.put("waypoint.north", w.north);
-    sub_tree.put("waypoint.depth", w.depth);
+    pt::ptree sub_tree_wp;
+    sub_tree_wp.put("waypoint.duration", w.duration);
+    if(w.enable_thrusters){
+        sub_tree_wp.put("waypoint.east", w.east);
+        sub_tree_wp.put("waypoint.north", w.north);
+    }
+    sub_tree_wp.put("waypoint.depth", w.depth);
 
-    tree.add_child("paths.waypoint", sub_tree.get_child("waypoint"));
+    if(w.seafloor_landing)
+        sub_tree_wp.put("waypoint.seafloor_landing", true);
+
+    m_tree.add_child("mission.paths.waypoint", sub_tree_wp.get_child("waypoint"));
   }
-  tree.put("paths.<xmlattr>.type", "0");
+
+  std::stringstream ss;
+  boost::property_tree::xml_parser::write_xml(ss, m_tree);
+  std::cout << ss.str() << std::endl;
 
   pt::xml_writer_settings<std::string> settings(' ', 4);
-  pt::write_xml(filename, tree, std::locale(), settings);
+  pt::write_xml(filename, m_tree, std::locale(), settings);
 }
