@@ -419,7 +419,12 @@ int SBD::cmd_enable_alert(const bool &enable){
 int SBD::cmd_enable_indicator_reporting(const bool &enable){
   string cmd = "AT+CIER=";
   cmd += string(enable?"1":"0");
-  cmd += ",1,1,1,0";
+  if(m_version==0){
+    cmd += ",1,1,1,0";
+  }
+  else if(m_version==1){
+    cmd += ",1,1"; // earlier Iridium
+  }
   write(cmd);
   return 0;
 }
@@ -455,5 +460,3 @@ bool SBD::sbd_power(const bool &enable){
   }
   return true;
 }
-
-

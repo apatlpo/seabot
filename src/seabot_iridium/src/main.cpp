@@ -227,6 +227,7 @@ int main(int argc, char *argv[]){
     wait_surface_time = n_private.param<double>("wait_time_surface", 2.0);
     depth_surface_limit = n_private.param<double>("depth_surface_limit", 0.5);
     bool enable_gnss_iridium = n_private.param<double>("enable_gnss_iridium", false);
+    int modem_version = n_private.param<int>("version", 0);
 
     const string mission_file_name = n_private.param<string>("mission_file_name", "mission_test.xml");
     const string mission_path = n_private.param<string>("mission_path", "");
@@ -260,6 +261,7 @@ int main(int argc, char *argv[]){
 
     sbd.init(serial_port_name, serial_baud_rate);
     sbd.set_debug(debug);
+    sbd.set_version(modem_version);
 
     //  omp_set_num_threads(2);
 #pragma omp parallel num_threads(2)
@@ -377,4 +379,3 @@ int main(int argc, char *argv[]){
  * ToDo :
  *  -> msg to set the frequency of state msg
 */
-
